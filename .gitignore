@@ -1,1 +1,16 @@
 # Created by .ignore support plugin (hsz.mobi)
+*~
+*.swp
+*.pyc
+*_backup.py
+.project
+.pydevproject
+/gh-pages
+prototype
+tests
+test
+varie
+herp
+build
+dist
+Makefile

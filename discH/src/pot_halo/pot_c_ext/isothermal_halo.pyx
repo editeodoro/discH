@@ -126,6 +126,7 @@ cdef double[:,:]  _potential_iso_array(double[:] R, double[:] Z, int nlen, doubl
 
     for  i in range(nlen):
 
+
         ret[i,0]=R[i]
         ret[i,1]=Z[i]
 
@@ -201,25 +202,51 @@ cdef double[:,:]  _potential_iso_grid(double[:] R, double[:] Z, int nlenR, int n
 
 
 cpdef potential_iso(R, Z, d0, rc, e, mcut=None, toll=1e-4, grid=False):
+    """Calculate the potential of an isothermal halo.
+        If len(R)|=len(Z) or grid=True, calculate the potential in a 2D grid in R and Z.
 
-        if mcut is None:
-            mcut=20*rc
 
-        if isinstance(R, float) or isinstance(R, int):
-            if isinstance(Z, float) or isinstance(Z, int):
-                return np.array(_potential_iso(R=R,Z=Z,mcut=mcut,d0=d0,rc=rc,e=e,toll=toll))
-            else:
-                raise ValueError('R and Z have different dimension')
+    :param R: Cylindrical radius (memview object)
+    :param Z: Cylindrical height (memview object)
+    :param d0: Central density at (R,Z)=(0,0) [Msol/kpc^3]
+    :param rc: Core radius [Kpc]
+    :param e: ellipticity
+    :param mcut: elliptical radius where dens(m>mcut)=0
+    :param e: ellipticity
+    :param toll: Tollerance for nquad
+    :param grid: If True calculate potential in a 2D grid in R and Z
+    :return: 3-col array:
+        0-R
+        1-Z
+        2-Potential at (R,Z)
+    """
+
+    #print('R',R)
+    #print('Z',Z)
+    #print('d0',d0)
+    #print('rc',rc)
+    #print('e',e)
+    #print('mcut',mcut)
+    #print('toll',toll)
+    #print('grid',grid)
+    if mcut is None:
+        mcut=20*rc
+
+    if isinstance(R, float) or isinstance(R, int):
+        if isinstance(Z, float) or isinstance(Z, int):
+            return np.array(_potential_iso(R=R,Z=Z,mcut=mcut,d0=d0,rc=rc,e=e,toll=toll))
         else:
-            if grid:
-                R=np.array(R,dtype=np.dtype("d"))
-                Z=np.array(Z,dtype=np.dtype("d"))
-                return np.array(_potential_iso_grid( R=R, Z=Z, nlenR=len(R), nlenZ=len(Z), mcut=mcut, d0=d0, rc=rc, e=e, toll=toll))
-            elif len(R)==len(Z):
-                nlen=len(R)
-                R=np.array(R,dtype=np.dtype("d"))
-                Z=np.array(Z,dtype=np.dtype("d"))
-                return np.array(_potential_iso_array( R=R, Z=Z, nlen=len(R), mcut=mcut, d0=d0, rc=rc, e=e, toll=toll))
-            else:
-                raise ValueError('R and Z have different dimension')
+            raise ValueError('R and Z have different dimension')
+    else:
+        if grid:
+            R=np.array(R,dtype=np.dtype("d"))
+            Z=np.array(Z,dtype=np.dtype("d"))
+            return np.array(_potential_iso_grid( R=R, Z=Z, nlenR=len(R), nlenZ=len(Z), mcut=mcut, d0=d0, rc=rc, e=e, toll=toll))
+        elif len(R)==len(Z):
+            nlen=len(R)
+            R=np.array(R,dtype=np.dtype("d"))
+            Z=np.array(Z,dtype=np.dtype("d"))
+            return np.array(_potential_iso_array( R=R, Z=Z, nlen=len(R), mcut=mcut, d0=d0, rc=rc, e=e, toll=toll))
+        else:
+            raise ValueError('R and Z have different dimension')
 

@@ -13,8 +13,8 @@ def main():
     mcut=100
 
 
-    R=np.linspace(0,15,1000)
-    Z=np.linspace(0,5,1000)
+    R=np.linspace(0,15,100000)
+    Z=np.linspace(0,5,100000)
 
 #t1=time.time()
 #b=a.potential(R,Z,1e-2)
@@ -23,12 +23,14 @@ def main():
 
     a=discH.isothermal_halo(d0,rc,e,mcut)
     t1=time.time()
-    b=a.potential(R,Z,grid=True, toll=1e-4,nproc=1)
+    b=a.potential(R,Z,grid=False, toll=1e-4,nproc=1)
+    #print(b)
     print('n=1',time.time()-t1)
 
     a=discH.isothermal_halo(d0,rc,e,mcut)
     t1=time.time()
-    b=a.potential(R,Z,grid=True, toll=1e-4,nproc=2)
+    b=a.potential(R,Z,grid=False, toll=1e-2,nproc=2)
+    #print(b)
     print('n=2',time.time()-t1)
 
     #def potential_parallel(self,R,Z,grid=False, toll=1e-4, nproc=2):
