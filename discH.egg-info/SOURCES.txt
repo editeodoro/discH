@@ -1,0 +1,17 @@
+setup.py
+discH/__init__.py
+discH.egg-info/PKG-INFO
+discH.egg-info/SOURCES.txt
+discH.egg-info/dependency_links.txt
+discH.egg-info/top_level.txt
+discH/src/__init__.py
+discH/src/cpotlib.c
+discH/src/pardo/Pardo.py
+discH/src/pardo/__init__.py
+discH/src/pot_halo/__init__.py
+discH/src/pot_halo/pot_halo.py
+discH/src/pot_halo/pot_c_ext/__init__.py
+discH/src/pot_halo/pot_c_ext/general_halo.c
+discH/src/pot_halo/pot_c_ext/isothermal_halo.c
+test/test.py
+test/test_multi.py

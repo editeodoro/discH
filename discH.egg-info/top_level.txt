@@ -1,0 +1,8 @@
+discH
+discH/src
+discH/src/cpotlib
+discH/src/pardo
+discH/src/pot_halo
+discH/src/pot_halo/pot_c_ext
+discH/src/pot_halo/pot_c_ext/general_halo
+discH/src/pot_halo/pot_c_ext/isothermal_halo
