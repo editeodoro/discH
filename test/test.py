@@ -9,7 +9,7 @@ from discH.src.pot_halo.pot_halo import isothermal_halo
 def main():
     d0=3
     rc=2
-    e=0
+    e=0.
     mcut=100
 
 
@@ -24,13 +24,25 @@ def main():
     a=discH.isothermal_halo(d0,rc,e,mcut)
     t1=time.time()
     b=a.potential(R,Z,grid=False, toll=1e-4,nproc=1)
-    #print(b)
+    print(b[0])
     print('n=1',time.time()-t1)
 
     a=discH.isothermal_halo(d0,rc,e,mcut)
     t1=time.time()
-    b=a.potential(R,Z,grid=False, toll=1e-2,nproc=2)
-    #print(b)
+    b=a.potential(R,Z,grid=False, toll=1e-4,nproc=2)
+    print(b[0])
+    print('n=2',time.time()-t1)
+
+    a=discH.NFW_halo(d0,rc,e,mcut)
+    t1=time.time()
+    b=a.potential(R,Z,grid=False, toll=1e-4,nproc=1)
+    print(b[0])
+    print('n=1',time.time()-t1)
+
+    a=discH.NFW_halo(d0,rc,e,mcut)
+    t1=time.time()
+    b=a.potential(R,Z,grid=False, toll=1e-4,nproc=2)
+    print(b[0])
     print('n=2',time.time()-t1)
 
     #def potential_parallel(self,R,Z,grid=False, toll=1e-4, nproc=2):
