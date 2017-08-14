@@ -5,7 +5,7 @@ from discH.src.pot_halo import potential_iso
 from discH.src.pot_halo.pot_halo import isothermal_halo
 #print(discH.potentialh_iso2(R=10,Z=2,d0=1,rc=0.5,e=0,rcut=20,toll=1e-4))
 
-
+'''
 def main():
     d0=3
     rc=2

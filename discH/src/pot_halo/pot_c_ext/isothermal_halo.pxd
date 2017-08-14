@@ -1,4 +1,4 @@
-
+#cython: language_level=3, boundscheck=False, cdivision=True, wraparound=False
 
 cdef double psi_iso(double d0, double rc, double m) nogil
 cdef double integrand_hiso(int n, double *data) nogil

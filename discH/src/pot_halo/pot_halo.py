@@ -1,4 +1,5 @@
 from .pot_c_ext.isothermal_halo import potential_iso
+from .pot_c_ext.nfw_halo import potential_nfw
 import multiprocessing as mp
 from ..pardo.Pardo import ParDo
 
@@ -154,3 +155,61 @@ class isothermal_halo(halo):
 
         return htab
 
+class NFW_halo(halo):
+
+    def __init__(self,d0,rs,e,mcut=None):
+        """NFW halo d=d0/((r/rs)(1+r/rs)^2)
+
+        :param d0:  Central density in Msun/kpc^3
+        :param rs:  Scale radius in kpc
+        :param e:  eccentricity (sqrt(1-b^2/a^2))
+        :param mcut: elliptical radius where dens(m>mcut)=0
+        """
+        super(NFW_halo,self).__init__(d0=d0,rc=rs,e=e,mcut=mcut)
+
+    def _potential_serial(self, R, Z, grid=False, toll=1e-4, mcut=None):
+        """Calculate the potential in R and Z using a serial code
+
+        :param R: Cylindrical radius [kpc]
+        :param Z: Cylindrical height [kpc]
+        :param grid:  if True calculate the potential in a 2D grid in R and Z
+        :param toll: tollerance for quad integration
+        :param mcut: elliptical radius where dens(m>mcut)=0
+        :return:
+        """
+
+
+        self.set_toll(toll)
+
+        if mcut is not  None: self.set_mcut(mcut)
+
+        return  potential_nfw(R, Z, d0=self.d0, rs=self.rc, e=self.e, mcut=self.mcut, toll=self.toll, grid=grid)
+
+    def _potential_parallel(self, R, Z, grid=False, toll=1e-4, mcut=None, nproc=2):
+        """Calculate the potential in R and Z using a parallelized code.
+
+        :param R: Cylindrical radius [kpc]
+        :param Z: Cylindrical height [kpc]
+        :param grid:  if True calculate the potential in a 2D grid in R and Z
+        :param toll: tollerance for quad integration
+        :param mcut: elliptical radius where dens(m>mcut)=0
+        :return:
+        """
+
+        self.set_toll(toll)
+
+        if mcut is not None: self.set_mcut(mcut)
+
+        pardo=ParDo(nproc=nproc)
+        pardo.set_func(potential_nfw)
+
+        if len(R)!=len(Z) or grid==True:
+
+            htab=pardo.run_grid(R,args=(Z,self.d0,self.rc,self.e,self.mcut,self.toll,grid))
+
+        else:
+
+            htab = pardo.run(R,Z, args=(self.d0, self.rc, self.e, self.mcut, self.toll, grid))
+
+
+        return htab

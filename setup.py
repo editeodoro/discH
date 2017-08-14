@@ -6,6 +6,7 @@ from distutils.core import Extension
 from Cython.Build import cythonize
 import sysconfig
 import numpy
+import cython_gsl
 
 def get_ext_filename_without_platform_suffix(filename):
     name, ext = os.path.splitext(filename)
@@ -37,18 +38,42 @@ gh_ext=Extension('discH/src/pot_halo/pot_c_ext/general_halo',sources=gh)
 ih=['discH/src/pot_halo/pot_c_ext/isothermal_halo.pyx']
 ih_ext=Extension('discH/src/pot_halo/pot_c_ext/isothermal_halo',sources=ih)
 
-ext_modules=cythonize([cy_ext,gh_ext,ih_ext])
+infw=['discH/src/pot_halo/pot_c_ext/nfw_halo.pyx']
+infw_ext=Extension('discH/src/pot_halo/pot_c_ext/nfw_halo',sources=infw)
+
+gd=['discH/src/pot_disc/pot_c_ext/integrand_functions.pyx']
+gd_ext=Extension('discH/src/pot_disc/pot_c_ext/integrand_functions',libraries=cython_gsl.get_libraries(),library_dirs=[cython_gsl.get_library_dir()],include_dirs=[cython_gsl.get_cython_include_dir(), numpy.get_include()],sources=gd)
+
+rd=['discH/src/pot_disc/pot_c_ext/rdens_law.pyx']
+rd_ext=Extension('discH/src/pot_disc/pot_c_ext/rdens_law',sources=rd)
+
+fd=['discH/src/pot_disc/pot_c_ext/rflare_law.pyx']
+fd_ext=Extension('discH/src/pot_disc/pot_c_ext/rflare_law',sources=fd)
+
+pd=['discH/src/pot_disc/pot_c_ext/potential_disc.pyx']
+pd_ext=Extension('discH/src/pot_disc/pot_c_ext/potential_disc',sources=pd)
+
+#ext_modules=cythonize([cy_ext,gh_ext,ih_ext,infw_ext,gd_ext,rd_ext,fd_ext])
+
+#extra_compile_args = ['-std=c99']
+#sturct_c_src=['discH/src/pot_disc/pot_c_ext/struct.c']
+#struct_c_ext = Extension('discH/src/pot_disc/pot_c_ext/struct',
+                     #sources=sturct_c_src,
+                     #extra_compile_args=extra_compile_args
+                     #)
+
+
+ext_modules=cythonize([cy_ext,gh_ext,ih_ext,infw_ext,gd_ext,rd_ext,fd_ext,pd_ext])
 
 setup(
 		name='discH',
-		version='0.0.3dev0',
+		version='0.0.8dev0',
 		author='Giuliano Iorio',
 		author_email='',
 		url='',
         cmdclass={'build_ext': BuildExtWithoutPlatformSuffix},
-		packages=['discH','discH/src','discH/src/pot_halo','discH/src/pot_halo/pot_c_ext','discH/src/pardo'],
+		packages=['discH','discH/src','discH/src/pot_halo','discH/src/pot_halo/pot_c_ext','discH/src/pardo','discH/src/pot_disc', 'discH/src/pot_disc/pot_c_ext' ],
         ext_modules=ext_modules,
-        include_dirs=[numpy.get_include()]
+        include_dirs=[numpy.get_include(),cython_gsl.get_include()]
 )
-
 

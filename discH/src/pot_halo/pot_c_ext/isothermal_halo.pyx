@@ -1,12 +1,12 @@
 #cython: language_level=3, boundscheck=False, cdivision=True, wraparound=False
 from libc.math cimport sqrt, log, asin
-from .general_halo cimport xi, m_calc
+from .general_halo cimport xi, m_calc, integrand_core, potential_core
 from scipy.integrate import quad
 from scipy._lib._ccallback import LowLevelCallable
 import numpy as np
 cimport numpy as np
 
-cdef PI=3.14159265358979323846
+cdef double PI=3.14159265358979323846
 
 cdef double psi_iso(double d0, double rc, double m) nogil:
     """Auxiliary functions linked to density law iso:
@@ -47,14 +47,16 @@ cdef double integrand_hiso(int n, double *data) nogil:
         double d0 = data[4]
         double rc = data[5]
         double e = data[6]
-
+        double psi, result #, num, den
 
     if (m<=mcut): psi=psi_iso(d0,rc,m)
     else: psi=psi_iso(d0,rc,mcut)
-    num=xi(m,R,Z,e)*(xi(m,R,Z,e)-e*e)*sqrt(xi(m,R,Z,e)-e*e)*m*psi
-    den=((xi(m,R,Z,e)-e*e)*(xi(m,R,Z,e)-e*e)*R*R)+(xi(m,R,Z,e)*xi(m,R,Z,e)*Z*Z)
 
-    return num/den
+    result=integrand_core(m, R, Z, e, psi)
+    #num=xi(m,R,Z,e)*(xi(m,R,Z,e)-e*e)*sqrt(xi(m,R,Z,e)-e*e)*m*psi
+    #den=((xi(m,R,Z,e)-e*e)*(xi(m,R,Z,e)-e*e)*R*R)+(xi(m,R,Z,e)*xi(m,R,Z,e)*Z*Z)
+
+    return result
 
 
 cdef double  _potential_iso(double R, double Z, double mcut, double d0, double rc, double e, double toll):
@@ -67,6 +69,7 @@ cdef double  _potential_iso(double R, double Z, double mcut, double d0, double r
     :param d0: Central density at (R,Z)=(0,0) [Msol/kpc^3]
     :param rc: Core radius [Kpc]
     :param e: ellipticity
+    :param toll: relative tollerance for the integration (see scipy.quad)
     :return: Potential of the isothermal halo in the point (R,Z)
     """
 
@@ -76,6 +79,7 @@ cdef double  _potential_iso(double R, double Z, double mcut, double d0, double r
         double m0
         double psi
         double intpot
+        double result
 
     m0=m_calc(R,Z,e)
 
@@ -88,9 +92,10 @@ cdef double  _potential_iso(double R, double Z, double mcut, double d0, double r
 
     psi=psi_iso(d0,rc,mcut)
 
+    result=potential_core(e, intpot, psi)
 
-    if (e<=0.0001): return -cost*(psi-intpot)
-    else: return -cost*(sqrt(1-e*e)/e)*(psi*asin(e)-e*intpot)
+    return result
+
 
 cdef double[:,:]  _potential_iso_array(double[:] R, double[:] Z, int nlen, double mcut, double d0, double rc, double e, double toll):
     """Calculate the potential of an isothermal halo in the a list of points R-Z
@@ -103,6 +108,7 @@ cdef double[:,:]  _potential_iso_array(double[:] R, double[:] Z, int nlen, doubl
     :param d0: Central density at (R,Z)=(0,0) [Msol/kpc^3]
     :param rc: Core radius [Kpc]
     :param e: ellipticity
+    :param toll: relative tollerance for the integration (see scipy.quad)
     :return: 3-col array:
         0-R
         1-Z
@@ -136,11 +142,13 @@ cdef double[:,:]  _potential_iso_array(double[:] R, double[:] Z, int nlen, doubl
 
         psi=psi_iso(d0,rc,mcut)
 
+        ret[i,2]=potential_core(e, intpot, psi)
 
-        if (e<=0.0001):
-            ret[i,2] = -cost*(psi-intpot)
-        else:
-            ret[i,2] = -cost*(sqrt(1-e*e)/e)*(psi*asin(e)-e*intpot)
+
+        #if (e<=0.0001):
+        #    ret[i,2] = -cost*(psi-intpot)
+        #else:
+        #    ret[i,2] = -cost*(sqrt(1-e*e)/e)*(psi*asin(e)-e*intpot)
 
     return ret
 
@@ -156,6 +164,7 @@ cdef double[:,:]  _potential_iso_grid(double[:] R, double[:] Z, int nlenR, int n
     :param d0: Central density at (R,Z)=(0,0) [Msol/kpc^3]
     :param rc: Core radius [Kpc]
     :param e: ellipticity
+    :param toll: relative tollerance for the integration (see scipy.quad)
     :return: 3-col array:
         0-R
         1-Z
@@ -190,11 +199,11 @@ cdef double[:,:]  _potential_iso_grid(double[:] R, double[:] Z, int nlenR, int n
 
             psi=psi_iso(d0,rc,mcut)
 
-
-            if (e<=0.0001):
-                ret[c,2] = -cost*(psi-intpot)
-            else:
-                ret[c,2] = -cost*(sqrt(1-e*e)/e)*(psi*asin(e)-e*intpot)
+            ret[c,2]=potential_core(e, intpot, psi)
+            #if (e<=0.0001):
+            #    ret[c,2] = -cost*(psi-intpot)
+            #else:
+            #    ret[c,2] = -cost*(sqrt(1-e*e)/e)*(psi*asin(e)-e*intpot)
 
             c+=1
 
