@@ -5,7 +5,6 @@ discH/src/pardo
 discH/src/pot_disc
 discH/src/pot_disc/pot_c_ext
 discH/src/pot_disc/pot_c_ext/integrand_functions
-discH/src/pot_disc/pot_c_ext/potential_disc
 discH/src/pot_disc/pot_c_ext/rdens_law
 discH/src/pot_disc/pot_c_ext/rflare_law
 discH/src/pot_halo

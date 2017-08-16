@@ -13,7 +13,6 @@ discH/src/pot_disc/__init__.py
 discH/src/pot_disc/pot_disc.py
 discH/src/pot_disc/pot_c_ext/__init__.py
 discH/src/pot_disc/pot_c_ext/integrand_functions.c
-discH/src/pot_disc/pot_c_ext/potential_disc.c
 discH/src/pot_disc/pot_c_ext/rdens_law.c
 discH/src/pot_disc/pot_c_ext/rflare_law.c
 discH/src/pot_halo/__init__.py

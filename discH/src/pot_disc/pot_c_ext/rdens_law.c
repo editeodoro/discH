@@ -993,7 +993,7 @@ static PyObject *strided = 0;
 static PyObject *indirect = 0;
 static PyObject *contiguous = 0;
 static PyObject *indirect_contiguous = 0;
-static double __pyx_f_5discH_3src_8pot_disc_9pot_c_ext_9rdens_law_poly_exponentialpy(double, double, double, double, double, double, double, double, int __pyx_skip_dispatch); /*proto*/
+static double __pyx_f_5discH_3src_8pot_disc_9pot_c_ext_9rdens_law_poly_exponentialpy(double, double, double, double, double, double, double, double, double, double, double, int __pyx_skip_dispatch); /*proto*/
 static struct __pyx_array_obj *__pyx_array_new(PyObject *, Py_ssize_t, char *, char *, char *); /*proto*/
 static void *__pyx_align_pointer(void *, size_t); /*proto*/
 static PyObject *__pyx_memoryview_new(PyObject *, int, int, __Pyx_TypeInfo *); /*proto*/
@@ -1039,7 +1039,7 @@ static PyObject *__pyx_builtin_TypeError;
 static PyObject *__pyx_builtin_xrange;
 static PyObject *__pyx_builtin_id;
 static PyObject *__pyx_builtin_IndexError;
-static PyObject *__pyx_pf_5discH_3src_8pot_disc_9pot_c_ext_9rdens_law_poly_exponentialpy(CYTHON_UNUSED PyObject *__pyx_self, double __pyx_v_R, double __pyx_v_Rd, double __pyx_v_a0, double __pyx_v_a1, double __pyx_v_a2, double __pyx_v_a3, double __pyx_v_a4, double __pyx_v_a5); /* proto */
+static PyObject *__pyx_pf_5discH_3src_8pot_disc_9pot_c_ext_9rdens_law_poly_exponentialpy(CYTHON_UNUSED PyObject *__pyx_self, double __pyx_v_R, double __pyx_v_a0, double __pyx_v_a1, double __pyx_v_a2, double __pyx_v_a3, double __pyx_v_a4, double __pyx_v_a5, double __pyx_v_a6, double __pyx_v_a7, double __pyx_v_a8, double __pyx_v_a9); /* proto */
 static int __pyx_array_MemoryView_5array___cinit__(struct __pyx_array_obj *__pyx_v_self, PyObject *__pyx_v_shape, Py_ssize_t __pyx_v_itemsize, PyObject *__pyx_v_format, PyObject *__pyx_v_mode, int __pyx_v_allocate_buffer); /* proto */
 static int __pyx_array_getbuffer_MemoryView_5array_2__getbuffer__(struct __pyx_array_obj *__pyx_v_self, Py_buffer *__pyx_v_info, int __pyx_v_flags); /* proto */
 static void __pyx_array_MemoryView_5array_4__dealloc__(struct __pyx_array_obj *__pyx_v_self); /* proto */
@@ -1079,13 +1079,16 @@ static PyObject *__pyx_tp_new__memoryviewslice(PyTypeObject *t, PyObject *a, PyO
 static char __pyx_k_O[] = "O";
 static char __pyx_k_R[] = "R";
 static char __pyx_k_c[] = "c";
-static char __pyx_k_Rd[] = "Rd";
 static char __pyx_k_a0[] = "a0";
 static char __pyx_k_a1[] = "a1";
 static char __pyx_k_a2[] = "a2";
 static char __pyx_k_a3[] = "a3";
 static char __pyx_k_a4[] = "a4";
 static char __pyx_k_a5[] = "a5";
+static char __pyx_k_a6[] = "a6";
+static char __pyx_k_a7[] = "a7";
+static char __pyx_k_a8[] = "a8";
+static char __pyx_k_a9[] = "a9";
 static char __pyx_k_id[] = "id";
 static char __pyx_k_np[] = "np";
 static char __pyx_k_obj[] = "obj";
@@ -1166,7 +1169,6 @@ static PyObject *__pyx_kp_s_MemoryView_of_r_object;
 static PyObject *__pyx_n_b_O;
 static PyObject *__pyx_kp_s_Out_of_bounds_on_buffer_access_a;
 static PyObject *__pyx_n_s_R;
-static PyObject *__pyx_n_s_Rd;
 static PyObject *__pyx_n_s_TypeError;
 static PyObject *__pyx_kp_s_Unable_to_convert_item_to_object;
 static PyObject *__pyx_n_s_ValueError;
@@ -1176,6 +1178,10 @@ static PyObject *__pyx_n_s_a2;
 static PyObject *__pyx_n_s_a3;
 static PyObject *__pyx_n_s_a4;
 static PyObject *__pyx_n_s_a5;
+static PyObject *__pyx_n_s_a6;
+static PyObject *__pyx_n_s_a7;
+static PyObject *__pyx_n_s_a8;
+static PyObject *__pyx_n_s_a9;
 static PyObject *__pyx_n_s_allocate_buffer;
 static PyObject *__pyx_n_s_base;
 static PyObject *__pyx_n_s_c;
@@ -1245,39 +1251,195 @@ static PyObject *__pyx_tuple__16;
 /* "discH/src/pot_disc/pot_c_ext/rdens_law.pyx":8
  * 
  * 
- * cdef double exponential_disc(double R, double Rd, int nparam) nogil:             # <<<<<<<<<<<<<<
+ * cdef double poly_exponential(double R, double a0, double a1, double a2, double a3, double a4, double a5, double a6, double a7, double a8, double a9) nogil:             # <<<<<<<<<<<<<<
+ * 
  *     """
- *     Normalised Exponetial disc surface density Sigma(R)=exp(-R/Rd)
  */
 
-static double __pyx_f_5discH_3src_8pot_disc_9pot_c_ext_9rdens_law_exponential_disc(double __pyx_v_R, double __pyx_v_Rd, CYTHON_UNUSED int __pyx_v_nparam) {
+static double __pyx_f_5discH_3src_8pot_disc_9pot_c_ext_9rdens_law_poly_exponential(double __pyx_v_R, double __pyx_v_a0, double __pyx_v_a1, double __pyx_v_a2, double __pyx_v_a3, double __pyx_v_a4, double __pyx_v_a5, double __pyx_v_a6, double __pyx_v_a7, double __pyx_v_a8, double __pyx_v_a9) {
+  double __pyx_v_res;
+  double __pyx_v_recursiveR;
+  double __pyx_v_Rd;
   double __pyx_r;
 
-  /* "discH/src/pot_disc/pot_c_ext/rdens_law.pyx":17
- *     """
+  /* "discH/src/pot_disc/pot_c_ext/rdens_law.pyx":30
+ *         double res, recursiveR, Rd
  * 
- *     nparam=1             # <<<<<<<<<<<<<<
+ *     Rd=a0             # <<<<<<<<<<<<<<
  * 
- * 
+ *     res=a1
  */
-  __pyx_v_nparam = 1;
+  __pyx_v_Rd = __pyx_v_a0;
 
-  /* "discH/src/pot_disc/pot_c_ext/rdens_law.pyx":21
+  /* "discH/src/pot_disc/pot_c_ext/rdens_law.pyx":32
+ *     Rd=a0
  * 
+ *     res=a1             # <<<<<<<<<<<<<<
+ *     recursiveR=R
+ *     res+=a2*recursiveR
+ */
+  __pyx_v_res = __pyx_v_a1;
+
+  /* "discH/src/pot_disc/pot_c_ext/rdens_law.pyx":33
  * 
- *     return exp(-R/Rd)             # <<<<<<<<<<<<<<
- * 
+ *     res=a1
+ *     recursiveR=R             # <<<<<<<<<<<<<<
+ *     res+=a2*recursiveR
+ *     recursiveR=recursiveR*R
+ */
+  __pyx_v_recursiveR = __pyx_v_R;
+
+  /* "discH/src/pot_disc/pot_c_ext/rdens_law.pyx":34
+ *     res=a1
+ *     recursiveR=R
+ *     res+=a2*recursiveR             # <<<<<<<<<<<<<<
+ *     recursiveR=recursiveR*R
+ *     res+=a3*recursiveR
+ */
+  __pyx_v_res = (__pyx_v_res + (__pyx_v_a2 * __pyx_v_recursiveR));
+
+  /* "discH/src/pot_disc/pot_c_ext/rdens_law.pyx":35
+ *     recursiveR=R
+ *     res+=a2*recursiveR
+ *     recursiveR=recursiveR*R             # <<<<<<<<<<<<<<
+ *     res+=a3*recursiveR
+ *     recursiveR=recursiveR*R
+ */
+  __pyx_v_recursiveR = (__pyx_v_recursiveR * __pyx_v_R);
+
+  /* "discH/src/pot_disc/pot_c_ext/rdens_law.pyx":36
+ *     res+=a2*recursiveR
+ *     recursiveR=recursiveR*R
+ *     res+=a3*recursiveR             # <<<<<<<<<<<<<<
+ *     recursiveR=recursiveR*R
+ *     res+=a4*recursiveR
+ */
+  __pyx_v_res = (__pyx_v_res + (__pyx_v_a3 * __pyx_v_recursiveR));
+
+  /* "discH/src/pot_disc/pot_c_ext/rdens_law.pyx":37
+ *     recursiveR=recursiveR*R
+ *     res+=a3*recursiveR
+ *     recursiveR=recursiveR*R             # <<<<<<<<<<<<<<
+ *     res+=a4*recursiveR
+ *     recursiveR=recursiveR*R
+ */
+  __pyx_v_recursiveR = (__pyx_v_recursiveR * __pyx_v_R);
+
+  /* "discH/src/pot_disc/pot_c_ext/rdens_law.pyx":38
+ *     res+=a3*recursiveR
+ *     recursiveR=recursiveR*R
+ *     res+=a4*recursiveR             # <<<<<<<<<<<<<<
+ *     recursiveR=recursiveR*R
+ *     res+=a5*recursiveR
+ */
+  __pyx_v_res = (__pyx_v_res + (__pyx_v_a4 * __pyx_v_recursiveR));
+
+  /* "discH/src/pot_disc/pot_c_ext/rdens_law.pyx":39
+ *     recursiveR=recursiveR*R
+ *     res+=a4*recursiveR
+ *     recursiveR=recursiveR*R             # <<<<<<<<<<<<<<
+ *     res+=a5*recursiveR
+ *     recursiveR=recursiveR*R
+ */
+  __pyx_v_recursiveR = (__pyx_v_recursiveR * __pyx_v_R);
+
+  /* "discH/src/pot_disc/pot_c_ext/rdens_law.pyx":40
+ *     res+=a4*recursiveR
+ *     recursiveR=recursiveR*R
+ *     res+=a5*recursiveR             # <<<<<<<<<<<<<<
+ *     recursiveR=recursiveR*R
+ *     res+=a6*recursiveR
+ */
+  __pyx_v_res = (__pyx_v_res + (__pyx_v_a5 * __pyx_v_recursiveR));
+
+  /* "discH/src/pot_disc/pot_c_ext/rdens_law.pyx":41
+ *     recursiveR=recursiveR*R
+ *     res+=a5*recursiveR
+ *     recursiveR=recursiveR*R             # <<<<<<<<<<<<<<
+ *     res+=a6*recursiveR
+ *     recursiveR=recursiveR*R
+ */
+  __pyx_v_recursiveR = (__pyx_v_recursiveR * __pyx_v_R);
+
+  /* "discH/src/pot_disc/pot_c_ext/rdens_law.pyx":42
+ *     res+=a5*recursiveR
+ *     recursiveR=recursiveR*R
+ *     res+=a6*recursiveR             # <<<<<<<<<<<<<<
+ *     recursiveR=recursiveR*R
+ *     res+=a7*recursiveR
+ */
+  __pyx_v_res = (__pyx_v_res + (__pyx_v_a6 * __pyx_v_recursiveR));
+
+  /* "discH/src/pot_disc/pot_c_ext/rdens_law.pyx":43
+ *     recursiveR=recursiveR*R
+ *     res+=a6*recursiveR
+ *     recursiveR=recursiveR*R             # <<<<<<<<<<<<<<
+ *     res+=a7*recursiveR
+ *     recursiveR=recursiveR*R
+ */
+  __pyx_v_recursiveR = (__pyx_v_recursiveR * __pyx_v_R);
+
+  /* "discH/src/pot_disc/pot_c_ext/rdens_law.pyx":44
+ *     res+=a6*recursiveR
+ *     recursiveR=recursiveR*R
+ *     res+=a7*recursiveR             # <<<<<<<<<<<<<<
+ *     recursiveR=recursiveR*R
+ *     res+=a8*recursiveR
+ */
+  __pyx_v_res = (__pyx_v_res + (__pyx_v_a7 * __pyx_v_recursiveR));
+
+  /* "discH/src/pot_disc/pot_c_ext/rdens_law.pyx":45
+ *     recursiveR=recursiveR*R
+ *     res+=a7*recursiveR
+ *     recursiveR=recursiveR*R             # <<<<<<<<<<<<<<
+ *     res+=a8*recursiveR
+ *     recursiveR=recursiveR*R
+ */
+  __pyx_v_recursiveR = (__pyx_v_recursiveR * __pyx_v_R);
+
+  /* "discH/src/pot_disc/pot_c_ext/rdens_law.pyx":46
+ *     res+=a7*recursiveR
+ *     recursiveR=recursiveR*R
+ *     res+=a8*recursiveR             # <<<<<<<<<<<<<<
+ *     recursiveR=recursiveR*R
+ *     res+=a9*recursiveR
+ */
+  __pyx_v_res = (__pyx_v_res + (__pyx_v_a8 * __pyx_v_recursiveR));
+
+  /* "discH/src/pot_disc/pot_c_ext/rdens_law.pyx":47
+ *     recursiveR=recursiveR*R
+ *     res+=a8*recursiveR
+ *     recursiveR=recursiveR*R             # <<<<<<<<<<<<<<
+ *     res+=a9*recursiveR
  * 
  */
-  __pyx_r = exp(((-__pyx_v_R) / __pyx_v_Rd));
+  __pyx_v_recursiveR = (__pyx_v_recursiveR * __pyx_v_R);
+
+  /* "discH/src/pot_disc/pot_c_ext/rdens_law.pyx":48
+ *     res+=a8*recursiveR
+ *     recursiveR=recursiveR*R
+ *     res+=a9*recursiveR             # <<<<<<<<<<<<<<
+ * 
+ *     return res*exp(-R/Rd)
+ */
+  __pyx_v_res = (__pyx_v_res + (__pyx_v_a9 * __pyx_v_recursiveR));
+
+  /* "discH/src/pot_disc/pot_c_ext/rdens_law.pyx":50
+ *     res+=a9*recursiveR
+ * 
+ *     return res*exp(-R/Rd)             # <<<<<<<<<<<<<<
+ * 
+ * cpdef double poly_exponentialpy(double R, double a0, double a1, double a2, double a3, double a4, double a5, double a6, double a7, double a8, double a9) nogil:
+ */
+  __pyx_r = (__pyx_v_res * exp(((-__pyx_v_R) / __pyx_v_Rd)));
   goto __pyx_L0;
 
   /* "discH/src/pot_disc/pot_c_ext/rdens_law.pyx":8
  * 
  * 
- * cdef double exponential_disc(double R, double Rd, int nparam) nogil:             # <<<<<<<<<<<<<<
+ * cdef double poly_exponential(double R, double a0, double a1, double a2, double a3, double a4, double a5, double a6, double a7, double a8, double a9) nogil:             # <<<<<<<<<<<<<<
+ * 
  *     """
- *     Normalised Exponetial disc surface density Sigma(R)=exp(-R/Rd)
  */
 
   /* function exit code */
@@ -1285,204 +1447,59 @@ static double __pyx_f_5discH_3src_8pot_disc_9pot_c_ext_9rdens_law_exponential_di
   return __pyx_r;
 }
 
-/* "discH/src/pot_disc/pot_c_ext/rdens_law.pyx":24
- * 
- * 
- * cdef double poly_exponential(double R, double Rd, double a0, double a1, double a2, double a3, double a4, double a5) nogil:             # <<<<<<<<<<<<<<
- * 
- *     cdef:
- */
-
-static double __pyx_f_5discH_3src_8pot_disc_9pot_c_ext_9rdens_law_poly_exponential(double __pyx_v_R, double __pyx_v_Rd, double __pyx_v_a0, double __pyx_v_a1, double __pyx_v_a2, double __pyx_v_a3, double __pyx_v_a4, double __pyx_v_a5) {
-  double __pyx_v_res;
-  double __pyx_v_recursiveR;
-  double __pyx_r;
-
-  /* "discH/src/pot_disc/pot_c_ext/rdens_law.pyx":29
- *         double res, recursiveR
- * 
- *     res=a0             # <<<<<<<<<<<<<<
- *     recursiveR=R
- *     res+=a1*recursiveR
- */
-  __pyx_v_res = __pyx_v_a0;
-
-  /* "discH/src/pot_disc/pot_c_ext/rdens_law.pyx":30
- * 
- *     res=a0
- *     recursiveR=R             # <<<<<<<<<<<<<<
- *     res+=a1*recursiveR
- *     recursiveR=recursiveR*R
- */
-  __pyx_v_recursiveR = __pyx_v_R;
-
-  /* "discH/src/pot_disc/pot_c_ext/rdens_law.pyx":31
- *     res=a0
- *     recursiveR=R
- *     res+=a1*recursiveR             # <<<<<<<<<<<<<<
- *     recursiveR=recursiveR*R
- *     res+=a2*recursiveR
- */
-  __pyx_v_res = (__pyx_v_res + (__pyx_v_a1 * __pyx_v_recursiveR));
-
-  /* "discH/src/pot_disc/pot_c_ext/rdens_law.pyx":32
- *     recursiveR=R
- *     res+=a1*recursiveR
- *     recursiveR=recursiveR*R             # <<<<<<<<<<<<<<
- *     res+=a2*recursiveR
- *     recursiveR=recursiveR*R
- */
-  __pyx_v_recursiveR = (__pyx_v_recursiveR * __pyx_v_R);
-
-  /* "discH/src/pot_disc/pot_c_ext/rdens_law.pyx":33
- *     res+=a1*recursiveR
- *     recursiveR=recursiveR*R
- *     res+=a2*recursiveR             # <<<<<<<<<<<<<<
- *     recursiveR=recursiveR*R
- *     res+=a3*recursiveR
- */
-  __pyx_v_res = (__pyx_v_res + (__pyx_v_a2 * __pyx_v_recursiveR));
-
-  /* "discH/src/pot_disc/pot_c_ext/rdens_law.pyx":34
- *     recursiveR=recursiveR*R
- *     res+=a2*recursiveR
- *     recursiveR=recursiveR*R             # <<<<<<<<<<<<<<
- *     res+=a3*recursiveR
- *     recursiveR=recursiveR*R
- */
-  __pyx_v_recursiveR = (__pyx_v_recursiveR * __pyx_v_R);
-
-  /* "discH/src/pot_disc/pot_c_ext/rdens_law.pyx":35
- *     res+=a2*recursiveR
- *     recursiveR=recursiveR*R
- *     res+=a3*recursiveR             # <<<<<<<<<<<<<<
- *     recursiveR=recursiveR*R
- *     res+=a4*recursiveR
- */
-  __pyx_v_res = (__pyx_v_res + (__pyx_v_a3 * __pyx_v_recursiveR));
-
-  /* "discH/src/pot_disc/pot_c_ext/rdens_law.pyx":36
- *     recursiveR=recursiveR*R
- *     res+=a3*recursiveR
- *     recursiveR=recursiveR*R             # <<<<<<<<<<<<<<
- *     res+=a4*recursiveR
- *     recursiveR=recursiveR*R
- */
-  __pyx_v_recursiveR = (__pyx_v_recursiveR * __pyx_v_R);
-
-  /* "discH/src/pot_disc/pot_c_ext/rdens_law.pyx":37
- *     res+=a3*recursiveR
- *     recursiveR=recursiveR*R
- *     res+=a4*recursiveR             # <<<<<<<<<<<<<<
- *     recursiveR=recursiveR*R
- *     res+=a5*recursiveR
- */
-  __pyx_v_res = (__pyx_v_res + (__pyx_v_a4 * __pyx_v_recursiveR));
-
-  /* "discH/src/pot_disc/pot_c_ext/rdens_law.pyx":38
- *     recursiveR=recursiveR*R
- *     res+=a4*recursiveR
- *     recursiveR=recursiveR*R             # <<<<<<<<<<<<<<
- *     res+=a5*recursiveR
- * 
- */
-  __pyx_v_recursiveR = (__pyx_v_recursiveR * __pyx_v_R);
-
-  /* "discH/src/pot_disc/pot_c_ext/rdens_law.pyx":39
- *     res+=a4*recursiveR
- *     recursiveR=recursiveR*R
- *     res+=a5*recursiveR             # <<<<<<<<<<<<<<
- * 
- *     return res*exp(-R/Rd)
- */
-  __pyx_v_res = (__pyx_v_res + (__pyx_v_a5 * __pyx_v_recursiveR));
-
-  /* "discH/src/pot_disc/pot_c_ext/rdens_law.pyx":41
- *     res+=a5*recursiveR
- * 
- *     return res*exp(-R/Rd)             # <<<<<<<<<<<<<<
- * 
- * cpdef double poly_exponentialpy(double R, double Rd, double a0, double a1, double a2, double a3, double a4, double a5):
- */
-  __pyx_r = (__pyx_v_res * exp(((-__pyx_v_R) / __pyx_v_Rd)));
-  goto __pyx_L0;
-
-  /* "discH/src/pot_disc/pot_c_ext/rdens_law.pyx":24
- * 
- * 
- * cdef double poly_exponential(double R, double Rd, double a0, double a1, double a2, double a3, double a4, double a5) nogil:             # <<<<<<<<<<<<<<
- * 
- *     cdef:
- */
-
-  /* function exit code */
-  __pyx_L0:;
-  return __pyx_r;
-}
-
-/* "discH/src/pot_disc/pot_c_ext/rdens_law.pyx":43
+/* "discH/src/pot_disc/pot_c_ext/rdens_law.pyx":52
  *     return res*exp(-R/Rd)
  * 
- * cpdef double poly_exponentialpy(double R, double Rd, double a0, double a1, double a2, double a3, double a4, double a5):             # <<<<<<<<<<<<<<
+ * cpdef double poly_exponentialpy(double R, double a0, double a1, double a2, double a3, double a4, double a5, double a6, double a7, double a8, double a9) nogil:             # <<<<<<<<<<<<<<
  * 
- *     cdef:
+ *     """
  */
 
 static PyObject *__pyx_pw_5discH_3src_8pot_disc_9pot_c_ext_9rdens_law_1poly_exponentialpy(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static double __pyx_f_5discH_3src_8pot_disc_9pot_c_ext_9rdens_law_poly_exponentialpy(double __pyx_v_R, double __pyx_v_Rd, double __pyx_v_a0, double __pyx_v_a1, double __pyx_v_a2, double __pyx_v_a3, double __pyx_v_a4, double __pyx_v_a5, CYTHON_UNUSED int __pyx_skip_dispatch) {
+static double __pyx_f_5discH_3src_8pot_disc_9pot_c_ext_9rdens_law_poly_exponentialpy(double __pyx_v_R, double __pyx_v_a0, double __pyx_v_a1, double __pyx_v_a2, double __pyx_v_a3, double __pyx_v_a4, double __pyx_v_a5, double __pyx_v_a6, double __pyx_v_a7, double __pyx_v_a8, double __pyx_v_a9, CYTHON_UNUSED int __pyx_skip_dispatch) {
   double __pyx_v_res;
   double __pyx_v_recursiveR;
+  double __pyx_v_Rd;
   double __pyx_r;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("poly_exponentialpy", 0);
 
-  /* "discH/src/pot_disc/pot_c_ext/rdens_law.pyx":48
- *         double res, recursiveR
+  /* "discH/src/pot_disc/pot_c_ext/rdens_law.pyx":74
+ *         double res, recursiveR, Rd
  * 
- *     res=a0             # <<<<<<<<<<<<<<
- *     recursiveR=R
- *     res+=a1*recursiveR
+ *     Rd=a0             # <<<<<<<<<<<<<<
+ * 
+ *     res=a1
  */
-  __pyx_v_res = __pyx_v_a0;
+  __pyx_v_Rd = __pyx_v_a0;
 
-  /* "discH/src/pot_disc/pot_c_ext/rdens_law.pyx":49
+  /* "discH/src/pot_disc/pot_c_ext/rdens_law.pyx":76
+ *     Rd=a0
  * 
- *     res=a0
+ *     res=a1             # <<<<<<<<<<<<<<
+ *     recursiveR=R
+ *     res+=a2*recursiveR
+ */
+  __pyx_v_res = __pyx_v_a1;
+
+  /* "discH/src/pot_disc/pot_c_ext/rdens_law.pyx":77
+ * 
+ *     res=a1
  *     recursiveR=R             # <<<<<<<<<<<<<<
- *     res+=a1*recursiveR
+ *     res+=a2*recursiveR
  *     recursiveR=recursiveR*R
  */
   __pyx_v_recursiveR = __pyx_v_R;
 
-  /* "discH/src/pot_disc/pot_c_ext/rdens_law.pyx":50
- *     res=a0
+  /* "discH/src/pot_disc/pot_c_ext/rdens_law.pyx":78
+ *     res=a1
  *     recursiveR=R
- *     res+=a1*recursiveR             # <<<<<<<<<<<<<<
- *     recursiveR=recursiveR*R
- *     res+=a2*recursiveR
- */
-  __pyx_v_res = (__pyx_v_res + (__pyx_v_a1 * __pyx_v_recursiveR));
-
-  /* "discH/src/pot_disc/pot_c_ext/rdens_law.pyx":51
- *     recursiveR=R
- *     res+=a1*recursiveR
- *     recursiveR=recursiveR*R             # <<<<<<<<<<<<<<
- *     res+=a2*recursiveR
- *     recursiveR=recursiveR*R
- */
-  __pyx_v_recursiveR = (__pyx_v_recursiveR * __pyx_v_R);
-
-  /* "discH/src/pot_disc/pot_c_ext/rdens_law.pyx":52
- *     res+=a1*recursiveR
- *     recursiveR=recursiveR*R
  *     res+=a2*recursiveR             # <<<<<<<<<<<<<<
  *     recursiveR=recursiveR*R
  *     res+=a3*recursiveR
  */
   __pyx_v_res = (__pyx_v_res + (__pyx_v_a2 * __pyx_v_recursiveR));
 
-  /* "discH/src/pot_disc/pot_c_ext/rdens_law.pyx":53
- *     recursiveR=recursiveR*R
+  /* "discH/src/pot_disc/pot_c_ext/rdens_law.pyx":79
+ *     recursiveR=R
  *     res+=a2*recursiveR
  *     recursiveR=recursiveR*R             # <<<<<<<<<<<<<<
  *     res+=a3*recursiveR
@@ -1490,7 +1507,7 @@ static double __pyx_f_5discH_3src_8pot_disc_9pot_c_ext_9rdens_law_poly_exponenti
  */
   __pyx_v_recursiveR = (__pyx_v_recursiveR * __pyx_v_R);
 
-  /* "discH/src/pot_disc/pot_c_ext/rdens_law.pyx":54
+  /* "discH/src/pot_disc/pot_c_ext/rdens_law.pyx":80
  *     res+=a2*recursiveR
  *     recursiveR=recursiveR*R
  *     res+=a3*recursiveR             # <<<<<<<<<<<<<<
@@ -1499,7 +1516,7 @@ static double __pyx_f_5discH_3src_8pot_disc_9pot_c_ext_9rdens_law_poly_exponenti
  */
   __pyx_v_res = (__pyx_v_res + (__pyx_v_a3 * __pyx_v_recursiveR));
 
-  /* "discH/src/pot_disc/pot_c_ext/rdens_law.pyx":55
+  /* "discH/src/pot_disc/pot_c_ext/rdens_law.pyx":81
  *     recursiveR=recursiveR*R
  *     res+=a3*recursiveR
  *     recursiveR=recursiveR*R             # <<<<<<<<<<<<<<
@@ -1508,7 +1525,7 @@ static double __pyx_f_5discH_3src_8pot_disc_9pot_c_ext_9rdens_law_poly_exponenti
  */
   __pyx_v_recursiveR = (__pyx_v_recursiveR * __pyx_v_R);
 
-  /* "discH/src/pot_disc/pot_c_ext/rdens_law.pyx":56
+  /* "discH/src/pot_disc/pot_c_ext/rdens_law.pyx":82
  *     res+=a3*recursiveR
  *     recursiveR=recursiveR*R
  *     res+=a4*recursiveR             # <<<<<<<<<<<<<<
@@ -1517,57 +1534,132 @@ static double __pyx_f_5discH_3src_8pot_disc_9pot_c_ext_9rdens_law_poly_exponenti
  */
   __pyx_v_res = (__pyx_v_res + (__pyx_v_a4 * __pyx_v_recursiveR));
 
-  /* "discH/src/pot_disc/pot_c_ext/rdens_law.pyx":57
+  /* "discH/src/pot_disc/pot_c_ext/rdens_law.pyx":83
  *     recursiveR=recursiveR*R
  *     res+=a4*recursiveR
  *     recursiveR=recursiveR*R             # <<<<<<<<<<<<<<
  *     res+=a5*recursiveR
+ *     recursiveR=recursiveR*R
+ */
+  __pyx_v_recursiveR = (__pyx_v_recursiveR * __pyx_v_R);
+
+  /* "discH/src/pot_disc/pot_c_ext/rdens_law.pyx":84
+ *     res+=a4*recursiveR
+ *     recursiveR=recursiveR*R
+ *     res+=a5*recursiveR             # <<<<<<<<<<<<<<
+ *     recursiveR=recursiveR*R
+ *     res+=a6*recursiveR
+ */
+  __pyx_v_res = (__pyx_v_res + (__pyx_v_a5 * __pyx_v_recursiveR));
+
+  /* "discH/src/pot_disc/pot_c_ext/rdens_law.pyx":85
+ *     recursiveR=recursiveR*R
+ *     res+=a5*recursiveR
+ *     recursiveR=recursiveR*R             # <<<<<<<<<<<<<<
+ *     res+=a6*recursiveR
+ *     recursiveR=recursiveR*R
+ */
+  __pyx_v_recursiveR = (__pyx_v_recursiveR * __pyx_v_R);
+
+  /* "discH/src/pot_disc/pot_c_ext/rdens_law.pyx":86
+ *     res+=a5*recursiveR
+ *     recursiveR=recursiveR*R
+ *     res+=a6*recursiveR             # <<<<<<<<<<<<<<
+ *     recursiveR=recursiveR*R
+ *     res+=a7*recursiveR
+ */
+  __pyx_v_res = (__pyx_v_res + (__pyx_v_a6 * __pyx_v_recursiveR));
+
+  /* "discH/src/pot_disc/pot_c_ext/rdens_law.pyx":87
+ *     recursiveR=recursiveR*R
+ *     res+=a6*recursiveR
+ *     recursiveR=recursiveR*R             # <<<<<<<<<<<<<<
+ *     res+=a7*recursiveR
+ *     recursiveR=recursiveR*R
+ */
+  __pyx_v_recursiveR = (__pyx_v_recursiveR * __pyx_v_R);
+
+  /* "discH/src/pot_disc/pot_c_ext/rdens_law.pyx":88
+ *     res+=a6*recursiveR
+ *     recursiveR=recursiveR*R
+ *     res+=a7*recursiveR             # <<<<<<<<<<<<<<
+ *     recursiveR=recursiveR*R
+ *     res+=a8*recursiveR
+ */
+  __pyx_v_res = (__pyx_v_res + (__pyx_v_a7 * __pyx_v_recursiveR));
+
+  /* "discH/src/pot_disc/pot_c_ext/rdens_law.pyx":89
+ *     recursiveR=recursiveR*R
+ *     res+=a7*recursiveR
+ *     recursiveR=recursiveR*R             # <<<<<<<<<<<<<<
+ *     res+=a8*recursiveR
+ *     recursiveR=recursiveR*R
+ */
+  __pyx_v_recursiveR = (__pyx_v_recursiveR * __pyx_v_R);
+
+  /* "discH/src/pot_disc/pot_c_ext/rdens_law.pyx":90
+ *     res+=a7*recursiveR
+ *     recursiveR=recursiveR*R
+ *     res+=a8*recursiveR             # <<<<<<<<<<<<<<
+ *     recursiveR=recursiveR*R
+ *     res+=a9*recursiveR
+ */
+  __pyx_v_res = (__pyx_v_res + (__pyx_v_a8 * __pyx_v_recursiveR));
+
+  /* "discH/src/pot_disc/pot_c_ext/rdens_law.pyx":91
+ *     recursiveR=recursiveR*R
+ *     res+=a8*recursiveR
+ *     recursiveR=recursiveR*R             # <<<<<<<<<<<<<<
+ *     res+=a9*recursiveR
  * 
  */
   __pyx_v_recursiveR = (__pyx_v_recursiveR * __pyx_v_R);
 
-  /* "discH/src/pot_disc/pot_c_ext/rdens_law.pyx":58
- *     res+=a4*recursiveR
+  /* "discH/src/pot_disc/pot_c_ext/rdens_law.pyx":92
+ *     res+=a8*recursiveR
  *     recursiveR=recursiveR*R
- *     res+=a5*recursiveR             # <<<<<<<<<<<<<<
+ *     res+=a9*recursiveR             # <<<<<<<<<<<<<<
  * 
  *     return res*exp(-R/Rd)
  */
-  __pyx_v_res = (__pyx_v_res + (__pyx_v_a5 * __pyx_v_recursiveR));
+  __pyx_v_res = (__pyx_v_res + (__pyx_v_a9 * __pyx_v_recursiveR));
 
-  /* "discH/src/pot_disc/pot_c_ext/rdens_law.pyx":60
- *     res+=a5*recursiveR
+  /* "discH/src/pot_disc/pot_c_ext/rdens_law.pyx":94
+ *     res+=a9*recursiveR
  * 
  *     return res*exp(-R/Rd)             # <<<<<<<<<<<<<<
  */
   __pyx_r = (__pyx_v_res * exp(((-__pyx_v_R) / __pyx_v_Rd)));
   goto __pyx_L0;
 
-  /* "discH/src/pot_disc/pot_c_ext/rdens_law.pyx":43
+  /* "discH/src/pot_disc/pot_c_ext/rdens_law.pyx":52
  *     return res*exp(-R/Rd)
  * 
- * cpdef double poly_exponentialpy(double R, double Rd, double a0, double a1, double a2, double a3, double a4, double a5):             # <<<<<<<<<<<<<<
+ * cpdef double poly_exponentialpy(double R, double a0, double a1, double a2, double a3, double a4, double a5, double a6, double a7, double a8, double a9) nogil:             # <<<<<<<<<<<<<<
  * 
- *     cdef:
+ *     """
  */
 
   /* function exit code */
   __pyx_L0:;
-  __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
 /* Python wrapper */
 static PyObject *__pyx_pw_5discH_3src_8pot_disc_9pot_c_ext_9rdens_law_1poly_exponentialpy(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_5discH_3src_8pot_disc_9pot_c_ext_9rdens_law_poly_exponentialpy[] = "\n\n    :param R: variable\n    :param a0: Radial scale length in Kpc\n    :param a1: coeff-0 polynomial\n    :param a2: coeff-1 polynomial\n    :param a3: coeff-2 polynomial\n    :param a4: coeff-3 polynomial\n    :param a5: coeff-4 polynomial\n    :param a6: coeff-5 polynomial\n    :param a7: coeff-6 polynomial\n    :param a8: coeff-7 polynomial\n    :param a9: coeff-8 polynomial\n    :return:\n    ";
 static PyObject *__pyx_pw_5discH_3src_8pot_disc_9pot_c_ext_9rdens_law_1poly_exponentialpy(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   double __pyx_v_R;
-  double __pyx_v_Rd;
   double __pyx_v_a0;
   double __pyx_v_a1;
   double __pyx_v_a2;
   double __pyx_v_a3;
   double __pyx_v_a4;
   double __pyx_v_a5;
+  double __pyx_v_a6;
+  double __pyx_v_a7;
+  double __pyx_v_a8;
+  double __pyx_v_a9;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -1575,12 +1667,15 @@ static PyObject *__pyx_pw_5discH_3src_8pot_disc_9pot_c_ext_9rdens_law_1poly_expo
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("poly_exponentialpy (wrapper)", 0);
   {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_R,&__pyx_n_s_Rd,&__pyx_n_s_a0,&__pyx_n_s_a1,&__pyx_n_s_a2,&__pyx_n_s_a3,&__pyx_n_s_a4,&__pyx_n_s_a5,0};
-    PyObject* values[8] = {0,0,0,0,0,0,0,0};
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_R,&__pyx_n_s_a0,&__pyx_n_s_a1,&__pyx_n_s_a2,&__pyx_n_s_a3,&__pyx_n_s_a4,&__pyx_n_s_a5,&__pyx_n_s_a6,&__pyx_n_s_a7,&__pyx_n_s_a8,&__pyx_n_s_a9,0};
+    PyObject* values[11] = {0,0,0,0,0,0,0,0,0,0,0};
     if (unlikely(__pyx_kwds)) {
       Py_ssize_t kw_args;
       const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
       switch (pos_args) {
+        case 11: values[10] = PyTuple_GET_ITEM(__pyx_args, 10);
+        case 10: values[9] = PyTuple_GET_ITEM(__pyx_args, 9);
+        case  9: values[8] = PyTuple_GET_ITEM(__pyx_args, 8);
         case  8: values[7] = PyTuple_GET_ITEM(__pyx_args, 7);
         case  7: values[6] = PyTuple_GET_ITEM(__pyx_args, 6);
         case  6: values[5] = PyTuple_GET_ITEM(__pyx_args, 5);
@@ -1598,45 +1693,60 @@ static PyObject *__pyx_pw_5discH_3src_8pot_disc_9pot_c_ext_9rdens_law_1poly_expo
         if (likely((values[0] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_R)) != 0)) kw_args--;
         else goto __pyx_L5_argtuple_error;
         case  1:
-        if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_Rd)) != 0)) kw_args--;
+        if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_a0)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("poly_exponentialpy", 1, 8, 8, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 43; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("poly_exponentialpy", 1, 11, 11, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 52; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  2:
-        if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_a0)) != 0)) kw_args--;
+        if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_a1)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("poly_exponentialpy", 1, 8, 8, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 43; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("poly_exponentialpy", 1, 11, 11, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 52; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  3:
-        if (likely((values[3] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_a1)) != 0)) kw_args--;
+        if (likely((values[3] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_a2)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("poly_exponentialpy", 1, 8, 8, 3); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 43; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("poly_exponentialpy", 1, 11, 11, 3); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 52; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  4:
-        if (likely((values[4] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_a2)) != 0)) kw_args--;
+        if (likely((values[4] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_a3)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("poly_exponentialpy", 1, 8, 8, 4); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 43; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("poly_exponentialpy", 1, 11, 11, 4); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 52; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  5:
-        if (likely((values[5] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_a3)) != 0)) kw_args--;
+        if (likely((values[5] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_a4)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("poly_exponentialpy", 1, 8, 8, 5); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 43; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("poly_exponentialpy", 1, 11, 11, 5); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 52; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  6:
-        if (likely((values[6] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_a4)) != 0)) kw_args--;
+        if (likely((values[6] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_a5)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("poly_exponentialpy", 1, 8, 8, 6); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 43; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("poly_exponentialpy", 1, 11, 11, 6); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 52; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  7:
-        if (likely((values[7] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_a5)) != 0)) kw_args--;
+        if (likely((values[7] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_a6)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("poly_exponentialpy", 1, 8, 8, 7); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 43; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("poly_exponentialpy", 1, 11, 11, 7); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 52; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case  8:
+        if (likely((values[8] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_a7)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("poly_exponentialpy", 1, 11, 11, 8); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 52; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case  9:
+        if (likely((values[9] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_a8)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("poly_exponentialpy", 1, 11, 11, 9); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 52; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case 10:
+        if (likely((values[10] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_a9)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("poly_exponentialpy", 1, 11, 11, 10); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 52; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "poly_exponentialpy") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 43; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "poly_exponentialpy") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 52; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
-    } else if (PyTuple_GET_SIZE(__pyx_args) != 8) {
+    } else if (PyTuple_GET_SIZE(__pyx_args) != 11) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
@@ -1647,32 +1757,38 @@ static PyObject *__pyx_pw_5discH_3src_8pot_disc_9pot_c_ext_9rdens_law_1poly_expo
       values[5] = PyTuple_GET_ITEM(__pyx_args, 5);
       values[6] = PyTuple_GET_ITEM(__pyx_args, 6);
       values[7] = PyTuple_GET_ITEM(__pyx_args, 7);
+      values[8] = PyTuple_GET_ITEM(__pyx_args, 8);
+      values[9] = PyTuple_GET_ITEM(__pyx_args, 9);
+      values[10] = PyTuple_GET_ITEM(__pyx_args, 10);
     }
-    __pyx_v_R = __pyx_PyFloat_AsDouble(values[0]); if (unlikely((__pyx_v_R == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 43; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
-    __pyx_v_Rd = __pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_Rd == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 43; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
-    __pyx_v_a0 = __pyx_PyFloat_AsDouble(values[2]); if (unlikely((__pyx_v_a0 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 43; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
-    __pyx_v_a1 = __pyx_PyFloat_AsDouble(values[3]); if (unlikely((__pyx_v_a1 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 43; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
-    __pyx_v_a2 = __pyx_PyFloat_AsDouble(values[4]); if (unlikely((__pyx_v_a2 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 43; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
-    __pyx_v_a3 = __pyx_PyFloat_AsDouble(values[5]); if (unlikely((__pyx_v_a3 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 43; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
-    __pyx_v_a4 = __pyx_PyFloat_AsDouble(values[6]); if (unlikely((__pyx_v_a4 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 43; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
-    __pyx_v_a5 = __pyx_PyFloat_AsDouble(values[7]); if (unlikely((__pyx_v_a5 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 43; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_R = __pyx_PyFloat_AsDouble(values[0]); if (unlikely((__pyx_v_R == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 52; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_a0 = __pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_a0 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 52; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_a1 = __pyx_PyFloat_AsDouble(values[2]); if (unlikely((__pyx_v_a1 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 52; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_a2 = __pyx_PyFloat_AsDouble(values[3]); if (unlikely((__pyx_v_a2 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 52; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_a3 = __pyx_PyFloat_AsDouble(values[4]); if (unlikely((__pyx_v_a3 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 52; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_a4 = __pyx_PyFloat_AsDouble(values[5]); if (unlikely((__pyx_v_a4 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 52; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_a5 = __pyx_PyFloat_AsDouble(values[6]); if (unlikely((__pyx_v_a5 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 52; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_a6 = __pyx_PyFloat_AsDouble(values[7]); if (unlikely((__pyx_v_a6 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 52; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_a7 = __pyx_PyFloat_AsDouble(values[8]); if (unlikely((__pyx_v_a7 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 52; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_a8 = __pyx_PyFloat_AsDouble(values[9]); if (unlikely((__pyx_v_a8 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 52; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_a9 = __pyx_PyFloat_AsDouble(values[10]); if (unlikely((__pyx_v_a9 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 52; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("poly_exponentialpy", 1, 8, 8, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 43; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("poly_exponentialpy", 1, 11, 11, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 52; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
   __Pyx_AddTraceback("discH.src.pot_disc.pot_c_ext.rdens_law.poly_exponentialpy", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_5discH_3src_8pot_disc_9pot_c_ext_9rdens_law_poly_exponentialpy(__pyx_self, __pyx_v_R, __pyx_v_Rd, __pyx_v_a0, __pyx_v_a1, __pyx_v_a2, __pyx_v_a3, __pyx_v_a4, __pyx_v_a5);
+  __pyx_r = __pyx_pf_5discH_3src_8pot_disc_9pot_c_ext_9rdens_law_poly_exponentialpy(__pyx_self, __pyx_v_R, __pyx_v_a0, __pyx_v_a1, __pyx_v_a2, __pyx_v_a3, __pyx_v_a4, __pyx_v_a5, __pyx_v_a6, __pyx_v_a7, __pyx_v_a8, __pyx_v_a9);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5discH_3src_8pot_disc_9pot_c_ext_9rdens_law_poly_exponentialpy(CYTHON_UNUSED PyObject *__pyx_self, double __pyx_v_R, double __pyx_v_Rd, double __pyx_v_a0, double __pyx_v_a1, double __pyx_v_a2, double __pyx_v_a3, double __pyx_v_a4, double __pyx_v_a5) {
+static PyObject *__pyx_pf_5discH_3src_8pot_disc_9pot_c_ext_9rdens_law_poly_exponentialpy(CYTHON_UNUSED PyObject *__pyx_self, double __pyx_v_R, double __pyx_v_a0, double __pyx_v_a1, double __pyx_v_a2, double __pyx_v_a3, double __pyx_v_a4, double __pyx_v_a5, double __pyx_v_a6, double __pyx_v_a7, double __pyx_v_a8, double __pyx_v_a9) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -1681,7 +1797,7 @@ static PyObject *__pyx_pf_5discH_3src_8pot_disc_9pot_c_ext_9rdens_law_poly_expon
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("poly_exponentialpy", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_f_5discH_3src_8pot_disc_9pot_c_ext_9rdens_law_poly_exponentialpy(__pyx_v_R, __pyx_v_Rd, __pyx_v_a0, __pyx_v_a1, __pyx_v_a2, __pyx_v_a3, __pyx_v_a4, __pyx_v_a5, 0)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 43; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_f_5discH_3src_8pot_disc_9pot_c_ext_9rdens_law_poly_exponentialpy(__pyx_v_R, __pyx_v_a0, __pyx_v_a1, __pyx_v_a2, __pyx_v_a3, __pyx_v_a4, __pyx_v_a5, __pyx_v_a6, __pyx_v_a7, __pyx_v_a8, __pyx_v_a9, 0)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 52; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -13012,7 +13128,7 @@ static PyTypeObject __pyx_type___pyx_memoryviewslice = {
 };
 
 static PyMethodDef __pyx_methods[] = {
-  {"poly_exponentialpy", (PyCFunction)__pyx_pw_5discH_3src_8pot_disc_9pot_c_ext_9rdens_law_1poly_exponentialpy, METH_VARARGS|METH_KEYWORDS, 0},
+  {"poly_exponentialpy", (PyCFunction)__pyx_pw_5discH_3src_8pot_disc_9pot_c_ext_9rdens_law_1poly_exponentialpy, METH_VARARGS|METH_KEYWORDS, __pyx_doc_5discH_3src_8pot_disc_9pot_c_ext_9rdens_law_poly_exponentialpy},
   {0, 0, 0, 0}
 };
 
@@ -13050,7 +13166,6 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_b_O, __pyx_k_O, sizeof(__pyx_k_O), 0, 0, 0, 1},
   {&__pyx_kp_s_Out_of_bounds_on_buffer_access_a, __pyx_k_Out_of_bounds_on_buffer_access_a, sizeof(__pyx_k_Out_of_bounds_on_buffer_access_a), 0, 0, 1, 0},
   {&__pyx_n_s_R, __pyx_k_R, sizeof(__pyx_k_R), 0, 0, 1, 1},
-  {&__pyx_n_s_Rd, __pyx_k_Rd, sizeof(__pyx_k_Rd), 0, 0, 1, 1},
   {&__pyx_n_s_TypeError, __pyx_k_TypeError, sizeof(__pyx_k_TypeError), 0, 0, 1, 1},
   {&__pyx_kp_s_Unable_to_convert_item_to_object, __pyx_k_Unable_to_convert_item_to_object, sizeof(__pyx_k_Unable_to_convert_item_to_object), 0, 0, 1, 0},
   {&__pyx_n_s_ValueError, __pyx_k_ValueError, sizeof(__pyx_k_ValueError), 0, 0, 1, 1},
@@ -13060,6 +13175,10 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_a3, __pyx_k_a3, sizeof(__pyx_k_a3), 0, 0, 1, 1},
   {&__pyx_n_s_a4, __pyx_k_a4, sizeof(__pyx_k_a4), 0, 0, 1, 1},
   {&__pyx_n_s_a5, __pyx_k_a5, sizeof(__pyx_k_a5), 0, 0, 1, 1},
+  {&__pyx_n_s_a6, __pyx_k_a6, sizeof(__pyx_k_a6), 0, 0, 1, 1},
+  {&__pyx_n_s_a7, __pyx_k_a7, sizeof(__pyx_k_a7), 0, 0, 1, 1},
+  {&__pyx_n_s_a8, __pyx_k_a8, sizeof(__pyx_k_a8), 0, 0, 1, 1},
+  {&__pyx_n_s_a9, __pyx_k_a9, sizeof(__pyx_k_a9), 0, 0, 1, 1},
   {&__pyx_n_s_allocate_buffer, __pyx_k_allocate_buffer, sizeof(__pyx_k_allocate_buffer), 0, 0, 1, 1},
   {&__pyx_n_s_base, __pyx_k_base, sizeof(__pyx_k_base), 0, 0, 1, 1},
   {&__pyx_n_s_c, __pyx_k_c, sizeof(__pyx_k_c), 0, 0, 1, 1},
@@ -13407,7 +13526,7 @@ PyMODINIT_FUNC PyInit_rdens_law(void)
   indirect_contiguous = Py_None; Py_INCREF(Py_None);
   /*--- Variable export code ---*/
   /*--- Function export code ---*/
-  if (__Pyx_ExportFunction("poly_exponential", (void (*)(void))__pyx_f_5discH_3src_8pot_disc_9pot_c_ext_9rdens_law_poly_exponential, "double (double, double, double, double, double, double, double, double)") < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_ExportFunction("poly_exponential", (void (*)(void))__pyx_f_5discH_3src_8pot_disc_9pot_c_ext_9rdens_law_poly_exponential, "double (double, double, double, double, double, double, double, double, double, double, double)") < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   /*--- Type init code ---*/
   if (PyType_Ready(&__pyx_type___pyx_array) < 0) {__pyx_filename = __pyx_f[1]; __pyx_lineno = 99; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_type___pyx_array.tp_print = 0;
