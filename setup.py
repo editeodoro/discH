@@ -67,7 +67,7 @@ ext_modules=cythonize([cy_ext,gh_ext,ih_ext,infw_ext,gd_ext,rd_ext,fd_ext,pd_ext
 
 setup(
 		name='discH',
-		version='0.0.9.dev0',
+		version='0.1.0.dev0',
 		author='Giuliano Iorio',
 		author_email='',
 		url='',

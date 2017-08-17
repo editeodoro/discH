@@ -1,8 +1,8 @@
 #cython: language_level=3, boundscheck=False, cdivision=True, wraparound=False
 from libc.math cimport sqrt, log, asin, exp, fabs, cosh
 from cython_gsl cimport *
-from .rdens_law cimport poly_exponential
-from .rflare_law cimport poly_flare, constant
+from .rdens_law cimport poly_exponential, gaussian, fratlaw
+from .rflare_law cimport poly_flare, constant, tanh_flare, asinh_flare
 from scipy._lib._ccallback import LowLevelCallable
 from scipy.integrate import nquad, quad
 cimport numpy as np
@@ -12,6 +12,9 @@ cdef double PI=3.14159265358979323846
 
 #checkrd: 1-poly_exponential
 #checkfl: 0-constat, 1-poly
+
+checkrd_dict = {'epoly':1., 'fratlaw':2., 'gau':3.}
+checkfl_dict = {'constant':0., 'poly':1., 'asinh':2., 'tanh':3.}
 
 ######
 #ZEXP
@@ -33,11 +36,14 @@ cdef double zexp(double u, double l, double checkrd, double checkfl, double d0, 
 
     #Dens law
     if checkrdi==1: densr= poly_exponential(u, d0, d1, d2, d3, d4, d5, d6, d7, d8, d9)
+    elif checkrdi==2: densr= fratlaw(u, d0, d1, d2, d3, d4, d5, d6, d7, d8, d9)
+    elif checkrdi==3: densr= gaussian(u, d0, d1, d2, d3, d4, d5, d6, d7, d8, d9)
 
     #Flare law
     if checkfli==0 : zd=constant(u, f0, f1, f2,f3,f4,f5, f6, f7, f8, f9)
-    elif checkfli==1.: zd=poly_flare(u, f0, f1, f2,f3,f4,f5, f6, f7, f8, f9)
-
+    elif checkfli==1: zd=poly_flare(u, f0, f1, f2,f3,f4,f5, f6, f7, f8, f9)
+    elif checkfli==2: zd=asinh_flare(u, f0, f1, f2,f3,f4,f5, f6, f7, f8, f9)
+    elif checkfli==3: zd=tanh_flare(u, f0, f1, f2,f3,f4,f5, f6, f7, f8, f9)
 
 
     #3D dens
@@ -131,10 +137,14 @@ cdef double zgau(double u, double l, double checkrd, double checkfl, double d0, 
 
     #Dens law
     if checkrdi==1: densr= poly_exponential(u, d0, d1, d2, d3, d4, d5, d6, d7, d8, d9)
+    elif checkrdi==2: densr= fratlaw(u, d0, d1, d2, d3, d4, d5, d6, d7, d8, d9)
+    elif checkrdi==3: densr= gaussian(u, d0, d1, d2, d3, d4, d5, d6, d7, d8, d9)
 
     #Flare law
     if checkfli==0 : zd=constant(u, f0, f1, f2,f3,f4,f5, f6, f7, f8, f9)
-    elif checkfli==1.: zd=poly_flare(u, f0, f1, f2,f3,f4,f5, f6, f7, f8, f9)
+    elif checkfli==1: zd=poly_flare(u, f0, f1, f2,f3,f4,f5, f6, f7, f8, f9)
+    elif checkfli==2: zd=asinh_flare(u, f0, f1, f2,f3,f4,f5, f6, f7, f8, f9)
+    elif checkfli==3: zd=tanh_flare(u, f0, f1, f2,f3,f4,f5, f6, f7, f8, f9)
 
 
     #3D dens
@@ -228,10 +238,14 @@ cdef double zsech2(double u, double l, double checkrd, double checkfl, double d0
 
     #Dens law
     if checkrdi==1: densr= poly_exponential(u, d0, d1, d2, d3, d4, d5, d6, d7, d8, d9)
+    elif checkrdi==2: densr= fratlaw(u, d0, d1, d2, d3, d4, d5, d6, d7, d8, d9)
+    elif checkrdi==3: densr= gaussian(u, d0, d1, d2, d3, d4, d5, d6, d7, d8, d9)
 
     #Flare law
     if checkfli==0 : zd=constant(u, f0, f1, f2,f3,f4,f5, f6, f7, f8, f9)
-    elif checkfli==1.: zd=poly_flare(u, f0, f1, f2,f3,f4,f5, f6, f7, f8, f9)
+    elif checkfli==1: zd=poly_flare(u, f0, f1, f2,f3,f4,f5, f6, f7, f8, f9)
+    elif checkfli==2: zd=asinh_flare(u, f0, f1, f2,f3,f4,f5, f6, f7, f8, f9)
+    elif checkfli==3: zd=tanh_flare(u, f0, f1, f2,f3,f4,f5, f6, f7, f8, f9)
 
 
 
@@ -324,6 +338,8 @@ cdef double zdirac(double u,  double checkrd, double d0, double d1, double d2, d
 
     #Dens law
     if checkrdi==1: densr= poly_exponential(u, d0, d1, d2, d3, d4, d5, d6, d7, d8, d9)
+    elif checkrdi==2: densr= fratlaw(u, d0, d1, d2, d3, d4, d5, d6, d7, d8, d9)
+    elif checkrdi==3: densr= gaussian(u, d0, d1, d2, d3, d4, d5, d6, d7, d8, d9)
 
     #return 3.
     return densr
@@ -389,7 +405,7 @@ cdef double _potential_disc(double R, double Z, int zlaw, double sigma0, double 
     :param toll: Relative tollerance for quad and nquad
     :param rcut: Radial cut of the density
     :param zcut: Vertical cut of the density
-    :return: Potential at R and Z
+    :return: Potential at R and Z in kpc/Myr
     """
 
     cdef:
@@ -452,7 +468,7 @@ cdef double[:,:] _potential_disc_array(double[:] R, double[:] Z, int nlen , int 
     :param toll: Relative tollerance for quad and nquad
     :param rcut: Radial cut of the density
     :param zcut: Vertical cut of the density
-    :return: Potential at R and Z
+    :return: Potential at R and Z in kpc/Myr
     """
 
     cdef:
@@ -526,7 +542,7 @@ cdef double[:,:] _potential_disc_grid(double[:] R, double[:] Z, int nlenR, int n
     :param toll: Relative tollerance for quad and nquad
     :param rcut: Radial cut of the density
     :param zcut: Vertical cut of the density
-    :return: Potential at R and Z
+    :return: Potential at R and Z in kpc/Myr
     """
 
     cdef:
@@ -602,7 +618,7 @@ cpdef potential_disc(R, Z, sigma0, rcoeff, fcoeff, zlaw='gau', rlaw='epoly', fla
     :param zcut: Vertical cut of the density
     :param toll: Relative tollerance for quad and nquad
     :param grid: If True, use the coordinates R and Z to make a grid of values
-    :return:  Potential at R and Z
+    :return:  Potential at R and Z in kpc/Myr
     """
 
 
@@ -612,13 +628,13 @@ cpdef potential_disc(R, Z, sigma0, rcoeff, fcoeff, zlaw='gau', rlaw='epoly', fla
     else: raise NotImplementedError('Z-Dens law %s not implmented'%zlaw)
 
     #Flaw
-    if flaw=='constant': checkfl=0.
-    elif flaw=='poly': checkfl=1.
+    if flaw in checkfl_dict: checkfl=checkfl_dict[flaw]
     else: raise NotImplementedError('Flare law %s not implmented'%flaw)
 
     #Rdens
-    if rlaw=='epoly': checkrd=1.
+    if rlaw in checkrd_dict: checkrd=checkrd_dict[rlaw]
     else: raise NotImplementedError('Dens law %s not implmented'%rlaw)
+
 
     rparam=np.array(rcoeff,dtype=np.dtype("d"))
     fparam=np.array(fcoeff,dtype=np.dtype("d"))
@@ -673,7 +689,7 @@ cdef double _potential_disc_thin(double R, double Z, double sigma0, double check
     :param rparam:  Params of the radial surface density law
     :param toll: Relative tollerance for quad and nquad
     :param rcut: Radial cut of the density
-    :return: Potential at R and Z
+    :return: Potential at R and Z in kpc/Myr
     """
 
     cdef:
@@ -716,7 +732,7 @@ cdef double[:,:] _potential_disc_thin_array(double[:] R, double[:] Z, int nlen, 
     :param rparam:  Params of the radial surface density law
     :param toll: Relative tollerance for quad and nquad
     :param rcut: Radial cut of the density
-    :return: Potential at R and Z
+    :return: Potential at R and Z in kpc/Myr
     """
 
     cdef:
@@ -770,7 +786,7 @@ cdef double[:,:] _potential_disc_thin_grid(double[:] R, double[:] Z, int nlenR, 
     :param rparam:  Params of the radial surface density law
     :param toll: Relative tollerance for quad and nquad
     :param rcut: Radial cut of the density
-    :return: Potential at R and Z
+    :return: Potential at R and Z in kpc/Myr
     """
 
     cdef:
@@ -825,10 +841,10 @@ cpdef potential_disc_thin(R, Z, sigma0, rcoeff, rlaw='epoly', rcut=None, toll=1e
     :param rcut: Radial cut of the density
     :param toll: Relative tollerance for quad and nquad
     :param grid: If True, use the coordinates R and Z to make a grid of values
-    :return:  Potential at R and Z
+    :return:  Potential at R and Z  in kpc/Myr
     """
     #Rdens
-    if rlaw=='epoly': checkrd=1.
+    if rlaw in checkrd_dict: checkrd=checkrd_dict[rlaw]
     else: raise NotImplementedError('Dens law %s not implmented'%rlaw)
 
     rparam=np.array(rcoeff,dtype=np.dtype("d"))

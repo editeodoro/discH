@@ -225,6 +225,40 @@ class Exponential_disc(disc):
 
         return cls(sigma0=sigma0, Rd=Rd, fparam=fparam, zlaw=zlaw, flaw='poly')
 
+    @classmethod
+    def asinhflare(cls,sigma0,Rd, h0, Rf, c, zlaw, Rlimit=None):
+
+        fparam = np.zeros(10)
+        fparam[0] = h0
+        fparam[1] = Rf
+        fparam[2] = c
+
+        if Rlimit is not None:
+            # Calculate the value of Zd at Rlim
+            flimit=h0+c*np.arcsinh(Rlimit*Rlimit)
+            fparam[-1] = flimit
+            fparam[-2] = Rlimit
+
+        return cls(sigma0=sigma0, Rd=Rd, fparam=fparam, zlaw=zlaw, flaw='asinh')
+
+    @classmethod
+    def tanhflare(cls, sigma0, Rd, h0, Rf, c, zlaw, Rlimit=None):
+
+        fparam = np.zeros(10)
+        fparam[0] = h0
+        fparam[1] = Rf
+        fparam[2] = c
+
+        if Rlimit is not None:
+            # Calculate the value of Zd at Rlim
+            flimit = h0 + c * np.tanh(Rlimit * Rlimit)
+            fparam[-1] = flimit
+            fparam[-2] = Rlimit
+
+        return cls(sigma0=sigma0, Rd=Rd, fparam=fparam, zlaw=zlaw, flaw='tanh')
+
+
+
 '''
 class Poly_disc(disc):
 
