@@ -20,6 +20,7 @@ class halo:
         self.rc=rc
         self.e=e
         self.toll=1e-4
+        self.name='General halo'
         if mcut is None:
             self.mcut=20*self.rc
         else:
@@ -59,16 +60,14 @@ class halo:
             2-Potential
         """
 
-        if nproc==1:
+        if len(R) != len(Z) or grid == True:
+            ndim = len(R) * len(Z)
+        else:
+            ndim = len(R)
+
+        if nproc==1 or ndim<100000:
             return self._potential_serial(R=R,Z=Z,grid=grid,toll=toll,mcut=mcut)
         else:
-            if len(R)!=len(Z) or grid==True:
-                ndim=len(R)*len(Z)
-            else:
-                ndim=len(R)
-
-            if ndim<100000: print('WARNING, too few point to exploit parallelization')
-
             return self._potential_parallel(R=R, Z=Z, grid=grid, toll=toll, mcut=mcut,nproc=nproc)
 
     def _potential_serial(self,R,Z,grid=False,toll=1e-4,mcut=None):
@@ -96,6 +95,18 @@ class halo:
         """
         raise NotImplementedError('Potential serial not implemented for this class')
 
+
+    def __str__(self):
+
+        s=''
+        s+='Model: General halo\n'
+        s+='d0: %.2f Msun/kpc3 \n'%self.d0
+        s+='rc: %.2f\n'%self.rc
+        s+='e: %.3f \n'%self.e
+        s+='mcut: %.2f \n'%self.mcut
+
+        return s
+
 class isothermal_halo(halo):
 
     def __init__(self,d0,rc,e,mcut=None):
@@ -107,6 +118,7 @@ class isothermal_halo(halo):
         :param mcut: elliptical radius where dens(m>mcut)=0
         """
         super(isothermal_halo,self).__init__(d0=d0,rc=rc,e=e,mcut=mcut)
+        self.name='Isothermal halo'
 
     def _potential_serial(self, R, Z, grid=False, toll=1e-4, mcut=None):
         """Calculate the potential in R and Z using a serial code
@@ -155,6 +167,17 @@ class isothermal_halo(halo):
 
         return htab
 
+    def __str__(self):
+
+        s=''
+        s+='Model: Isothermal halo\n'
+        s+='d0: %.2f Msun/kpc3 \n'%self.d0
+        s+='rc: %.2f\n'%self.rc
+        s+='e: %.3f \n'%self.e
+        s+='mcut: %.2f \n'%self.mcut
+
+        return s
+
 class NFW_halo(halo):
 
     def __init__(self,d0,rs,e,mcut=None):
@@ -165,7 +188,10 @@ class NFW_halo(halo):
         :param e:  eccentricity (sqrt(1-b^2/a^2))
         :param mcut: elliptical radius where dens(m>mcut)=0
         """
+
+        self.rs=rs
         super(NFW_halo,self).__init__(d0=d0,rc=rs,e=e,mcut=mcut)
+        self.name='NFW halo'
 
     def _potential_serial(self, R, Z, grid=False, toll=1e-4, mcut=None):
         """Calculate the potential in R and Z using a serial code
@@ -213,3 +239,14 @@ class NFW_halo(halo):
 
 
         return htab
+
+    def __str__(self):
+
+        s=''
+        s+='Model: NFW halo\n'
+        s+='d0: %.2f Msun/kpc3 \n'%self.d0
+        s+='rs: %.2f\n'%self.rs
+        s+='e: %.3f \n'%self.e
+        s+='mcut: %.2f \n'%self.mcut
+
+        return s

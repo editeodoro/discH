@@ -72,7 +72,7 @@ setup(
 		author_email='',
 		url='',
         cmdclass={'build_ext': BuildExtWithoutPlatformSuffix},
-		packages=['discH','discH/src','discH/src/pot_halo','discH/src/pot_halo/pot_c_ext','discH/src/pardo','discH/src/pot_disc', 'discH/src/pot_disc/pot_c_ext' ],
+		packages=['discH','discH/src','discH/src/pot_halo','discH/src/pot_halo/pot_c_ext','discH/src/pardo','discH/src/pot_disc', 'discH/src/pot_disc/pot_c_ext', 'discH/src/galpotential' ],
         ext_modules=ext_modules,
         include_dirs=[numpy.get_include(),cython_gsl.get_include()]
 )

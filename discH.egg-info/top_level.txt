@@ -1,6 +1,7 @@
 discH
 discH/src
 discH/src/cpotlib
+discH/src/galpotential
 discH/src/pardo
 discH/src/pot_disc
 discH/src/pot_disc/pot_c_ext

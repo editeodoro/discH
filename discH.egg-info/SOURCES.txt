@@ -7,6 +7,8 @@ discH.egg-info/dependency_links.txt
 discH.egg-info/top_level.txt
 discH/src/__init__.py
 discH/src/cpotlib.c
+discH/src/galpotential/__init__.py
+discH/src/galpotential/galpotential.py
 discH/src/pardo/Pardo.py
 discH/src/pardo/__init__.py
 discH/src/pot_disc/__init__.py
