@@ -29,8 +29,7 @@ class BuildExtWithoutPlatformSuffix(build_ext):
         filename = super().get_ext_filename(ext_name)
         return get_ext_filename_without_platform_suffix(filename)
 
-cy=['discH/src/cpotlib.pyx']
-cy_ext=Extension('discH/src/cpotlib',sources=cy)
+
 
 gh=['discH/src/pot_halo/pot_c_ext/general_halo.pyx']
 gh_ext=Extension('discH/src/pot_halo/pot_c_ext/general_halo',sources=gh)
@@ -57,8 +56,7 @@ rd_ext=Extension('discH/src/pot_disc/pot_c_ext/rdens_law',sources=rd)
 fd=['discH/src/pot_disc/pot_c_ext/rflare_law.pyx']
 fd_ext=Extension('discH/src/pot_disc/pot_c_ext/rflare_law',sources=fd)
 
-pd=['discH/src/pot_disc/pot_c_ext/potential_disc.pyx']
-pd_ext=Extension('discH/src/pot_disc/pot_c_ext/potential_disc',sources=pd)
+
 
 #ext_modules=cythonize([cy_ext,gh_ext,ih_ext,infw_ext,gd_ext,rd_ext,fd_ext])
 
@@ -70,7 +68,7 @@ pd_ext=Extension('discH/src/pot_disc/pot_c_ext/potential_disc',sources=pd)
                      #)
 
 
-ext_modules=cythonize([cy_ext,gh_ext,ih_ext,infw_ext,gd_ext,rd_ext,fd_ext,pd_ext,iab_ext,ph_ext])
+ext_modules=cythonize([gh_ext,ih_ext,infw_ext,gd_ext,rd_ext,fd_ext,iab_ext,ph_ext])
 
 setup(
 		name='discH',
