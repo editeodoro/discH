@@ -1,3 +1,4 @@
+from __future__ import division, print_function
 from ..pot_disc.pot_disc import disc
 from ..pot_halo.pot_halo import  halo
 import numpy as np
@@ -10,7 +11,10 @@ class galpotential:
     def __init__(self,dynamic_components=()):
 
         self._check_components(dynamic_components)
-        self.dynamic_components=list(dynamic_components)
+        if isinstance(dynamic_components,list) or isinstance(dynamic_components,tuple) or isinstance(dynamic_components,np.ndarray):
+            self.dynamic_components=list(dynamic_components)
+        else:
+            self.dynamic_components=(dynamic_components,)
         self.potential_grid=None
         self.external_potential=None
         self.potential_grid_exist=False
@@ -25,7 +29,7 @@ class galpotential:
                 else:
                     raise ValueError('Dynamic components %i is not from class halo or disc'%i)
                 i+=1
-        elif isinstance(comp, disc) or isinstance(comp, halo):
+        elif isinstance(components, disc) or isinstance(components, halo):
             pass
         else:
             raise ValueError('Dynamic component is not from class halo or disc')
@@ -71,7 +75,7 @@ class galpotential:
 
         return arr
 
-    def potential(self,R,Z,grid=False,nproc=2, toll=1e-4, Rcut=100, zcut=100, mcut=100,external_potential=None):
+    def potential(self,R,Z,grid=False,nproc=2, toll=1e-4, Rcut=100, zcut=100, mcut=None,external_potential=None):
 
         grid_final=self._make_finalgrid(R,Z,ncolumn=3,grid=grid)
         grid_complete=self._make_finalgrid(R,Z,ncolumn=len(self.dynamic_components)+4,grid=grid)
@@ -83,8 +87,8 @@ class galpotential:
             if len(external_potential)!=len(grid_final):
                 raise ValueError('External potential dimension (%i) are than the user defined grid dimension (%i)'%(len(external_potential),len(grid_final)))
             else:
-                grid_complete[:-2]=external_potential[:-1]
-                grid_final[:-1]=external_potential[:-1]
+                grid_complete[:,-2]=external_potential[:,-1]
+                grid_final[:,-1]=external_potential[:,-1]
                 print('Yes',flush=True)
         else:
             print('No',flush=True)

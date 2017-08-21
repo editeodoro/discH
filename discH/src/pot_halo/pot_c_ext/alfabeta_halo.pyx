@@ -1,27 +1,42 @@
 #cython: language_level=3, boundscheck=False, cdivision=True, wraparound=False
-from libc.math cimport sqrt, log, asin
+from libc.math cimport sqrt, log, asin, pow
 from .general_halo cimport xi, m_calc, integrand_core, potential_core
 from scipy.integrate import quad
 from scipy._lib._ccallback import LowLevelCallable
+from scipy.special.cython_special cimport hyp2f1
 import numpy as np
 cimport numpy as np
 
 cdef double PI=3.14159265358979323846
 
-cdef double psi_iso(double d0, double rc, double m) nogil:
-    """Auxiliary functions linked to density law iso:
-    d=d0/(1+m/rc^2)
 
-    :param d0: Central density at (R,Z)=(0,0) [Msol/kpc^3]
-    :param rc: Core radius [Kpc]
+
+cdef double psi_alfabeta(double d0, double alpha, double beta, double rc, double m) nogil:
+    """Auxiliary functions linked to density law alfabeta:
+    d=d0*(m/rs)**(-alfa)*(m/rs)**(-(alfa-beta))
+
+    :param d0: Scale density  [Msol/kpc^3], if alpha=0, d0 is the density ad R=0 and Z=0
+    :param alpha: Alpha exponent
+    :param beta: beta exponent
+    :param rc: scale radius [Kpc], if alpha=0 it is a core radius
     :param m:  elliptical radius
     :return:
     """
 
-    return d0*rc*rc*(log(1+((m*m)/(rc*rc))))
+    cdef:
+        double x=m/rc
+        double a=alpha, b=beta
+        double num1, num2, num3, den
 
-cdef double integrand_hiso(int n, double *data) nogil:
-    """ Potential integrand for isothermal halo: d=d0/(1+m/rc^2)
+    den=alpha-2
+    num1=2*m*m
+    num2=pow(x,-alpha)
+    num3=hyp2f1(2.-alpha, beta-alpha, 3.-alpha, -x)
+
+    return -(d0*num1*num2*num3)/den
+
+cdef double integrand_alfabeta(int n, double *data) nogil:
+    """ Potential integrand for alfabeta halo: d=d0*(m/rs)**(-alfa)*(m/rs)**(-(alfa-beta))
 
     :param n: dummy integer variable
     :param data: pointer to an array with
@@ -29,8 +44,10 @@ cdef double integrand_hiso(int n, double *data) nogil:
         1-R: Cylindrical radius
         2-Z: Cylindrical height
         3-mcut: elliptical radius where dens(m>mcut)=0
-        4-d0: Central density at (R,Z)=(0,0) [Msol/kpc^3]
-        5-rc: Core radius [Kpc]
+        4-d0: Scale density  [Msol/kpc^3], if alpha=0, d0 is the density ad R=0 and Z=0
+        5-alpha: Alpha exponent
+        6-beta: Beta exponent
+        5-rc: scale radius [Kpc], if alpha=0 it is a core radius
         6-e: ellipticity
     :return: integrand function
     """
@@ -45,12 +62,14 @@ cdef double integrand_hiso(int n, double *data) nogil:
         double Z = data[2]
         double mcut = data[3]
         double d0 = data[4]
-        double rc = data[5]
-        double e = data[6]
+        double alpha= data[5]
+        double beta= data[6]
+        double rc = data[7]
+        double e = data[8]
         double psi, result #, num, den
 
-    if (m<=mcut): psi=psi_iso(d0,rc,m)
-    else: psi=psi_iso(d0,rc,mcut)
+    if (m<=mcut): psi=psi_alfabeta(d0,alpha,beta,rc,m)
+    else: psi=psi_alfabeta(d0,alpha,beta,rc,mcut)
 
     result=integrand_core(m, R, Z, e, psi)
     #num=xi(m,R,Z,e)*(xi(m,R,Z,e)-e*e)*sqrt(xi(m,R,Z,e)-e*e)*m*psi
@@ -58,8 +77,7 @@ cdef double integrand_hiso(int n, double *data) nogil:
 
     return result
 
-
-cdef double  _potential_iso(double R, double Z, double mcut, double d0, double rc, double e, double toll):
+cdef double  _potential_alfabeta(double R, double Z, double mcut, double d0, double alfa, double beta, double rc, double e, double toll):
     """Calculate the potential of an isothermal halo in the point R-Z.
         Use the formula 2.88b in BT 1987. The integration is performed with the function quad in scipy.quad.
 
@@ -84,20 +102,19 @@ cdef double  _potential_iso(double R, double Z, double mcut, double d0, double r
     m0=m_calc(R,Z,e)
 
     #Integ
-    import discH.src.pot_halo.pot_c_ext.isothermal_halo as mod
-    fintegrand=LowLevelCallable.from_cython(mod,'integrand_hiso')
+    import discH.src.pot_halo.pot_c_ext.alfabeta_halo as mod
+    fintegrand=LowLevelCallable.from_cython(mod,'integrand_alfabeta')
 
-    intpot=quad(fintegrand,0.,m0,args=(R,Z,mcut,d0,rc,e),epsabs=toll,epsrel=toll)[0]
+    intpot=quad(fintegrand,0.,m0,args=(R,Z,mcut,d0,alfa, beta, rc,e),epsabs=toll,epsrel=toll)[0]
 
 
-    psi=psi_iso(d0,rc,mcut)
+    psi=psi_alfabeta(d0,alfa,beta,rc,mcut)
 
     result=potential_core(e, intpot, psi)
 
     return result
 
-
-cdef double[:,:]  _potential_iso_array(double[:] R, double[:] Z, int nlen, double mcut, double d0, double rc, double e, double toll):
+cdef double[:,:]  _potential_alfabeta_array(double[:] R, double[:] Z, int nlen, double mcut, double d0, double alfa, double beta, double rc, double e, double toll):
     """Calculate the potential of an isothermal halo in the a list of points R-Z
         Use the formula 2.88b in BT 1987. The integration is performed with the function quad in scipy.quad.
 
@@ -127,8 +144,8 @@ cdef double[:,:]  _potential_iso_array(double[:] R, double[:] Z, int nlen, doubl
 
 
     #Integ
-    import discH.src.pot_halo.pot_c_ext.isothermal_halo as mod
-    fintegrand=LowLevelCallable.from_cython(mod,'integrand_hiso')
+    import discH.src.pot_halo.pot_c_ext.alfabeta_halo as mod
+    fintegrand=LowLevelCallable.from_cython(mod,'integrand_alfabeta')
 
     for  i in range(nlen):
 
@@ -138,9 +155,9 @@ cdef double[:,:]  _potential_iso_array(double[:] R, double[:] Z, int nlen, doubl
 
         m0=m_calc(R[i],Z[i],e)
 
-        intpot=quad(fintegrand,0.,m0,args=(R[i],Z[i],mcut,d0,rc,e),epsabs=toll,epsrel=toll)[0]
+        intpot=quad(fintegrand,0.,m0,args=(R[i],Z[i],mcut,d0,alfa, beta, rc,e),epsabs=toll,epsrel=toll)[0]
 
-        psi=psi_iso(d0,rc,mcut)
+        psi=psi_alfabeta(d0,alfa,beta,rc,mcut)
 
         ret[i,2]=potential_core(e, intpot, psi)
 
@@ -152,7 +169,7 @@ cdef double[:,:]  _potential_iso_array(double[:] R, double[:] Z, int nlen, doubl
 
     return ret
 
-cdef double[:,:]  _potential_iso_grid(double[:] R, double[:] Z, int nlenR, int nlenZ, double mcut, double d0, double rc, double e, double toll):
+cdef double[:,:]  _potential_alfabeta_grid(double[:] R, double[:] Z, int nlenR, int nlenZ, double mcut, double d0, double alfa, double beta,  double rc, double e, double toll):
     """Calculate the potential of an isothermal halo in a 2D grid combining the vector R and Z
         Use the formula 2.88b in BT 1987. The integration is performed with the function quad in scipy.quad.
 
@@ -183,8 +200,8 @@ cdef double[:,:]  _potential_iso_grid(double[:] R, double[:] Z, int nlenR, int n
 
 
     #Integ
-    import discH.src.pot_halo.pot_c_ext.isothermal_halo as mod
-    fintegrand=LowLevelCallable.from_cython(mod,'integrand_hiso')
+    import discH.src.pot_halo.pot_c_ext.alfabeta_halo as mod
+    fintegrand=LowLevelCallable.from_cython(mod,'integrand_alfabeta')
 
     c=0
     for  i in range(nlenR):
@@ -195,9 +212,9 @@ cdef double[:,:]  _potential_iso_grid(double[:] R, double[:] Z, int nlenR, int n
 
             m0=m_calc(R[i],Z[j],e)
 
-            intpot=quad(fintegrand,0.,m0,args=(R[i],Z[j],mcut,d0,rc,e),epsabs=toll,epsrel=toll)[0]
+            intpot=quad(fintegrand,0.,m0,args=(R[i],Z[j],mcut,d0,alfa, beta, rc,e),epsabs=toll,epsrel=toll)[0]
 
-            psi=psi_iso(d0,rc,mcut)
+            psi=psi_alfabeta(d0,alfa,beta,rc,mcut)
 
             ret[c,2]=potential_core(e, intpot, psi)
             #if (e<=0.0001):
@@ -209,8 +226,7 @@ cdef double[:,:]  _potential_iso_grid(double[:] R, double[:] Z, int nlenR, int n
 
     return ret
 
-
-cpdef potential_iso(R, Z, d0, rc, e, mcut, toll=1e-4, grid=False):
+cpdef potential_alfabeta(R, Z, d0, alfa, beta, rc, e, mcut, toll=1e-4, grid=False):
     """Calculate the potential of an isothermal halo.
         If len(R)|=len(Z) or grid=True, calculate the potential in a 2D grid in R and Z.
 
@@ -230,31 +246,20 @@ cpdef potential_iso(R, Z, d0, rc, e, mcut, toll=1e-4, grid=False):
         2-Potential at (R,Z)
     """
 
-    #print('R',R)
-    #print('Z',Z)
-    #print('d0',d0)
-    #print('rc',rc)
-    #print('e',e)
-    #print('mcut',mcut)
-    #print('toll',toll)
-    #print('grid',grid)
-
-
     if isinstance(R, float) or isinstance(R, int):
         if isinstance(Z, float) or isinstance(Z, int):
-            return np.array(_potential_iso(R=R,Z=Z,mcut=mcut,d0=d0,rc=rc,e=e,toll=toll))
+            return np.array(_potential_alfabeta(R=R,Z=Z,mcut=mcut,d0=d0, alfa=alfa, beta=beta, rc=rc,e=e,toll=toll))
         else:
             raise ValueError('R and Z have different dimension')
     else:
         if grid:
             R=np.array(R,dtype=np.dtype("d"))
             Z=np.array(Z,dtype=np.dtype("d"))
-            return np.array(_potential_iso_grid( R=R, Z=Z, nlenR=len(R), nlenZ=len(Z), mcut=mcut, d0=d0, rc=rc, e=e, toll=toll))
+            return np.array(_potential_alfabeta_grid( R=R, Z=Z, nlenR=len(R), nlenZ=len(Z), mcut=mcut, d0=d0, alfa=alfa, beta=beta, rc=rc, e=e, toll=toll))
         elif len(R)==len(Z):
             nlen=len(R)
             R=np.array(R,dtype=np.dtype("d"))
             Z=np.array(Z,dtype=np.dtype("d"))
-            return np.array(_potential_iso_array( R=R, Z=Z, nlen=len(R), mcut=mcut, d0=d0, rc=rc, e=e, toll=toll))
+            return np.array(_potential_alfabeta_array( R=R, Z=Z, nlen=len(R), mcut=mcut, d0=d0, alfa=alfa, beta=beta, rc=rc, e=e, toll=toll))
         else:
             raise ValueError('R and Z have different dimension')
-

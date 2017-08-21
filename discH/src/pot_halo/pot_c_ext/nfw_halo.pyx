@@ -23,6 +23,13 @@ cdef double psi_nfw(double d0,double rs,double m) nogil:
         double val=(1/(1+m/rs))-1
 
     return -2*d0*rs*rs*val
+    #cdef:
+    #    double num= 2*m*rs*rs
+    #    double den= m+rs
+
+    #return d0*num/den
+
+
 
 cdef double integrand_hnfw(int n, double *data) nogil:
     """ Potential integrand for nfw halo: d=d0/((m/rs)*(1+m/rs)^2)
@@ -200,7 +207,7 @@ cdef double[:,:]  _potential_nfw_grid(double[:] R, double[:] Z, int nlenR, int n
 
     return ret
 
-cpdef potential_nfw(R, Z, d0, rs, e, mcut=None, toll=1e-4, grid=False):
+cpdef potential_nfw(R, Z, d0, rs, e, mcut, toll=1e-4, grid=False):
     """Calculate the potential of a NFW halo.
         If len(R)|=len(Z) or grid=True, calculate the potential in a 2D grid in R and Z.
 
@@ -221,9 +228,6 @@ cpdef potential_nfw(R, Z, d0, rs, e, mcut=None, toll=1e-4, grid=False):
     """
 
 
-    #print('grid',grid)
-    if mcut is None:
-        mcut=20*rs
 
     if isinstance(R, float) or isinstance(R, int):
         if isinstance(Z, float) or isinstance(Z, int):

@@ -41,6 +41,13 @@ ih_ext=Extension('discH/src/pot_halo/pot_c_ext/isothermal_halo',sources=ih)
 infw=['discH/src/pot_halo/pot_c_ext/nfw_halo.pyx']
 infw_ext=Extension('discH/src/pot_halo/pot_c_ext/nfw_halo',sources=infw)
 
+iab=['discH/src/pot_halo/pot_c_ext/alfabeta_halo.pyx']
+iab_ext=Extension('discH/src/pot_halo/pot_c_ext/alfabeta_halo',sources=iab,libraries=cython_gsl.get_libraries(),library_dirs=[cython_gsl.get_library_dir()],include_dirs=[cython_gsl.get_cython_include_dir()])
+
+ph=['discH/src/pot_halo/pot_c_ext/plummer_halo.pyx']
+ph_ext=Extension('discH/src/pot_halo/pot_c_ext/plummer_halo',sources=ph)
+
+
 gd=['discH/src/pot_disc/pot_c_ext/integrand_functions.pyx']
 gd_ext=Extension('discH/src/pot_disc/pot_c_ext/integrand_functions',libraries=cython_gsl.get_libraries(),library_dirs=[cython_gsl.get_library_dir()],include_dirs=[cython_gsl.get_cython_include_dir(), numpy.get_include()],sources=gd)
 
@@ -63,17 +70,22 @@ pd_ext=Extension('discH/src/pot_disc/pot_c_ext/potential_disc',sources=pd)
                      #)
 
 
-ext_modules=cythonize([cy_ext,gh_ext,ih_ext,infw_ext,gd_ext,rd_ext,fd_ext,pd_ext])
+ext_modules=cythonize([cy_ext,gh_ext,ih_ext,infw_ext,gd_ext,rd_ext,fd_ext,pd_ext,iab_ext,ph_ext])
 
 setup(
 		name='discH',
-		version='0.1.0.dev0',
+		version='2.0.1.dev0',
 		author='Giuliano Iorio',
 		author_email='',
 		url='',
         cmdclass={'build_ext': BuildExtWithoutPlatformSuffix},
-		packages=['discH','discH/src','discH/src/pot_halo','discH/src/pot_halo/pot_c_ext','discH/src/pardo','discH/src/pot_disc', 'discH/src/pot_disc/pot_c_ext', 'discH/src/galpotential' ],
+		packages=['discH','discH/src','discH/src/pot_halo','discH/src/pot_halo/pot_c_ext','discH/src/pardo','discH/src/pot_disc', 'discH/src/pot_disc/pot_c_ext', 'discH/src/galpotential', 'discH/src/discHeigth', 'discH/src/discHeigth/c_ext' , 'discH/src/fitlib' ],
         ext_modules=ext_modules,
-        include_dirs=[numpy.get_include(),cython_gsl.get_include()]
+        include_dirs=[numpy.get_include(),cython_gsl.get_include()],
+        install_requires=['numpy>=1.9', 'scipy>=0.19', 'matplotlib', 'cython', 'CythonGSL']
 )
+
+shutil.rmtree('build')
+shutil.rmtree('dist')
+shutil.rmtree('discH.egg-info')
 
