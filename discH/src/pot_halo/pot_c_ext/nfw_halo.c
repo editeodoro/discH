@@ -1394,7 +1394,6 @@ static PyObject *__pyx_memoryviewslice_assign_item_from_object(struct __pyx_memo
 /* Module declarations from 'libc.math' */
 
 /* Module declarations from 'discH.src.pot_halo.pot_c_ext.general_halo' */
-static double (*__pyx_f_5discH_3src_8pot_halo_9pot_c_ext_12general_halo_xi)(double, double, double, double); /*proto*/
 static double (*__pyx_f_5discH_3src_8pot_halo_9pot_c_ext_12general_halo_m_calc)(double, double, double); /*proto*/
 static double (*__pyx_f_5discH_3src_8pot_halo_9pot_c_ext_12general_halo_integrand_core)(double, double, double, double, double); /*proto*/
 static double (*__pyx_f_5discH_3src_8pot_halo_9pot_c_ext_12general_halo_potential_core)(double, double, double); /*proto*/
@@ -17594,7 +17593,6 @@ PyMODINIT_FUNC PyInit_nfw_halo(void)
   /*--- Variable import code ---*/
   /*--- Function import code ---*/
   __pyx_t_1 = __Pyx_ImportModule("discH.src.pot_halo.pot_c_ext.general_halo"); if (!__pyx_t_1) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (__Pyx_ImportFunction(__pyx_t_1, "xi", (void (**)(void))&__pyx_f_5discH_3src_8pot_halo_9pot_c_ext_12general_halo_xi, "double (double, double, double, double)") < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   if (__Pyx_ImportFunction(__pyx_t_1, "m_calc", (void (**)(void))&__pyx_f_5discH_3src_8pot_halo_9pot_c_ext_12general_halo_m_calc, "double (double, double, double)") < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   if (__Pyx_ImportFunction(__pyx_t_1, "integrand_core", (void (**)(void))&__pyx_f_5discH_3src_8pot_halo_9pot_c_ext_12general_halo_integrand_core, "double (double, double, double, double, double)") < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   if (__Pyx_ImportFunction(__pyx_t_1, "potential_core", (void (**)(void))&__pyx_f_5discH_3src_8pot_halo_9pot_c_ext_12general_halo_potential_core, "double (double, double, double)") < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
@@ -17603,7 +17601,7 @@ PyMODINIT_FUNC PyInit_nfw_halo(void)
 
   /* "discH/src/pot_halo/pot_c_ext/nfw_halo.pyx":4
  * from libc.math cimport sqrt, log, asin
- * from .general_halo cimport xi, m_calc, integrand_core, potential_core
+ * from .general_halo cimport m_calc, potential_core, integrand_core
  * from scipy.integrate import quad             # <<<<<<<<<<<<<<
  * from scipy._lib._ccallback import LowLevelCallable
  * import numpy as np
@@ -17623,7 +17621,7 @@ PyMODINIT_FUNC PyInit_nfw_halo(void)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
   /* "discH/src/pot_halo/pot_c_ext/nfw_halo.pyx":5
- * from .general_halo cimport xi, m_calc, integrand_core, potential_core
+ * from .general_halo cimport m_calc, potential_core, integrand_core
  * from scipy.integrate import quad
  * from scipy._lib._ccallback import LowLevelCallable             # <<<<<<<<<<<<<<
  * import numpy as np
@@ -17667,7 +17665,7 @@ PyMODINIT_FUNC PyInit_nfw_halo(void)
   /* "discH/src/pot_halo/pot_c_ext/nfw_halo.pyx":1
  * #cython: language_level=3, boundscheck=False, cdivision=True, wraparound=False             # <<<<<<<<<<<<<<
  * from libc.math cimport sqrt, log, asin
- * from .general_halo cimport xi, m_calc, integrand_core, potential_core
+ * from .general_halo cimport m_calc, potential_core, integrand_core
  */
   __pyx_t_2 = PyDict_New(); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
