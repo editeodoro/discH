@@ -1,8 +1,8 @@
 #cython: language_level=3, boundscheck=False, cdivision=True, wraparound=False
 from libc.math cimport sqrt, log, asin, exp, fabs, cosh
 from cython_gsl cimport *
-from .rdens_law cimport poly_exponential, gaussian, fratlaw
-from .rflare_law cimport poly_flare, constant, tanh_flare, asinh_flare
+from discH.src.pot_disc.pot_c_ext.rdens_law cimport poly_exponential, gaussian, fratlaw
+from discH.src.pot_disc.pot_c_ext.rflare_law cimport poly_flare, constant, tanh_flare, asinh_flare
 from scipy._lib._ccallback import LowLevelCallable
 from scipy.integrate import nquad, quad
 cimport numpy as np

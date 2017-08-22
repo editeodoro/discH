@@ -80,7 +80,7 @@ setup(
 		packages=['discH','discH/src','discH/src/pot_halo','discH/src/pot_halo/pot_c_ext','discH/src/pardo','discH/src/pot_disc', 'discH/src/pot_disc/pot_c_ext', 'discH/src/galpotential', 'discH/src/discHeigth', 'discH/src/discHeigth/c_ext' , 'discH/src/fitlib' ],
         ext_modules=ext_modules,
         include_dirs=[numpy.get_include(),cython_gsl.get_include()],
-        install_requires=['numpy>=1.9', 'scipy>=0.19', 'matplotlib', 'cython', 'CythonGSL']
+        install_requires=['numpy>=1.9', 'scipy>=0.19', 'matplotlib', 'Cython', 'CythonGSL']
 )
 
 shutil.rmtree('build')
