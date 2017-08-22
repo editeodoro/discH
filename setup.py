@@ -1,3 +1,26 @@
+from __future__ import print_function
+import pip
+import time
+
+#Check Cython installation
+print('Checkin Ctyhon')
+try:
+    import Cython
+    print('OK!')
+except:
+    print('Cython is not present, I will install it for you my lord')
+    pip.main(['install','Cython'])
+
+#Check CythonGSL installation
+print('Checkin CtyhonGSL')
+
+try:
+    import cython_gsl
+    print('OK!')
+except:
+    print('Cython is not present, I will install it for you my lord')
+    pip.main(['install','CythonGSL'])
+
 from setuptools import setup
 import shutil
 import os
@@ -7,28 +30,39 @@ from Cython.Build import cythonize
 import sysconfig
 import numpy
 import cython_gsl
+import sys
 
-def get_ext_filename_without_platform_suffix(filename):
-    name, ext = os.path.splitext(filename)
-    ext_suffix = sysconfig.get_config_var('EXT_SUFFIX')
+if sys.version_info[0]==2:
+    #time.sleep(5)
+    cmdclass_option = {}
+    raise ValueError('You are using Python2, what a shame! Download Python3 to use this module')
 
-    if ext_suffix == ext:
-        return filename
+elif sys.version_info[0]==3:
+    print('You are using Python3, you are a wise person!')
 
-    ext_suffix = ext_suffix.replace(ext, '')
-    idx = name.find(ext_suffix)
+    def get_ext_filename_without_platform_suffix(filename):
+        name, ext = os.path.splitext(filename)
+        ext_suffix = sysconfig.get_config_var('EXT_SUFFIX')
 
-    if idx == -1:
-        return filename
-    else:
-        return name[:idx] + ext
+        if ext_suffix == ext:
+            return filename
+
+        ext_suffix = ext_suffix.replace(ext, '')
+        idx = name.find(ext_suffix)
+
+        if idx == -1:
+            return filename
+        else:
+            return name[:idx] + ext
 
 
-class BuildExtWithoutPlatformSuffix(build_ext):
-    def get_ext_filename(self, ext_name):
-        filename = super().get_ext_filename(ext_name)
-        return get_ext_filename_without_platform_suffix(filename)
-
+    class BuildExtWithoutPlatformSuffix(build_ext):
+        def get_ext_filename(self, ext_name):
+            filename = super().get_ext_filename(ext_name)
+            return get_ext_filename_without_platform_suffix(filename)
+    cmdclass_option = {'build_ext': BuildExtWithoutPlatformSuffix}
+else:
+    raise ValueError('You are not using neither Python2 nor Python3, probably you are a time traveller from the Future or from the Past')
 
 
 gh=['discH/src/pot_halo/pot_c_ext/general_halo.pyx']
@@ -76,14 +110,16 @@ setup(
 		author='Giuliano Iorio',
 		author_email='',
 		url='',
-        cmdclass={'build_ext': BuildExtWithoutPlatformSuffix},
-		packages=['discH','discH/src','discH/src/pot_halo','discH/src/pot_halo/pot_c_ext','discH/src/pardo','discH/src/pot_disc', 'discH/src/pot_disc/pot_c_ext', 'discH/src/galpotential', 'discH/src/discHeigth', 'discH/src/discHeigth/c_ext' , 'discH/src/fitlib' ],
+        cmdclass=cmdclass_option,
+		packages=['discH','discH/src','discH/src/pot_halo','discH/src/pot_halo/pot_c_ext','discH/src/pardo','discH/src/pot_disc', 'discH/src/pot_disc/pot_c_ext', 'discH/src/galpotential', 'discH/src/discHeight', 'discH/src/discHeight/c_ext' , 'discH/src/fitlib' ],
         ext_modules=ext_modules,
         include_dirs=[numpy.get_include(),cython_gsl.get_include()],
-        install_requires=['numpy>=1.9', 'scipy>=0.19', 'matplotlib', 'Cython', 'CythonGSL']
+        install_requires=['numpy>=1.9', 'scipy>=0.19', 'matplotlib','emcee']
 )
 
-shutil.rmtree('build')
-shutil.rmtree('dist')
-shutil.rmtree('discH.egg-info')
-
+try:
+    shutil.rmtree('build')
+    shutil.rmtree('dist')
+    shutil.rmtree('discH.egg-info')
+except:
+    pass

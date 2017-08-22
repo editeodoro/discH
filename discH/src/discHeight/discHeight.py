@@ -14,7 +14,7 @@ mpl.rcParams['xtick.labelsize'] = label_size
 mpl.rcParams['ytick.labelsize'] = label_size
 mpl.rcParams['mathtext.default']='regular'
 
-class discHeigth():
+class discHeight():
 
     def __init__(self, disc_component, dynamic_components=None):
 
@@ -62,7 +62,7 @@ class discHeigth():
 
         return ftab,fitfunc
 
-    def heigth(self, flaw='poly', zlaw='gau',  polyflare_degree=5, vdisp=10, Rpoints=30, Rinterval='linear', Rrange=(0.01,30), Zpoints=30, Zinterval='log', Zrange=(0,10), Niter=10, nproc=2, Rcut=None, zcut=None, mcut=None, flaretollabs=1e-4,flaretollrel=1e-4, inttoll=1e-4, external_potential=None, outdir='gasHeigth', diagnostic=True, Rlimit=None):
+    def height(self, flaw='poly', zlaw='gau',  polyflare_degree=5, vdisp=10, Rpoints=30, Rinterval='linear', Rrange=(0.01,30), Zpoints=30, Zinterval='log', Zrange=(0,10), Niter=10, nproc=2, Rcut=None, zcut=None, mcut=None, flaretollabs=1e-4,flaretollrel=1e-4, inttoll=1e-4, external_potential=None, outdir='gasHeight', diagnostic=True, Rlimit=None):
 
         comp=self.disc_component
         vdisp_func=self._set_vdisp(vdisp)

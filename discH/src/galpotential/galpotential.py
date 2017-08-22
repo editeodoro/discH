@@ -75,7 +75,7 @@ class galpotential:
 
         return arr
 
-    def potential(self,R,Z,grid=False,nproc=2, toll=1e-4, Rcut=100, zcut=100, mcut=None,external_potential=None):
+    def potential(self,R,Z,grid=False,nproc=2, toll=1e-4, Rcut=None, zcut=None, mcut=None,external_potential=None):
 
         grid_final=self._make_finalgrid(R,Z,ncolumn=3,grid=grid)
         grid_complete=self._make_finalgrid(R,Z,ncolumn=len(self.dynamic_components)+4,grid=grid)

@@ -292,8 +292,8 @@ class disc:
         s+='Vertical density law: %s\n'%self.zlaw
         s+='Radial density law: %s \n'%self.rlaw
         s+='Flaring law: %s \n'%self.flaw
-        s+='Rparam: %.1f %.1f %.1f %.1f %.1f %.1f %.1f %.1f %.1f %.1f\n'%tuple(self.rparam)
-        s+='Fparam: %.1f %.1f %.1f %.1f %.1f %.1f %.1f %.1f %.1f %.1f\n'%tuple(self.fparam)
+        s+='Rparam: %.1e %.1e %.1e %.1e %.1e %.1e %.1e %.1e %.1e %.1e\n'%tuple(self.rparam)
+        s+='Fparam: %.1e %.1e %.1e %.1e %.1e %.1e %.1e %.1e %.1e %.1e\n'%tuple(self.fparam)
         s+='Rcut: %.3f kpc \n'%self.Rcut
         s+='zcut: %.3f kpc \n'%self.zcut
         if self.Rlimit is None:
@@ -563,7 +563,7 @@ class Exponential_disc(disc):
         s+='Radial density law: %s \n'%self.rlaw
         s+='Rd: %.3f kpc \n'%self.Rd
         s+='Flaring law: %s \n'%self.flaw
-        s+='Fparam: %.1f %.1f %.1f %.1f %.1f %.1f %.1f %.1f %.1f %.1f\n'%tuple(self.fparam)
+        s+='Fparam: %.1e %.1e %.1e %.1e %.1e %.1e %.1e %.1e %.1e %.1e\n'%tuple(self.fparam)
         s+='Rcut: %.3f kpc \n'%self.Rcut
         s+='zcut: %.3f kpc \n'%self.zcut
         if self.Rlimit is None:
@@ -844,9 +844,9 @@ class PolyExponential_disc(disc):
         s+='Vertical density law: %s\n'%self.zlaw
         s+='Radial density law: %s \n'%self.rlaw
         s+='Rd: %.3f kpc \n'%self.Rd
-        s+='Polycoeff: %.1f %.1f %.1f %.1f %.1f %.1f %.1f %.1f %.1f\n'%tuple(self.rparam[1:])
+        s+='Polycoeff: %.1e %.1e %.1e %.1e %.1e %.1e %.1e %.1e %.1e\n'%tuple(self.rparam[1:])
         s+='Flaring law: %s \n'%self.flaw
-        s+='Fparam: %.1f %.1f %.1f %.1f %.1f %.1f %.1f %.1f %.1f %.1f\n'%tuple(self.fparam)
+        s+='Fparam: %.1e %.1e %.1e %.1e %.1e %.1e %.1e %.1e %.1e %.1e\n'%tuple(self.fparam)
         s+='Rcut: %.3f kpc \n'%self.Rcut
         s+='zcut: %.3f kpc \n'%self.zcut
         if self.Rlimit is None:
@@ -857,7 +857,7 @@ class PolyExponential_disc(disc):
 
 class Gaussian_disc(disc):
 
-    def __init__(self,sigma0, sigmad, R0, fparam,zlaw='gau',flaw='poly'):
+    def __init__(self,sigma0, sigmad, R0, fparam,zlaw='gau',flaw='poly', Rcut=50, zcut=30):
 
         rparam    = np.zeros(10)
         rparam[0] = sigmad
@@ -1120,7 +1120,7 @@ class Gaussian_disc(disc):
         s+='sigmad: %.3f kpc \n'%self.sigmad
         s+='R0: %.3f kpc \n'%self.R0
         s+='Flaring law: %s \n'%self.flaw
-        s+='Fparam: %.1f %.1f %.1f %.1f %.1f %.1f %.1f %.1f %.1f %.1f\n'%tuple(self.fparam)
+        s+='Fparam: %.1e %.1e %.1e %.1e %.1e %.1e %.1e %.1e %.1e %.1e\n'%tuple(self.fparam)
         s+='Rcut: %.3f kpc \n'%self.Rcut
         s+='zcut: %.3f kpc \n'%self.zcut
         if self.Rlimit is None:
@@ -1398,9 +1398,11 @@ class Frat_disc(disc):
         s+='Sigma0: %.2e Msun/kpc2 \n'%self.sigma0
         s+='Vertical density law: %s\n'%self.zlaw
         s+='Radial density law: %s \n'%self.rlaw
+        s+='Rd: %.2f kpc\n'%self.Rd
+        s+='Rd2: %.2f kpc\n'%self.Rd2
+        s+='alpha: %.2f \n'%self.alpha
         s+='Flaring law: %s \n'%self.flaw
-        s+='Rparam: %.1f %.1f %.1f %.1f %.1f %.1f %.1f %.1f %.1f %.1f\n'%tuple(self.rparam)
-        s+='Fparam: %.1f %.1f %.1f %.1f %.1f %.1f %.1f %.1f %.1f %.1f\n'%tuple(self.fparam)
+        s+='Fparam: %.1e %.1e %.1e %.1e %.1e %.1e %.1e %.1e %.1e %.1e\n'%tuple(self.fparam)
         s+='Rcut: %.3f kpc \n'%self.Rcut
         s+='zcut: %.3f kpc \n'%self.zcut
         if self.Rlimit is None:
