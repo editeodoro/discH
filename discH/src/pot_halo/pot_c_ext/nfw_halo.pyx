@@ -1,6 +1,6 @@
 #cython: language_level=3, boundscheck=False, cdivision=True, wraparound=False
 from libc.math cimport sqrt, log, asin
-from discH.src.pot_halo.pot_c_ext.general_halo cimport xi, m_calc, integrand_core, potential_core
+from .general_halo cimport m_calc, potential_core, integrand_core
 from scipy.integrate import quad
 from scipy._lib._ccallback import LowLevelCallable
 import numpy as np
