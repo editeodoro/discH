@@ -35,7 +35,7 @@ import sys
 if sys.version_info[0]==2:
     #time.sleep(5)
     cmdclass_option = {}
-    raise ValueError('You are using Python2, what a shame! Download Python3 to use this module')
+    raise ValueError('You are using Python2, what a shame! Download Python3 to use this module. \n If you are using anaconda you can install a python3 virtual env just typing:\n "conda create -n yourenvname python=3.6 anaconda". \n Then you can activate the env with the bash command  "source activate yourenvname"')
 
 elif sys.version_info[0]==3:
     print('You are using Python3, you are a wise person!')
