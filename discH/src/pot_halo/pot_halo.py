@@ -7,7 +7,7 @@ import multiprocessing as mp
 from ..pardo.Pardo import ParDo
 import numpy as np
 
-class halo:
+class halo(object):
     """
     Super class for halo potentials
     """

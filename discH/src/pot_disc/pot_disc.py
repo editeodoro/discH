@@ -98,7 +98,7 @@ def _fit_utility_rpoly(degree,rfit_array,nproc=1):
 
     return best_pars, best_like
 
-class disc:
+class disc(object):
     """
     Super class for halo potentials
     """

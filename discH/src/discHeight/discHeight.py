@@ -14,7 +14,7 @@ mpl.rcParams['xtick.labelsize'] = label_size
 mpl.rcParams['ytick.labelsize'] = label_size
 mpl.rcParams['mathtext.default']='regular'
 
-class discHeight():
+class discHeight(object):
 
     def __init__(self, disc_component, dynamic_components=None):
 

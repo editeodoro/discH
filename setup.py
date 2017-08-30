@@ -3,7 +3,7 @@ import pip
 import time
 
 #Check Cython installation
-print('Checkin Ctyhon')
+print('Checking Ctyhon')
 try:
     import Cython
     print('OK!')
@@ -12,7 +12,7 @@ except:
     pip.main(['install','Cython'])
 
 #Check CythonGSL installation
-print('Checkin CtyhonGSL')
+print('Checking CtyhonGSL')
 
 try:
     import cython_gsl
@@ -35,7 +35,7 @@ import sys
 if sys.version_info[0]==2:
     #time.sleep(5)
     cmdclass_option = {}
-    raise ValueError('You are using Python2, what a shame! Download Python3 to use this module. \n If you are using anaconda you can install a python3 virtual env just typing:\n "conda create -n yourenvname python=3.6 anaconda". \n Then you can activate the env with the bash command  "source activate yourenvname"')
+    #raise ValueError('You are using Python2, what a shame! Download Python3 to use this module. \n If you are using anaconda you can install a python3 virtual env just typing:\n "conda create -n yourenvname python=3.6 anaconda". \n Then you can activate the env with the bash command  "source activate yourenvname"')
 
 elif sys.version_info[0]==3:
     print('You are using Python3, you are a wise person!')
@@ -106,7 +106,7 @@ ext_modules=cythonize([gh_ext,ih_ext,infw_ext,gd_ext,rd_ext,fd_ext,iab_ext,ph_ex
 
 setup(
 		name='discH',
-		version='2.0.1.dev0',
+		version='2.1.0.dev0',
 		author='Giuliano Iorio',
 		author_email='',
 		url='',
