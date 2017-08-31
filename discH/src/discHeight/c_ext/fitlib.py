@@ -8,6 +8,8 @@ import time
 import datetime
 import matplotlib as mpl
 import functools as fu
+import sys
+
 label_size =18
 mpl.rcParams.update({'figure.autolayout':True})
 mpl.rcParams['xtick.labelsize'] = label_size
@@ -389,7 +391,8 @@ def fitzprof(zdz,dzlimit=1E-300,output=False,iname='',outdir='fitzprof',Runity='
     #PLOTTING TO FILE
 
     if plot==True:
-        print('Save figures',flush=True)
+        print('Save figures')
+        sys.stdout.flush()
         if diagnostic==True:
             fig.legend(legendlist,dlist,fontsize=8,loc='upper center',bbox_to_anchor=[0.5,0.97],ncol=5)
             fig2.legend(legendlist,dlist,fontsize=8,loc='upper center',bbox_to_anchor=[0.5,0.97],ncol=5)

@@ -8,6 +8,7 @@ import numpy as np
 from scipy.interpolate import UnivariateSpline
 import matplotlib.pyplot as plt
 import matplotlib as mpl
+import sys
 label_size =18
 mpl.rcParams.update({'figure.autolayout':True})
 mpl.rcParams['xtick.labelsize'] = label_size
@@ -87,24 +88,28 @@ class discHeight(object):
         ax10 = fig10.add_subplot(1, 1, 1)
 
         #Fixed potential
-        print('//////////////////////////////////////////////////////////////////////////////',flush=True)
-        print('Calculating fixed potential',flush=True)
+        print('//////////////////////////////////////////////////////////////////////////////')
+        print('Calculating fixed potential')
+        sys.stdout.flush()
         df_fix=self._fixed_potential(R=R, Z=Z, grid=True, nproc=nproc, Rcut=Rcut, zcut=zcut, mcut=mcut, toll=inttoll,external_potential=external_potential)
         fixed_potential=self.fixed_potential_grid
-        print('Fixed potential Done',flush=True)
-        print('//////////////////////////////////////////////////////////////////////////////\n',flush=True)
+        print('Fixed potential Done')
+        print('//////////////////////////////////////////////////////////////////////////////\n')
+        sys.stdout.flush()
 
         if Rlimit=='max': Rlimit=R[-1]
 
 
-        print('//////////////////////////////////////////////////////////////////////////////', flush=True)
-        print('Iter-0: Massless disc', flush=True)
+        print('//////////////////////////////////////////////////////////////////////////////')
+        print('Iter-0: Massless disc')
+        sys.stdout.flush()
         outfolder='/diagnostic/run0'
         tabzd,tabh=self._calc_flaring(pot_grid=fixed_potential,vdisp_func=vdisp_func,zlaw=zlaw, outdir=outdir + outfolder, plot=diagnostic, diagnostic=diagnostic, output=diagnostic)
         ftab,fitfunc=self._fit_flaring(tabzd=tabzd,zlaw=flaw,polydegree=polyflare_degree,diagnostic=diagnostic,outdir=outdir + outfolder+'/flare', Rlimit=Rlimit)
         oldtabzd=tabzd
-        print('Iter-0: Done', flush=True)
-        print('//////////////////////////////////////////////////////////////////////////////\n', flush=True)
+        print('Iter-0: Done')
+        print('//////////////////////////////////////////////////////////////////////////////\n')
+        sys.stdout.flush()
 
         ax10.plot(tabzd[:,0],tabzd[:,1], '-o', color='gray')
 
@@ -115,8 +120,10 @@ class discHeight(object):
 
             #new model
             self.disc_component=comp.change_flaring(flaw=flaw,zlaw=zlaw,polycoeff=ftab,h0=ftab[0], Rf=ftab[1], c=ftab[2], Rlimit=Rlimit)
-            print('//////////////////////////////////////////////////////////////////////////////', flush=True)
-            print('Iter-%i:'%(count+1), flush=True)
+            print('//////////////////////////////////////////////////////////////////////////////')
+            sys.stdout.flush()
+            print('Iter-%i:'%(count+1))
+            sys.stdout.flush()
             outfolder = '/diagnostic/run%i'%count
 
             df = galpotential(dynamic_components=self.disc_component)
@@ -132,11 +139,13 @@ class discHeight(object):
 
             ax10.plot(tabzd[:, 0], tabzd[:, 1],'-o' , color='gray')
 
-            print('Iter-%i: Done'%(count+1), flush=True)
+            print('Iter-%i: Done'%(count+1))
+            sys.stdout.flush()
             print('Max Absolute residual=%.2e'%max_residual_abs)
             print('Max Relative residual=%.2e'%max_residual_rel)
 
-            print('//////////////////////////////////////////////////////////////////////////////\n', flush=True)
+            print('//////////////////////////////////////////////////////////////////////////////\n')
+            sys.stdout.flush()
 
             oldtabzd = tabzd
             count+=1

@@ -4,6 +4,7 @@ from ..pot_halo.pot_halo import  halo
 import numpy as np
 import time
 import copy
+import sys
 
 class galpotential:
 
@@ -82,21 +83,25 @@ class galpotential:
         self.external_potential=external_potential
 
         #External potential
-        print('External potential: ',flush=True,end='')
+        print('External potential: ',end='')
+        sys.stdout.flush()
         if external_potential is not None:
             if len(external_potential)!=len(grid_final):
                 raise ValueError('External potential dimension (%i) are than the user defined grid dimension (%i)'%(len(external_potential),len(grid_final)))
             else:
                 grid_complete[:,-2]=external_potential[:,-1]
                 grid_final[:,-1]=external_potential[:,-1]
-                print('Yes',flush=True)
+                print('Yes')
+                sys.stdout.flush()
         else:
-            print('No',flush=True)
+            print('No')
+            sys.stdout.flush()
 
         #Calc potential
         i=0
         for comp in self.dynamic_components:
-            print('Calculating Potential of the %ith component (%s)...'%(i+1,comp.name),end='',flush=True)
+            print('Calculating Potential of the %ith component (%s)...'%(i+1,comp.name),end='')
+            sys.stdout.flush()
             if isinstance(comp, halo):
                 tini=time.time()
                 grid_tmp = comp.potential(R, Z, grid=grid, toll=toll, mcut=mcut, nproc=nproc)

@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import os
 import time
 import datetime
+import sys
 
 #FITTA profili verticali di densita con fitzprof e profili di flaring con fitflare
 #V1.1.1
