@@ -318,7 +318,7 @@ class alfabeta_halo(halo):
         s+='d0: %.2e Msun/kpc3 \n'%self.d0
         s+='rs: %.2f\n'%self.rs
         s+='alfa: %.1f\n'%self.alfa
-        s+='alfa: %.1f\n'%self.beta
+        s+='beta: %.1f\n'%self.beta
         s+='e: %.3f \n'%self.e
         s+='mcut: %.3f \n'%self.mcut
 

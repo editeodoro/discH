@@ -98,7 +98,7 @@ class discHeight(object):
         sys.stdout.flush()
 
         if Rlimit=='max': Rlimit=R[-1]
-
+        flare_max=[]
 
         print('//////////////////////////////////////////////////////////////////////////////')
         print('Iter-0: Massless disc')
@@ -107,6 +107,7 @@ class discHeight(object):
         tabzd,tabh=self._calc_flaring(pot_grid=fixed_potential,vdisp_func=vdisp_func,zlaw=zlaw, outdir=outdir + outfolder, plot=diagnostic, diagnostic=diagnostic, output=diagnostic)
         ftab,fitfunc=self._fit_flaring(tabzd=tabzd,zlaw=flaw,polydegree=polyflare_degree,diagnostic=diagnostic,outdir=outdir + outfolder+'/flare', Rlimit=Rlimit)
         oldtabzd=tabzd
+        flare_max=np.max(tabzd[:,1])
         print('Iter-0: Done')
         print('//////////////////////////////////////////////////////////////////////////////\n')
         sys.stdout.flush()
@@ -116,7 +117,6 @@ class discHeight(object):
         count=0
         max_residual_abs=1e10
         max_residual_rel=1e10
-        flare_max=0
         while (count<=Niter) and (max_residual_abs>flaretollabs) and (max_residual_rel>flaretollrel):
 
             #new model
@@ -139,10 +139,10 @@ class discHeight(object):
             max_residual_rel  =  np.max(residuals/tabzd)
 
             ax10.plot(tabzd[:, 0], tabzd[:, 1],'-o' , color='gray')
-
             flare_max_tmp=np.max(tabzd[:,1])
             if flare_max_tmp>flare_max: flare_max=flare_max_tmp
             else: pass
+
 
             print('Iter-%i: Done'%(count+1))
             sys.stdout.flush()
@@ -164,7 +164,7 @@ class discHeight(object):
         else: y=np.where(rr<=Rlimit,fitfunc(rr),fitfunc(Rlimit))
         ax10.plot(rr,y, '-', c='red')
         ax10.set_xlim(0,rr[-1])
-        ax10.set_ylim(0,y[-1]*1.05)
+        ax10.set_ylim(0,flare_max*1.05)
         ax10.set_xlabel('R [kpc]',fontsize=20)
         ax10.set_ylabel('Zd [kpc]',fontsize=20)
         fig10.savefig(outdir+'/finalflare_zd.pdf')
