@@ -1132,12 +1132,13 @@ class Gaussian_disc(disc):
 
 class Frat_disc(disc):
 
-    def __init__(self,sigma0,Rd, Rd2, alpha, fparam, zlaw='gau', flaw='poly',Rcut=50, zcut=30):
+    def __init__(self,sigma0,Rd, alpha, fparam, Rd2=None, zlaw='gau', flaw='poly',Rcut=50, zcut=30):
 
 
         self.sigma0=sigma0
         self.Rd=Rd
-        self.Rd2=Rd2
+        if Rd2 is None: self.Rd2=Rd
+        else: self.Rd2=Rd2
         self.alpha=alpha
         self.zlaw=zlaw
         self.Rcut=50
@@ -1160,7 +1161,7 @@ class Frat_disc(disc):
             p0=(rfit_array[0,1],np.mean(rfit_array[:,0]),np.mean(rfit_array[:,0]),1)
             popt,pcov=_fit_utility(func_fit,rfit_array,p0)
             sigma0,Rd,Rd2,alpha=popt
-        elif (sigma0 is not None) and (Rd is not None) and (Rd2 is not None) and (alpha is not None):
+        elif (sigma0 is not None) and (Rd is not None) and (alpha is not None):
             pass
         else:
             raise ValueError()
@@ -1180,7 +1181,7 @@ class Frat_disc(disc):
             p0=(rfit_array[0,1],np.mean(rfit_array[:,0]),np.mean(rfit_array[:,0]),1)
             popt,pcov=_fit_utility(func_fit,rfit_array,p0)
             sigma0,Rd,Rd2,alpha=popt
-        elif (sigma0 is not None) and (Rd is not None) and (Rd2 is not None) and (alpha is not None):
+        elif (sigma0 is not None) and (Rd is not None)  and (alpha is not None):
             pass
         else:
             raise ValueError()
@@ -1215,7 +1216,7 @@ class Frat_disc(disc):
             p0=(rfit_array[0,1],np.mean(rfit_array[:,0]),np.mean(rfit_array[:,0]),1)
             popt,pcov=_fit_utility(func_fit,rfit_array,p0)
             sigma0,Rd,Rd2,alpha=popt
-        elif (sigma0 is not None) and (Rd is not None) and (Rd2 is not None) and (alpha is not None):
+        elif (sigma0 is not None) and (Rd is not None)  and (alpha is not None):
             pass
         else:
             raise ValueError()
@@ -1265,7 +1266,7 @@ class Frat_disc(disc):
             p0=(rfit_array[0,1],np.mean(rfit_array[:,0]),np.mean(rfit_array[:,0]),1)
             popt,pcov=_fit_utility(func_fit,rfit_array,p0)
             sigma0,Rd,Rd2,alpha=popt
-        elif (sigma0 is not None) and (Rd is not None) and (Rd2 is not None) and (alpha is not None):
+        elif (sigma0 is not None) and (Rd is not None)  and (alpha is not None):
             pass
         else:
             raise ValueError()
@@ -1309,7 +1310,7 @@ class Frat_disc(disc):
             p0=(rfit_array[0,1],np.mean(rfit_array[:,0]),np.mean(rfit_array[:,0]),1)
             popt,pcov=_fit_utility(func_fit,rfit_array,p0)
             sigma0,Rd,Rd2,alpha=popt
-        elif (sigma0 is not None) and (Rd is not None) and (Rd2 is not None) and (alpha is not None):
+        elif (sigma0 is not None) and (Rd is not None)  and (alpha is not None):
             pass
         else:
             raise ValueError()

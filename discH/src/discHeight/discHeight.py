@@ -116,6 +116,7 @@ class discHeight(object):
         count=0
         max_residual_abs=1e10
         max_residual_rel=1e10
+        flare_max=0
         while (count<=Niter) and (max_residual_abs>flaretollabs) and (max_residual_rel>flaretollrel):
 
             #new model
@@ -138,6 +139,10 @@ class discHeight(object):
             max_residual_rel  =  np.max(residuals/tabzd)
 
             ax10.plot(tabzd[:, 0], tabzd[:, 1],'-o' , color='gray')
+
+            flare_max_tmp=np.max(tabzd[:,1])
+            if flare_max_tmp>flare_max: flare_max=flare_max_tmp
+            else: pass
 
             print('Iter-%i: Done'%(count+1))
             sys.stdout.flush()
