@@ -475,6 +475,49 @@ static const char *__pyx_f[] = {
 #define __Pyx_CLEAR(r)    do { PyObject* tmp = ((PyObject*)(r)); r = NULL; __Pyx_DECREF(tmp);} while(0)
 #define __Pyx_XCLEAR(r)   do { if((r) != NULL) {PyObject* tmp = ((PyObject*)(r)); r = NULL; __Pyx_DECREF(tmp);}} while(0)
 
+#if CYTHON_COMPILING_IN_CPYTHON
+static CYTHON_INLINE PyObject* __Pyx_PyObject_GetAttrStr(PyObject* obj, PyObject* attr_name) {
+    PyTypeObject* tp = Py_TYPE(obj);
+    if (likely(tp->tp_getattro))
+        return tp->tp_getattro(obj, attr_name);
+#if PY_MAJOR_VERSION < 3
+    if (likely(tp->tp_getattr))
+        return tp->tp_getattr(obj, PyString_AS_STRING(attr_name));
+#endif
+    return PyObject_GetAttr(obj, attr_name);
+}
+#else
+#define __Pyx_PyObject_GetAttrStr(o,n) PyObject_GetAttr(o,n)
+#endif
+
+static PyObject *__Pyx_GetBuiltinName(PyObject *name);
+
+#include <string.h>
+
+static CYTHON_INLINE int __Pyx_PyBytes_Equals(PyObject* s1, PyObject* s2, int equals);
+
+static CYTHON_INLINE int __Pyx_PyUnicode_Equals(PyObject* s1, PyObject* s2, int equals);
+
+#if CYTHON_COMPILING_IN_CPYTHON
+static CYTHON_INLINE PyObject* __Pyx_PyObject_Call(PyObject *func, PyObject *arg, PyObject *kw);
+#else
+#define __Pyx_PyObject_Call(func, arg, kw) PyObject_Call(func, arg, kw)
+#endif
+
+static CYTHON_INLINE void __Pyx_ErrRestore(PyObject *type, PyObject *value, PyObject *tb);
+static CYTHON_INLINE void __Pyx_ErrFetch(PyObject **type, PyObject **value, PyObject **tb);
+
+static void __Pyx_Raise(PyObject *type, PyObject *value, PyObject *tb, PyObject *cause);
+
+static void __Pyx_RaiseArgtupleInvalid(const char* func_name, int exact,
+    Py_ssize_t num_min, Py_ssize_t num_max, Py_ssize_t num_found);
+
+static void __Pyx_RaiseDoubleKeywordsError(const char* func_name, PyObject* kw_name);
+
+static int __Pyx_ParseOptionalKeywords(PyObject *kwds, PyObject **argnames[], \
+    PyObject *kwds2, PyObject *values[], Py_ssize_t num_pos_args, \
+    const char* function_name);
+
 typedef struct {
     int code_line;
     PyCodeObject* code_object;
@@ -510,14 +553,35 @@ static int __Pyx_InitStrings(__Pyx_StringTabEntry *t);
 /* Module declarations from 'discH.src.pot_halo.pot_c_ext.general_halo' */
 static double __pyx_v_5discH_3src_8pot_halo_9pot_c_ext_12general_halo_PI;
 static double __pyx_f_5discH_3src_8pot_halo_9pot_c_ext_12general_halo_xi(double, double, double, double); /*proto*/
+static PyObject *__pyx_f_5discH_3src_8pot_halo_9pot_c_ext_12general_halo_sph_to_ell(PyObject *, PyObject *, PyObject *, PyObject *, int __pyx_skip_dispatch); /*proto*/
 #define __Pyx_MODULE_NAME "discH.src.pot_halo.pot_c_ext.general_halo"
 int __pyx_module_is_main_discH__src__pot_halo__pot_c_ext__general_halo = 0;
 
 /* Implementation of 'discH.src.pot_halo.pot_c_ext.general_halo' */
+static PyObject *__pyx_builtin_IOError;
+static PyObject *__pyx_pf_5discH_3src_8pot_halo_9pot_c_ext_12general_halo_sph_to_ell(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_hlaw, PyObject *__pyx_v_d0, PyObject *__pyx_v_rc, PyObject *__pyx_v_e); /* proto */
+static char __pyx_k_e[] = "e";
+static char __pyx_k_d0[] = "d0";
+static char __pyx_k_rc[] = "rc";
+static char __pyx_k_iso[] = "iso";
+static char __pyx_k_nfw[] = "nfw";
+static char __pyx_k_hlaw[] = "hlaw";
 static char __pyx_k_main[] = "__main__";
 static char __pyx_k_test[] = "__test__";
+static char __pyx_k_IOError[] = "IOError";
+static char __pyx_k_hlaw_allowed_iso_or_nfw[] = "hlaw allowed: iso or nfw";
+static PyObject *__pyx_n_s_IOError;
+static PyObject *__pyx_n_s_d0;
+static PyObject *__pyx_n_s_e;
+static PyObject *__pyx_n_s_hlaw;
+static PyObject *__pyx_kp_u_hlaw_allowed_iso_or_nfw;
+static PyObject *__pyx_n_u_iso;
 static PyObject *__pyx_n_s_main;
+static PyObject *__pyx_n_u_nfw;
+static PyObject *__pyx_n_s_rc;
 static PyObject *__pyx_n_s_test;
+static PyObject *__pyx_int_1;
+static PyObject *__pyx_tuple_;
 
 /* "discH/src/pot_halo/pot_c_ext/general_halo.pyx":7
  * 
@@ -698,6 +762,7 @@ static double __pyx_f_5discH_3src_8pot_halo_9pot_c_ext_12general_halo_potential_
  * 
  *     if (e<=0.0001): return -cost*(psi-intpot)             # <<<<<<<<<<<<<<
  *     else: return -cost*(sqrt(1-e*e)/e)*(psi*asin(e)-e*intpot)
+ * 
  */
   __pyx_t_1 = ((__pyx_v_e <= 0.0001) != 0);
   if (__pyx_t_1) {
@@ -710,6 +775,8 @@ static double __pyx_f_5discH_3src_8pot_halo_9pot_c_ext_12general_halo_potential_
  * 
  *     if (e<=0.0001): return -cost*(psi-intpot)
  *     else: return -cost*(sqrt(1-e*e)/e)*(psi*asin(e)-e*intpot)             # <<<<<<<<<<<<<<
+ * 
+ * cdef double vcirc_core(double m, double R, double e) nogil:
  */
     __pyx_r = (((-__pyx_v_cost) * (sqrt((1.0 - (__pyx_v_e * __pyx_v_e))) / __pyx_v_e)) * ((__pyx_v_psi * asin(__pyx_v_e)) - (__pyx_v_e * __pyx_v_intpot)));
     goto __pyx_L0;
@@ -728,7 +795,355 @@ static double __pyx_f_5discH_3src_8pot_halo_9pot_c_ext_12general_halo_potential_
   return __pyx_r;
 }
 
+/* "discH/src/pot_halo/pot_c_ext/general_halo.pyx":73
+ *     else: return -cost*(sqrt(1-e*e)/e)*(psi*asin(e)-e*intpot)
+ * 
+ * cdef double vcirc_core(double m, double R, double e) nogil:             # <<<<<<<<<<<<<<
+ *     """
+ *     Core function to calculate the Vcirc of a flattened ellipsoids (Eq. 2.132 BT2)
+ */
+
+static double __pyx_f_5discH_3src_8pot_halo_9pot_c_ext_12general_halo_vcirc_core(double __pyx_v_m, double __pyx_v_R, double __pyx_v_e) {
+  double __pyx_v_m2;
+  double __pyx_v_den;
+  double __pyx_r;
+
+  /* "discH/src/pot_halo/pot_c_ext/general_halo.pyx":83
+ * 
+ *     cdef:
+ *         double m2=m*m             # <<<<<<<<<<<<<<
+ *         double den
+ * 
+ */
+  __pyx_v_m2 = (__pyx_v_m * __pyx_v_m);
+
+  /* "discH/src/pot_halo/pot_c_ext/general_halo.pyx":86
+ *         double den
+ * 
+ *     den=sqrt(R*R - m2*e*e)             # <<<<<<<<<<<<<<
+ * 
+ *     return m2/den
+ */
+  __pyx_v_den = sqrt(((__pyx_v_R * __pyx_v_R) - ((__pyx_v_m2 * __pyx_v_e) * __pyx_v_e)));
+
+  /* "discH/src/pot_halo/pot_c_ext/general_halo.pyx":88
+ *     den=sqrt(R*R - m2*e*e)
+ * 
+ *     return m2/den             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  __pyx_r = (__pyx_v_m2 / __pyx_v_den);
+  goto __pyx_L0;
+
+  /* "discH/src/pot_halo/pot_c_ext/general_halo.pyx":73
+ *     else: return -cost*(sqrt(1-e*e)/e)*(psi*asin(e)-e*intpot)
+ * 
+ * cdef double vcirc_core(double m, double R, double e) nogil:             # <<<<<<<<<<<<<<
+ *     """
+ *     Core function to calculate the Vcirc of a flattened ellipsoids (Eq. 2.132 BT2)
+ */
+
+  /* function exit code */
+  __pyx_L0:;
+  return __pyx_r;
+}
+
+/* "discH/src/pot_halo/pot_c_ext/general_halo.pyx":91
+ * 
+ * 
+ * cpdef sph_to_ell(hlaw,d0,rc,e):             # <<<<<<<<<<<<<<
+ *     """
+ *     Find the value of d0 and rc for an halo of ellipticity e, starting from the values d0 and rc for a spherical halo.
+ */
+
+static PyObject *__pyx_pw_5discH_3src_8pot_halo_9pot_c_ext_12general_halo_1sph_to_ell(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_f_5discH_3src_8pot_halo_9pot_c_ext_12general_halo_sph_to_ell(PyObject *__pyx_v_hlaw, PyObject *__pyx_v_d0, PyObject *__pyx_v_rc, PyObject *__pyx_v_e, CYTHON_UNUSED int __pyx_skip_dispatch) {
+  double __pyx_v_q;
+  double __pyx_v_kappa;
+  double __pyx_v_lamb;
+  PyObject *__pyx_v_d0n = NULL;
+  PyObject *__pyx_v_rcn = NULL;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  double __pyx_t_3;
+  int __pyx_t_4;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("sph_to_ell", 0);
+
+  /* "discH/src/pot_halo/pot_c_ext/general_halo.pyx":101
+ *     :return: d0(e), rc(e)
+ *     """
+ *     q=sqrt(1-e*e)             # <<<<<<<<<<<<<<
+ *     if hlaw=='iso':
+ *         kappa=0.598+(0.996/(q+1.460))-(0.003*q*q*q)
+ */
+  __pyx_t_1 = PyNumber_Multiply(__pyx_v_e, __pyx_v_e); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 101; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = PyNumber_Subtract(__pyx_int_1, __pyx_t_1); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 101; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_3 = __pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_3 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 101; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_v_q = sqrt(__pyx_t_3);
+
+  /* "discH/src/pot_halo/pot_c_ext/general_halo.pyx":102
+ *     """
+ *     q=sqrt(1-e*e)
+ *     if hlaw=='iso':             # <<<<<<<<<<<<<<
+ *         kappa=0.598+(0.996/(q+1.460))-(0.003*q*q*q)
+ *         lamb=0.538+(0.380/q)+0.083*q
+ */
+  __pyx_t_4 = (__Pyx_PyUnicode_Equals(__pyx_v_hlaw, __pyx_n_u_iso, Py_EQ)); if (unlikely(__pyx_t_4 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 102; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__pyx_t_4) {
+
+    /* "discH/src/pot_halo/pot_c_ext/general_halo.pyx":103
+ *     q=sqrt(1-e*e)
+ *     if hlaw=='iso':
+ *         kappa=0.598+(0.996/(q+1.460))-(0.003*q*q*q)             # <<<<<<<<<<<<<<
+ *         lamb=0.538+(0.380/q)+0.083*q
+ *     elif hlaw=='nfw':
+ */
+    __pyx_v_kappa = ((0.598 + (0.996 / (__pyx_v_q + 1.460))) - (((0.003 * __pyx_v_q) * __pyx_v_q) * __pyx_v_q));
+
+    /* "discH/src/pot_halo/pot_c_ext/general_halo.pyx":104
+ *     if hlaw=='iso':
+ *         kappa=0.598+(0.996/(q+1.460))-(0.003*q*q*q)
+ *         lamb=0.538+(0.380/q)+0.083*q             # <<<<<<<<<<<<<<
+ *     elif hlaw=='nfw':
+ *         kappa=0.549+(1.170/(q+1.367))-0.047*q
+ */
+    __pyx_v_lamb = ((0.538 + (0.380 / __pyx_v_q)) + (0.083 * __pyx_v_q));
+    goto __pyx_L3;
+  }
+
+  /* "discH/src/pot_halo/pot_c_ext/general_halo.pyx":105
+ *         kappa=0.598+(0.996/(q+1.460))-(0.003*q*q*q)
+ *         lamb=0.538+(0.380/q)+0.083*q
+ *     elif hlaw=='nfw':             # <<<<<<<<<<<<<<
+ *         kappa=0.549+(1.170/(q+1.367))-0.047*q
+ *         lamb=0.510+(0.312/q)+0.178*q
+ */
+  __pyx_t_4 = (__Pyx_PyUnicode_Equals(__pyx_v_hlaw, __pyx_n_u_nfw, Py_EQ)); if (unlikely(__pyx_t_4 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 105; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__pyx_t_4) {
+
+    /* "discH/src/pot_halo/pot_c_ext/general_halo.pyx":106
+ *         lamb=0.538+(0.380/q)+0.083*q
+ *     elif hlaw=='nfw':
+ *         kappa=0.549+(1.170/(q+1.367))-0.047*q             # <<<<<<<<<<<<<<
+ *         lamb=0.510+(0.312/q)+0.178*q
+ *     else: raise IOError('hlaw allowed: iso or nfw')
+ */
+    __pyx_v_kappa = ((0.549 + (1.170 / (__pyx_v_q + 1.367))) - (0.047 * __pyx_v_q));
+
+    /* "discH/src/pot_halo/pot_c_ext/general_halo.pyx":107
+ *     elif hlaw=='nfw':
+ *         kappa=0.549+(1.170/(q+1.367))-0.047*q
+ *         lamb=0.510+(0.312/q)+0.178*q             # <<<<<<<<<<<<<<
+ *     else: raise IOError('hlaw allowed: iso or nfw')
+ *     d0n=d0*lamb
+ */
+    __pyx_v_lamb = ((0.510 + (0.312 / __pyx_v_q)) + (0.178 * __pyx_v_q));
+    goto __pyx_L3;
+  }
+  /*else*/ {
+
+    /* "discH/src/pot_halo/pot_c_ext/general_halo.pyx":108
+ *         kappa=0.549+(1.170/(q+1.367))-0.047*q
+ *         lamb=0.510+(0.312/q)+0.178*q
+ *     else: raise IOError('hlaw allowed: iso or nfw')             # <<<<<<<<<<<<<<
+ *     d0n=d0*lamb
+ *     rcn=rc*kappa
+ */
+    __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_IOError, __pyx_tuple_, NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 108; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_2);
+    __Pyx_Raise(__pyx_t_2, 0, 0, 0);
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 108; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  }
+  __pyx_L3:;
+
+  /* "discH/src/pot_halo/pot_c_ext/general_halo.pyx":109
+ *         lamb=0.510+(0.312/q)+0.178*q
+ *     else: raise IOError('hlaw allowed: iso or nfw')
+ *     d0n=d0*lamb             # <<<<<<<<<<<<<<
+ *     rcn=rc*kappa
+ *     return d0n,rcn
+ */
+  __pyx_t_2 = PyFloat_FromDouble(__pyx_v_lamb); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 109; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_1 = PyNumber_Multiply(__pyx_v_d0, __pyx_t_2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 109; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_v_d0n = __pyx_t_1;
+  __pyx_t_1 = 0;
+
+  /* "discH/src/pot_halo/pot_c_ext/general_halo.pyx":110
+ *     else: raise IOError('hlaw allowed: iso or nfw')
+ *     d0n=d0*lamb
+ *     rcn=rc*kappa             # <<<<<<<<<<<<<<
+ *     return d0n,rcn
+ */
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_kappa); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 110; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = PyNumber_Multiply(__pyx_v_rc, __pyx_t_1); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 110; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_v_rcn = __pyx_t_2;
+  __pyx_t_2 = 0;
+
+  /* "discH/src/pot_halo/pot_c_ext/general_halo.pyx":111
+ *     d0n=d0*lamb
+ *     rcn=rc*kappa
+ *     return d0n,rcn             # <<<<<<<<<<<<<<
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 111; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_INCREF(__pyx_v_d0n);
+  PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_v_d0n);
+  __Pyx_GIVEREF(__pyx_v_d0n);
+  __Pyx_INCREF(__pyx_v_rcn);
+  PyTuple_SET_ITEM(__pyx_t_2, 1, __pyx_v_rcn);
+  __Pyx_GIVEREF(__pyx_v_rcn);
+  __pyx_r = __pyx_t_2;
+  __pyx_t_2 = 0;
+  goto __pyx_L0;
+
+  /* "discH/src/pot_halo/pot_c_ext/general_halo.pyx":91
+ * 
+ * 
+ * cpdef sph_to_ell(hlaw,d0,rc,e):             # <<<<<<<<<<<<<<
+ *     """
+ *     Find the value of d0 and rc for an halo of ellipticity e, starting from the values d0 and rc for a spherical halo.
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_AddTraceback("discH.src.pot_halo.pot_c_ext.general_halo.sph_to_ell", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = 0;
+  __pyx_L0:;
+  __Pyx_XDECREF(__pyx_v_d0n);
+  __Pyx_XDECREF(__pyx_v_rcn);
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* Python wrapper */
+static PyObject *__pyx_pw_5discH_3src_8pot_halo_9pot_c_ext_12general_halo_1sph_to_ell(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_5discH_3src_8pot_halo_9pot_c_ext_12general_halo_sph_to_ell[] = "\n    Find the value of d0 and rc for an halo of ellipticity e, starting from the values d0 and rc for a spherical halo.\n    The transformation is performed to have the same rotation curve. (App. C, my thesis)\n    :param hlaw: 'iso' for isothermal, 'nfw' for navarro-frank-white\n    :param d0:\n    :param rc:\n    :param e:\n    :return: d0(e), rc(e)\n    ";
+static PyObject *__pyx_pw_5discH_3src_8pot_halo_9pot_c_ext_12general_halo_1sph_to_ell(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  PyObject *__pyx_v_hlaw = 0;
+  PyObject *__pyx_v_d0 = 0;
+  PyObject *__pyx_v_rc = 0;
+  PyObject *__pyx_v_e = 0;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("sph_to_ell (wrapper)", 0);
+  {
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_hlaw,&__pyx_n_s_d0,&__pyx_n_s_rc,&__pyx_n_s_e,0};
+    PyObject* values[4] = {0,0,0,0};
+    if (unlikely(__pyx_kwds)) {
+      Py_ssize_t kw_args;
+      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
+      switch (pos_args) {
+        case  4: values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
+        case  3: values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
+        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+        case  0: break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+      kw_args = PyDict_Size(__pyx_kwds);
+      switch (pos_args) {
+        case  0:
+        if (likely((values[0] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_hlaw)) != 0)) kw_args--;
+        else goto __pyx_L5_argtuple_error;
+        case  1:
+        if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_d0)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("sph_to_ell", 1, 4, 4, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 91; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case  2:
+        if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_rc)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("sph_to_ell", 1, 4, 4, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 91; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case  3:
+        if (likely((values[3] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_e)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("sph_to_ell", 1, 4, 4, 3); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 91; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+      }
+      if (unlikely(kw_args > 0)) {
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "sph_to_ell") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 91; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+      }
+    } else if (PyTuple_GET_SIZE(__pyx_args) != 4) {
+      goto __pyx_L5_argtuple_error;
+    } else {
+      values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+      values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+      values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
+      values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
+    }
+    __pyx_v_hlaw = values[0];
+    __pyx_v_d0 = values[1];
+    __pyx_v_rc = values[2];
+    __pyx_v_e = values[3];
+  }
+  goto __pyx_L4_argument_unpacking_done;
+  __pyx_L5_argtuple_error:;
+  __Pyx_RaiseArgtupleInvalid("sph_to_ell", 1, 4, 4, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 91; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __pyx_L3_error:;
+  __Pyx_AddTraceback("discH.src.pot_halo.pot_c_ext.general_halo.sph_to_ell", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_RefNannyFinishContext();
+  return NULL;
+  __pyx_L4_argument_unpacking_done:;
+  __pyx_r = __pyx_pf_5discH_3src_8pot_halo_9pot_c_ext_12general_halo_sph_to_ell(__pyx_self, __pyx_v_hlaw, __pyx_v_d0, __pyx_v_rc, __pyx_v_e);
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_5discH_3src_8pot_halo_9pot_c_ext_12general_halo_sph_to_ell(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_hlaw, PyObject *__pyx_v_d0, PyObject *__pyx_v_rc, PyObject *__pyx_v_e) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("sph_to_ell", 0);
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_1 = __pyx_f_5discH_3src_8pot_halo_9pot_c_ext_12general_halo_sph_to_ell(__pyx_v_hlaw, __pyx_v_d0, __pyx_v_rc, __pyx_v_e, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 91; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_r = __pyx_t_1;
+  __pyx_t_1 = 0;
+  goto __pyx_L0;
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("discH.src.pot_halo.pot_c_ext.general_halo.sph_to_ell", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
 static PyMethodDef __pyx_methods[] = {
+  {"sph_to_ell", (PyCFunction)__pyx_pw_5discH_3src_8pot_halo_9pot_c_ext_12general_halo_1sph_to_ell, METH_VARARGS|METH_KEYWORDS, __pyx_doc_5discH_3src_8pot_halo_9pot_c_ext_12general_halo_sph_to_ell},
   {0, 0, 0, 0}
 };
 
@@ -751,23 +1166,49 @@ static struct PyModuleDef __pyx_moduledef = {
 #endif
 
 static __Pyx_StringTabEntry __pyx_string_tab[] = {
+  {&__pyx_n_s_IOError, __pyx_k_IOError, sizeof(__pyx_k_IOError), 0, 0, 1, 1},
+  {&__pyx_n_s_d0, __pyx_k_d0, sizeof(__pyx_k_d0), 0, 0, 1, 1},
+  {&__pyx_n_s_e, __pyx_k_e, sizeof(__pyx_k_e), 0, 0, 1, 1},
+  {&__pyx_n_s_hlaw, __pyx_k_hlaw, sizeof(__pyx_k_hlaw), 0, 0, 1, 1},
+  {&__pyx_kp_u_hlaw_allowed_iso_or_nfw, __pyx_k_hlaw_allowed_iso_or_nfw, sizeof(__pyx_k_hlaw_allowed_iso_or_nfw), 0, 1, 0, 0},
+  {&__pyx_n_u_iso, __pyx_k_iso, sizeof(__pyx_k_iso), 0, 1, 0, 1},
   {&__pyx_n_s_main, __pyx_k_main, sizeof(__pyx_k_main), 0, 0, 1, 1},
+  {&__pyx_n_u_nfw, __pyx_k_nfw, sizeof(__pyx_k_nfw), 0, 1, 0, 1},
+  {&__pyx_n_s_rc, __pyx_k_rc, sizeof(__pyx_k_rc), 0, 0, 1, 1},
   {&__pyx_n_s_test, __pyx_k_test, sizeof(__pyx_k_test), 0, 0, 1, 1},
   {0, 0, 0, 0, 0, 0, 0}
 };
 static int __Pyx_InitCachedBuiltins(void) {
+  __pyx_builtin_IOError = __Pyx_GetBuiltinName(__pyx_n_s_IOError); if (!__pyx_builtin_IOError) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 108; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   return 0;
+  __pyx_L1_error:;
+  return -1;
 }
 
 static int __Pyx_InitCachedConstants(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
+
+  /* "discH/src/pot_halo/pot_c_ext/general_halo.pyx":108
+ *         kappa=0.549+(1.170/(q+1.367))-0.047*q
+ *         lamb=0.510+(0.312/q)+0.178*q
+ *     else: raise IOError('hlaw allowed: iso or nfw')             # <<<<<<<<<<<<<<
+ *     d0n=d0*lamb
+ *     rcn=rc*kappa
+ */
+  __pyx_tuple_ = PyTuple_Pack(1, __pyx_kp_u_hlaw_allowed_iso_or_nfw); if (unlikely(!__pyx_tuple_)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 108; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_tuple_);
+  __Pyx_GIVEREF(__pyx_tuple_);
   __Pyx_RefNannyFinishContext();
   return 0;
+  __pyx_L1_error:;
+  __Pyx_RefNannyFinishContext();
+  return -1;
 }
 
 static int __Pyx_InitGlobals(void) {
   if (__Pyx_InitStrings(__pyx_string_tab) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+  __pyx_int_1 = PyInt_FromLong(1); if (unlikely(!__pyx_int_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   return 0;
   __pyx_L1_error:;
   return -1;
@@ -856,6 +1297,7 @@ PyMODINIT_FUNC PyInit_general_halo(void)
   if (__Pyx_ExportFunction("m_calc", (void (*)(void))__pyx_f_5discH_3src_8pot_halo_9pot_c_ext_12general_halo_m_calc, "double (double, double, double)") < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   if (__Pyx_ExportFunction("integrand_core", (void (*)(void))__pyx_f_5discH_3src_8pot_halo_9pot_c_ext_12general_halo_integrand_core, "double (double, double, double, double, double)") < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   if (__Pyx_ExportFunction("potential_core", (void (*)(void))__pyx_f_5discH_3src_8pot_halo_9pot_c_ext_12general_halo_potential_core, "double (double, double, double)") < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_ExportFunction("vcirc_core", (void (*)(void))__pyx_f_5discH_3src_8pot_halo_9pot_c_ext_12general_halo_vcirc_core, "double (double, double, double)") < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   /*--- Type init code ---*/
   /*--- Type import code ---*/
   /*--- Variable import code ---*/
@@ -920,6 +1362,477 @@ end:
     return (__Pyx_RefNannyAPIStruct *)r;
 }
 #endif
+
+static PyObject *__Pyx_GetBuiltinName(PyObject *name) {
+    PyObject* result = __Pyx_PyObject_GetAttrStr(__pyx_b, name);
+    if (unlikely(!result)) {
+        PyErr_Format(PyExc_NameError,
+#if PY_MAJOR_VERSION >= 3
+            "name '%U' is not defined", name);
+#else
+            "name '%.200s' is not defined", PyString_AS_STRING(name));
+#endif
+    }
+    return result;
+}
+
+static CYTHON_INLINE int __Pyx_PyBytes_Equals(PyObject* s1, PyObject* s2, int equals) {
+#if CYTHON_COMPILING_IN_PYPY
+    return PyObject_RichCompareBool(s1, s2, equals);
+#else
+    if (s1 == s2) {
+        return (equals == Py_EQ);
+    } else if (PyBytes_CheckExact(s1) & PyBytes_CheckExact(s2)) {
+        const char *ps1, *ps2;
+        Py_ssize_t length = PyBytes_GET_SIZE(s1);
+        if (length != PyBytes_GET_SIZE(s2))
+            return (equals == Py_NE);
+        ps1 = PyBytes_AS_STRING(s1);
+        ps2 = PyBytes_AS_STRING(s2);
+        if (ps1[0] != ps2[0]) {
+            return (equals == Py_NE);
+        } else if (length == 1) {
+            return (equals == Py_EQ);
+        } else {
+            int result = memcmp(ps1, ps2, (size_t)length);
+            return (equals == Py_EQ) ? (result == 0) : (result != 0);
+        }
+    } else if ((s1 == Py_None) & PyBytes_CheckExact(s2)) {
+        return (equals == Py_NE);
+    } else if ((s2 == Py_None) & PyBytes_CheckExact(s1)) {
+        return (equals == Py_NE);
+    } else {
+        int result;
+        PyObject* py_result = PyObject_RichCompare(s1, s2, equals);
+        if (!py_result)
+            return -1;
+        result = __Pyx_PyObject_IsTrue(py_result);
+        Py_DECREF(py_result);
+        return result;
+    }
+#endif
+}
+
+static CYTHON_INLINE int __Pyx_PyUnicode_Equals(PyObject* s1, PyObject* s2, int equals) {
+#if CYTHON_COMPILING_IN_PYPY
+    return PyObject_RichCompareBool(s1, s2, equals);
+#else
+#if PY_MAJOR_VERSION < 3
+    PyObject* owned_ref = NULL;
+#endif
+    int s1_is_unicode, s2_is_unicode;
+    if (s1 == s2) {
+        goto return_eq;
+    }
+    s1_is_unicode = PyUnicode_CheckExact(s1);
+    s2_is_unicode = PyUnicode_CheckExact(s2);
+#if PY_MAJOR_VERSION < 3
+    if ((s1_is_unicode & (!s2_is_unicode)) && PyString_CheckExact(s2)) {
+        owned_ref = PyUnicode_FromObject(s2);
+        if (unlikely(!owned_ref))
+            return -1;
+        s2 = owned_ref;
+        s2_is_unicode = 1;
+    } else if ((s2_is_unicode & (!s1_is_unicode)) && PyString_CheckExact(s1)) {
+        owned_ref = PyUnicode_FromObject(s1);
+        if (unlikely(!owned_ref))
+            return -1;
+        s1 = owned_ref;
+        s1_is_unicode = 1;
+    } else if (((!s2_is_unicode) & (!s1_is_unicode))) {
+        return __Pyx_PyBytes_Equals(s1, s2, equals);
+    }
+#endif
+    if (s1_is_unicode & s2_is_unicode) {
+        Py_ssize_t length;
+        int kind;
+        void *data1, *data2;
+        if (unlikely(__Pyx_PyUnicode_READY(s1) < 0) || unlikely(__Pyx_PyUnicode_READY(s2) < 0))
+            return -1;
+        length = __Pyx_PyUnicode_GET_LENGTH(s1);
+        if (length != __Pyx_PyUnicode_GET_LENGTH(s2)) {
+            goto return_ne;
+        }
+        kind = __Pyx_PyUnicode_KIND(s1);
+        if (kind != __Pyx_PyUnicode_KIND(s2)) {
+            goto return_ne;
+        }
+        data1 = __Pyx_PyUnicode_DATA(s1);
+        data2 = __Pyx_PyUnicode_DATA(s2);
+        if (__Pyx_PyUnicode_READ(kind, data1, 0) != __Pyx_PyUnicode_READ(kind, data2, 0)) {
+            goto return_ne;
+        } else if (length == 1) {
+            goto return_eq;
+        } else {
+            int result = memcmp(data1, data2, (size_t)(length * kind));
+            #if PY_MAJOR_VERSION < 3
+            Py_XDECREF(owned_ref);
+            #endif
+            return (equals == Py_EQ) ? (result == 0) : (result != 0);
+        }
+    } else if ((s1 == Py_None) & s2_is_unicode) {
+        goto return_ne;
+    } else if ((s2 == Py_None) & s1_is_unicode) {
+        goto return_ne;
+    } else {
+        int result;
+        PyObject* py_result = PyObject_RichCompare(s1, s2, equals);
+        if (!py_result)
+            return -1;
+        result = __Pyx_PyObject_IsTrue(py_result);
+        Py_DECREF(py_result);
+        return result;
+    }
+return_eq:
+    #if PY_MAJOR_VERSION < 3
+    Py_XDECREF(owned_ref);
+    #endif
+    return (equals == Py_EQ);
+return_ne:
+    #if PY_MAJOR_VERSION < 3
+    Py_XDECREF(owned_ref);
+    #endif
+    return (equals == Py_NE);
+#endif
+}
+
+#if CYTHON_COMPILING_IN_CPYTHON
+static CYTHON_INLINE PyObject* __Pyx_PyObject_Call(PyObject *func, PyObject *arg, PyObject *kw) {
+    PyObject *result;
+    ternaryfunc call = func->ob_type->tp_call;
+    if (unlikely(!call))
+        return PyObject_Call(func, arg, kw);
+    if (unlikely(Py_EnterRecursiveCall((char*)" while calling a Python object")))
+        return NULL;
+    result = (*call)(func, arg, kw);
+    Py_LeaveRecursiveCall();
+    if (unlikely(!result) && unlikely(!PyErr_Occurred())) {
+        PyErr_SetString(
+            PyExc_SystemError,
+            "NULL result without error in PyObject_Call");
+    }
+    return result;
+}
+#endif
+
+static CYTHON_INLINE void __Pyx_ErrRestore(PyObject *type, PyObject *value, PyObject *tb) {
+#if CYTHON_COMPILING_IN_CPYTHON
+    PyObject *tmp_type, *tmp_value, *tmp_tb;
+    PyThreadState *tstate = PyThreadState_GET();
+    tmp_type = tstate->curexc_type;
+    tmp_value = tstate->curexc_value;
+    tmp_tb = tstate->curexc_traceback;
+    tstate->curexc_type = type;
+    tstate->curexc_value = value;
+    tstate->curexc_traceback = tb;
+    Py_XDECREF(tmp_type);
+    Py_XDECREF(tmp_value);
+    Py_XDECREF(tmp_tb);
+#else
+    PyErr_Restore(type, value, tb);
+#endif
+}
+static CYTHON_INLINE void __Pyx_ErrFetch(PyObject **type, PyObject **value, PyObject **tb) {
+#if CYTHON_COMPILING_IN_CPYTHON
+    PyThreadState *tstate = PyThreadState_GET();
+    *type = tstate->curexc_type;
+    *value = tstate->curexc_value;
+    *tb = tstate->curexc_traceback;
+    tstate->curexc_type = 0;
+    tstate->curexc_value = 0;
+    tstate->curexc_traceback = 0;
+#else
+    PyErr_Fetch(type, value, tb);
+#endif
+}
+
+#if PY_MAJOR_VERSION < 3
+static void __Pyx_Raise(PyObject *type, PyObject *value, PyObject *tb,
+                        CYTHON_UNUSED PyObject *cause) {
+    Py_XINCREF(type);
+    if (!value || value == Py_None)
+        value = NULL;
+    else
+        Py_INCREF(value);
+    if (!tb || tb == Py_None)
+        tb = NULL;
+    else {
+        Py_INCREF(tb);
+        if (!PyTraceBack_Check(tb)) {
+            PyErr_SetString(PyExc_TypeError,
+                "raise: arg 3 must be a traceback or None");
+            goto raise_error;
+        }
+    }
+    if (PyType_Check(type)) {
+#if CYTHON_COMPILING_IN_PYPY
+        if (!value) {
+            Py_INCREF(Py_None);
+            value = Py_None;
+        }
+#endif
+        PyErr_NormalizeException(&type, &value, &tb);
+    } else {
+        if (value) {
+            PyErr_SetString(PyExc_TypeError,
+                "instance exception may not have a separate value");
+            goto raise_error;
+        }
+        value = type;
+        type = (PyObject*) Py_TYPE(type);
+        Py_INCREF(type);
+        if (!PyType_IsSubtype((PyTypeObject *)type, (PyTypeObject *)PyExc_BaseException)) {
+            PyErr_SetString(PyExc_TypeError,
+                "raise: exception class must be a subclass of BaseException");
+            goto raise_error;
+        }
+    }
+    __Pyx_ErrRestore(type, value, tb);
+    return;
+raise_error:
+    Py_XDECREF(value);
+    Py_XDECREF(type);
+    Py_XDECREF(tb);
+    return;
+}
+#else
+static void __Pyx_Raise(PyObject *type, PyObject *value, PyObject *tb, PyObject *cause) {
+    PyObject* owned_instance = NULL;
+    if (tb == Py_None) {
+        tb = 0;
+    } else if (tb && !PyTraceBack_Check(tb)) {
+        PyErr_SetString(PyExc_TypeError,
+            "raise: arg 3 must be a traceback or None");
+        goto bad;
+    }
+    if (value == Py_None)
+        value = 0;
+    if (PyExceptionInstance_Check(type)) {
+        if (value) {
+            PyErr_SetString(PyExc_TypeError,
+                "instance exception may not have a separate value");
+            goto bad;
+        }
+        value = type;
+        type = (PyObject*) Py_TYPE(value);
+    } else if (PyExceptionClass_Check(type)) {
+        PyObject *instance_class = NULL;
+        if (value && PyExceptionInstance_Check(value)) {
+            instance_class = (PyObject*) Py_TYPE(value);
+            if (instance_class != type) {
+                if (PyObject_IsSubclass(instance_class, type)) {
+                    type = instance_class;
+                } else {
+                    instance_class = NULL;
+                }
+            }
+        }
+        if (!instance_class) {
+            PyObject *args;
+            if (!value)
+                args = PyTuple_New(0);
+            else if (PyTuple_Check(value)) {
+                Py_INCREF(value);
+                args = value;
+            } else
+                args = PyTuple_Pack(1, value);
+            if (!args)
+                goto bad;
+            owned_instance = PyObject_Call(type, args, NULL);
+            Py_DECREF(args);
+            if (!owned_instance)
+                goto bad;
+            value = owned_instance;
+            if (!PyExceptionInstance_Check(value)) {
+                PyErr_Format(PyExc_TypeError,
+                             "calling %R should have returned an instance of "
+                             "BaseException, not %R",
+                             type, Py_TYPE(value));
+                goto bad;
+            }
+        }
+    } else {
+        PyErr_SetString(PyExc_TypeError,
+            "raise: exception class must be a subclass of BaseException");
+        goto bad;
+    }
+#if PY_VERSION_HEX >= 0x03030000
+    if (cause) {
+#else
+    if (cause && cause != Py_None) {
+#endif
+        PyObject *fixed_cause;
+        if (cause == Py_None) {
+            fixed_cause = NULL;
+        } else if (PyExceptionClass_Check(cause)) {
+            fixed_cause = PyObject_CallObject(cause, NULL);
+            if (fixed_cause == NULL)
+                goto bad;
+        } else if (PyExceptionInstance_Check(cause)) {
+            fixed_cause = cause;
+            Py_INCREF(fixed_cause);
+        } else {
+            PyErr_SetString(PyExc_TypeError,
+                            "exception causes must derive from "
+                            "BaseException");
+            goto bad;
+        }
+        PyException_SetCause(value, fixed_cause);
+    }
+    PyErr_SetObject(type, value);
+    if (tb) {
+        PyThreadState *tstate = PyThreadState_GET();
+        PyObject* tmp_tb = tstate->curexc_traceback;
+        if (tb != tmp_tb) {
+            Py_INCREF(tb);
+            tstate->curexc_traceback = tb;
+            Py_XDECREF(tmp_tb);
+        }
+    }
+bad:
+    Py_XDECREF(owned_instance);
+    return;
+}
+#endif
+
+static void __Pyx_RaiseArgtupleInvalid(
+    const char* func_name,
+    int exact,
+    Py_ssize_t num_min,
+    Py_ssize_t num_max,
+    Py_ssize_t num_found)
+{
+    Py_ssize_t num_expected;
+    const char *more_or_less;
+    if (num_found < num_min) {
+        num_expected = num_min;
+        more_or_less = "at least";
+    } else {
+        num_expected = num_max;
+        more_or_less = "at most";
+    }
+    if (exact) {
+        more_or_less = "exactly";
+    }
+    PyErr_Format(PyExc_TypeError,
+                 "%.200s() takes %.8s %" CYTHON_FORMAT_SSIZE_T "d positional argument%.1s (%" CYTHON_FORMAT_SSIZE_T "d given)",
+                 func_name, more_or_less, num_expected,
+                 (num_expected == 1) ? "" : "s", num_found);
+}
+
+static void __Pyx_RaiseDoubleKeywordsError(
+    const char* func_name,
+    PyObject* kw_name)
+{
+    PyErr_Format(PyExc_TypeError,
+        #if PY_MAJOR_VERSION >= 3
+        "%s() got multiple values for keyword argument '%U'", func_name, kw_name);
+        #else
+        "%s() got multiple values for keyword argument '%s'", func_name,
+        PyString_AsString(kw_name));
+        #endif
+}
+
+static int __Pyx_ParseOptionalKeywords(
+    PyObject *kwds,
+    PyObject **argnames[],
+    PyObject *kwds2,
+    PyObject *values[],
+    Py_ssize_t num_pos_args,
+    const char* function_name)
+{
+    PyObject *key = 0, *value = 0;
+    Py_ssize_t pos = 0;
+    PyObject*** name;
+    PyObject*** first_kw_arg = argnames + num_pos_args;
+    while (PyDict_Next(kwds, &pos, &key, &value)) {
+        name = first_kw_arg;
+        while (*name && (**name != key)) name++;
+        if (*name) {
+            values[name-argnames] = value;
+            continue;
+        }
+        name = first_kw_arg;
+        #if PY_MAJOR_VERSION < 3
+        if (likely(PyString_CheckExact(key)) || likely(PyString_Check(key))) {
+            while (*name) {
+                if ((CYTHON_COMPILING_IN_PYPY || PyString_GET_SIZE(**name) == PyString_GET_SIZE(key))
+                        && _PyString_Eq(**name, key)) {
+                    values[name-argnames] = value;
+                    break;
+                }
+                name++;
+            }
+            if (*name) continue;
+            else {
+                PyObject*** argname = argnames;
+                while (argname != first_kw_arg) {
+                    if ((**argname == key) || (
+                            (CYTHON_COMPILING_IN_PYPY || PyString_GET_SIZE(**argname) == PyString_GET_SIZE(key))
+                             && _PyString_Eq(**argname, key))) {
+                        goto arg_passed_twice;
+                    }
+                    argname++;
+                }
+            }
+        } else
+        #endif
+        if (likely(PyUnicode_Check(key))) {
+            while (*name) {
+                int cmp = (**name == key) ? 0 :
+                #if !CYTHON_COMPILING_IN_PYPY && PY_MAJOR_VERSION >= 3
+                    (PyUnicode_GET_SIZE(**name) != PyUnicode_GET_SIZE(key)) ? 1 :
+                #endif
+                    PyUnicode_Compare(**name, key);
+                if (cmp < 0 && unlikely(PyErr_Occurred())) goto bad;
+                if (cmp == 0) {
+                    values[name-argnames] = value;
+                    break;
+                }
+                name++;
+            }
+            if (*name) continue;
+            else {
+                PyObject*** argname = argnames;
+                while (argname != first_kw_arg) {
+                    int cmp = (**argname == key) ? 0 :
+                    #if !CYTHON_COMPILING_IN_PYPY && PY_MAJOR_VERSION >= 3
+                        (PyUnicode_GET_SIZE(**argname) != PyUnicode_GET_SIZE(key)) ? 1 :
+                    #endif
+                        PyUnicode_Compare(**argname, key);
+                    if (cmp < 0 && unlikely(PyErr_Occurred())) goto bad;
+                    if (cmp == 0) goto arg_passed_twice;
+                    argname++;
+                }
+            }
+        } else
+            goto invalid_keyword_type;
+        if (kwds2) {
+            if (unlikely(PyDict_SetItem(kwds2, key, value))) goto bad;
+        } else {
+            goto invalid_keyword;
+        }
+    }
+    return 0;
+arg_passed_twice:
+    __Pyx_RaiseDoubleKeywordsError(function_name, key);
+    goto bad;
+invalid_keyword_type:
+    PyErr_Format(PyExc_TypeError,
+        "%.200s() keywords must be strings", function_name);
+    goto bad;
+invalid_keyword:
+    PyErr_Format(PyExc_TypeError,
+    #if PY_MAJOR_VERSION < 3
+        "%.200s() got an unexpected keyword argument '%.200s'",
+        function_name, PyString_AsString(key));
+    #else
+        "%s() got an unexpected keyword argument '%U'",
+        function_name, key);
+    #endif
+bad:
+    return -1;
+}
 
 static int __pyx_bisect_code_objects(__Pyx_CodeObjectCacheEntry* entries, int count, int code_line) {
     int start = 0, mid = 0, end = count - 1;

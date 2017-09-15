@@ -69,3 +69,43 @@ cdef double potential_core(double e, double intpot, double psi) nogil:
 
     if (e<=0.0001): return -cost*(psi-intpot)
     else: return -cost*(sqrt(1-e*e)/e)*(psi*asin(e)-e*intpot)
+
+cdef double vcirc_core(double m, double R, double e) nogil:
+    """
+    Core function to calculate the Vcirc of a flattened ellipsoids (Eq. 2.132 BT2)
+    :param m: integrand variable
+    :param R: Radius on the meridional plane
+    :param e: flattening
+    :return:
+    """
+
+    cdef:
+        double m2=m*m
+        double den
+
+    den=sqrt(R*R - m2*e*e)
+
+    return m2/den
+
+
+cpdef sph_to_ell(hlaw,d0,rc,e):
+    """
+    Find the value of d0 and rc for an halo of ellipticity e, starting from the values d0 and rc for a spherical halo.
+    The transformation is performed to have the same rotation curve. (App. C, my thesis)
+    :param hlaw: 'iso' for isothermal, 'nfw' for navarro-frank-white
+    :param d0:
+    :param rc:
+    :param e:
+    :return: d0(e), rc(e)
+    """
+    q=sqrt(1-e*e)
+    if hlaw=='iso':
+        kappa=0.598+(0.996/(q+1.460))-(0.003*q*q*q)
+        lamb=0.538+(0.380/q)+0.083*q
+    elif hlaw=='nfw':
+        kappa=0.549+(1.170/(q+1.367))-0.047*q
+        lamb=0.510+(0.312/q)+0.178*q
+    else: raise IOError('hlaw allowed: iso or nfw')
+    d0n=d0*lamb
+    rcn=rc*kappa
+    return d0n,rcn

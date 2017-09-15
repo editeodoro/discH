@@ -1,5 +1,5 @@
 from __future__ import division, print_function
-from .pot_c_ext.isothermal_halo import potential_iso
+from .pot_c_ext.isothermal_halo import potential_iso,  vcirc_iso
 from .pot_c_ext.nfw_halo import potential_nfw
 from .pot_c_ext.alfabeta_halo import potential_alfabeta
 from .pot_c_ext.plummer_halo import potential_plummer
@@ -99,8 +99,42 @@ class halo(object):
         :param mcut: elliptical radius where dens(m>mcut)=0
         :return:
         """
-        raise NotImplementedError('Potential serial not implemented for this class')
+        raise NotImplementedError('Potential parallel not implemented for this class')
 
+    def vcirc(self, R, toll=1e-4, nproc=1):
+        """Calculate Vcirc at planare radius coordinate R.
+        :param R: Cylindrical radius [kpc]
+        :param toll: tollerance for quad integration
+        :param nproc: Number of processes
+        :return:  An array with:
+            0-R
+            1-Vcirc
+        """
+
+        ndim=len(R)
+        if nproc==1 or ndim<100000:
+            return self._vcirc_serial(R=R,toll=toll)
+        else:
+            return self._vcirc_parallel(R=R, toll=toll, nproc=nproc)
+
+    def _vcirc_serial(self, R, toll=1e-4):
+        """Calculate the Vcirc in R using a serial code
+        :param R: Cylindrical radius [kpc]
+        :param toll: tollerance for quad integration
+        :return:
+        """
+
+        raise NotImplementedError('Vcirc serial not implemented for this class')
+
+
+    def _vcirc_parallel(self, R, toll=1e-4, nproc=1):
+        """Calculate the Vcirc in R using a parallelized code
+        :param R: Cylindrical radius [kpc]
+        :param toll: tollerance for quad integration
+        :param nproc: Number of processes
+        :return:
+        """
+        raise NotImplementedError('Potential parallel not implemented for this class')
 
     def __str__(self):
 
@@ -168,6 +202,33 @@ class isothermal_halo(halo):
 
             htab = pardo.run(R,Z, args=(self.d0, self.rc, self.e, mcut, self.toll, grid))
 
+
+        return htab
+
+    def _vcirc_serial(self, R, toll=1e-4):
+        """Calculate the Vcirc in R using a serial code
+        :param R: Cylindrical radius [kpc]
+        :param toll: tollerance for quad integration
+        :return:
+        """
+        self.set_toll(toll)
+
+        return np.array(vcirc_iso(R, self.d0, self.rc, self.e, toll=self.toll))
+
+    def _vcirc_parallel(self, R, toll=1e-4, nproc=1):
+        """Calculate the Vcirc in R using a parallelized code
+        :param R: Cylindrical radius [kpc]
+        :param toll: tollerance for quad integration
+        :param nproc: Number of processes
+        :return:
+        """
+
+        self.set_toll(toll)
+
+        pardo=ParDo(nproc=nproc)
+        pardo.set_func(vcirc_iso)
+
+        htab=pardo.run_grid(R,args=(self.d0, self.rc, self.e, self.toll))
 
         return htab
 
