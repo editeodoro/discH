@@ -682,6 +682,7 @@ class einasto_halo(halo):
         n2=n*n
         n3=n2*n
         n4=n3*n
+        a0=3*n
         a1 = -1. / 3.
         a2 = 8. / (1215. * n)
         a3 = 184. / (229635. * n2)
