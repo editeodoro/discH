@@ -81,6 +81,8 @@ iab_ext=Extension('discH/src/pot_halo/pot_c_ext/alfabeta_halo',sources=iab,libra
 ph=['discH/src/pot_halo/pot_c_ext/plummer_halo.pyx']
 ph_ext=Extension('discH/src/pot_halo/pot_c_ext/plummer_halo',sources=ph)
 
+eh=['discH/src/pot_halo/pot_c_ext/einasto_halo.pyx']
+eh_ext=Extension('discH/src/pot_halo/pot_c_ext/einasto_halo',sources=eh,libraries=cython_gsl.get_libraries(),library_dirs=[cython_gsl.get_library_dir()],include_dirs=[cython_gsl.get_cython_include_dir()])
 
 gd=['discH/src/pot_disc/pot_c_ext/integrand_functions.pyx']
 gd_ext=Extension('discH/src/pot_disc/pot_c_ext/integrand_functions',libraries=cython_gsl.get_libraries(),library_dirs=[cython_gsl.get_library_dir()],include_dirs=[cython_gsl.get_cython_include_dir(), numpy.get_include()],sources=gd)
@@ -103,11 +105,11 @@ fd_ext=Extension('discH/src/pot_disc/pot_c_ext/rflare_law',sources=fd)
                      #)
 
 
-ext_modules=cythonize([gh_ext,ih_ext,infw_ext,gd_ext,rd_ext,fd_ext,iab_ext,ph_ext])
+ext_modules=cythonize([gh_ext,ih_ext,infw_ext,gd_ext,rd_ext,fd_ext,iab_ext,ph_ext,eh_ext])
 
 setup(
 		name='discH',
-		version='2.3.2.dev0',
+		version='2.5.0.dev0',
 		author='Giuliano Iorio',
 		author_email='',
 		url='',

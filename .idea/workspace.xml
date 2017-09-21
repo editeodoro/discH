@@ -2,9 +2,18 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1c15f409-53bc-40b2-a677-97d1411f89aa" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/discH/src/pot_halo/pot_c_ext/einasto_halo.pxd" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/discH/src/pot_halo/pot_c_ext/einasto_halo.pyx" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/discH/src/pot_halo/pot_c_ext/nfw_halo.pxd" afterPath="$PROJECT_DIR$/discH/src/pot_halo/pot_c_ext/nfw_halo.pxd" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/discH/src/pot_halo/pot_c_ext/nfw_halo.pyx" afterPath="$PROJECT_DIR$/discH/src/pot_halo/pot_c_ext/nfw_halo.pyx" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/discH/dynamic_component.py" afterPath="$PROJECT_DIR$/discH/dynamic_component.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/discH/src/pot_halo/__init__.py" afterPath="$PROJECT_DIR$/discH/src/pot_halo/__init__.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/discH/src/pot_halo/pot_c_ext/alfabeta_halo.c" afterPath="$PROJECT_DIR$/discH/src/pot_halo/pot_c_ext/alfabeta_halo.c" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/discH/src/pot_halo/pot_c_ext/alfabeta_halo.pxd" afterPath="$PROJECT_DIR$/discH/src/pot_halo/pot_c_ext/alfabeta_halo.pxd" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/discH/src/pot_halo/pot_c_ext/alfabeta_halo.pyx" afterPath="$PROJECT_DIR$/discH/src/pot_halo/pot_c_ext/alfabeta_halo.pyx" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/discH/src/pot_halo/pot_c_ext/plummer_halo.c" afterPath="$PROJECT_DIR$/discH/src/pot_halo/pot_c_ext/plummer_halo.c" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/discH/src/pot_halo/pot_c_ext/plummer_halo.pxd" afterPath="$PROJECT_DIR$/discH/src/pot_halo/pot_c_ext/plummer_halo.pxd" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/discH/src/pot_halo/pot_c_ext/plummer_halo.pyx" afterPath="$PROJECT_DIR$/discH/src/pot_halo/pot_c_ext/plummer_halo.pyx" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/discH/src/pot_halo/pot_halo.py" afterPath="$PROJECT_DIR$/discH/src/pot_halo/pot_halo.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/setup.py" afterPath="$PROJECT_DIR$/setup.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -17,7 +26,9 @@
   <component name="CoverageDataManager">
     <SUITE FILE_PATH="coverage/discH$fitlib.coverage" NAME="fitlib Coverage Results" MODIFIED="1503229545371" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/discH/src/discHeigth/c_ext" />
     <SUITE FILE_PATH="coverage/discH$test.coverage" NAME="test Coverage Results" MODIFIED="1503076640873" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test/test_class" />
+    <SUITE FILE_PATH="coverage/discH$einasto_halo_pyx.coverage" NAME="einasto_halo.pyx Coverage Results" MODIFIED="1505956548284" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/discH/src/pot_halo/pot_c_ext" />
     <SUITE FILE_PATH="coverage/discH$pot_disc.coverage" NAME="pot_disc Coverage Results" MODIFIED="1503068909913" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/discH/src/pot_disc" />
+    <SUITE FILE_PATH="coverage/discH$pot_halo.coverage" NAME="pot_halo Coverage Results" MODIFIED="1505960397254" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/discH/src/pot_halo" />
   </component>
   <component name="CreatePatchCommitExecutor">
     <option name="PATCH_PATH" value="" />
@@ -25,30 +36,38 @@
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="375">
-      <file leaf-file-name="general_halo.pyx" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/discH/src/pot_halo/pot_c_ext/general_halo.pyx">
+      <file leaf-file-name="alfabeta_halo.pyx" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/discH/src/pot_halo/pot_c_ext/alfabeta_halo.pyx">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="636">
-              <caret line="101" column="0" lean-forward="false" selection-start-line="101" selection-start-column="0" selection-end-line="101" selection-end-column="0" />
+            <state relative-caret-position="331">
+              <caret line="296" column="0" lean-forward="false" selection-start-line="296" selection-start-column="0" selection-end-line="296" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="iso.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/test/test_vcirc/iso.py">
+      <file leaf-file-name="dynamic_component.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/discH/dynamic_component.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="902">
-              <caret line="41" column="19" lean-forward="false" selection-start-line="41" selection-start-column="19" selection-end-line="41" selection-end-column="19" />
-              <folding>
-                <element signature="e#0#30#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="0">
+              <caret line="0" column="127" lean-forward="false" selection-start-line="0" selection-start-column="127" selection-end-line="0" selection-end-column="127" />
+              <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="isothermal_halo.c" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/discH/src/pot_halo/pot_c_ext/isothermal_halo.c">
+      <file leaf-file-name="einasto_halo.pyx" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/discH/src/pot_halo/pot_c_ext/einasto_halo.pyx">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="176">
+              <caret line="22" column="0" lean-forward="false" selection-start-line="22" selection-start-column="0" selection-end-line="25" selection-end-column="47" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="general_halo.c" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/discH/src/pot_halo/pot_c_ext/general_halo.c">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="0">
               <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
@@ -57,31 +76,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="isothermal_halo.pxd" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/discH/src/pot_halo/pot_c_ext/isothermal_halo.pxd">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="154">
-              <caret line="7" column="21" lean-forward="false" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="58" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="isothermal_halo.pyx" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/discH/src/pot_halo/pot_c_ext/isothermal_halo.pyx">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="44">
-              <caret line="2" column="77" lean-forward="true" selection-start-line="2" selection-start-column="65" selection-end-line="2" selection-end-column="77" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="nfw_halo.pxd" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/discH/src/pot_halo/pot_c_ext/nfw_halo.pxd">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="154">
-              <caret line="7" column="31" lean-forward="false" selection-start-line="7" selection-start-column="31" selection-end-line="7" selection-end-column="31" />
+            <state relative-caret-position="264">
+              <caret line="18" column="7" lean-forward="false" selection-start-line="18" selection-start-column="7" selection-end-line="18" selection-end-column="7" />
               <folding />
             </state>
           </provider>
@@ -90,7 +89,7 @@
       <file leaf-file-name="nfw_halo.pyx" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/discH/src/pot_halo/pot_c_ext/nfw_halo.pyx">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="756">
+            <state relative-caret-position="5852">
               <caret line="281" column="37" lean-forward="false" selection-start-line="281" selection-start-column="37" selection-end-line="281" selection-end-column="37" />
               <folding />
             </state>
@@ -100,28 +99,28 @@
       <file leaf-file-name="pot_halo.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/discH/src/pot_halo/pot_halo.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1276">
-              <caret line="111" column="11" lean-forward="false" selection-start-line="111" selection-start-column="11" selection-end-line="111" selection-end-column="11" />
+            <state relative-caret-position="243">
+              <caret line="703" column="16" lean-forward="false" selection-start-line="703" selection-start-column="16" selection-end-line="703" selection-end-column="16" />
               <folding>
                 <element signature="e#0#47#0" expanded="true" />
-                <element signature="e#1255#2298#0" expanded="false" />
-                <element signature="e#1255#1852#1" expanded="true" />
-                <element signature="e#2919#3290#1" expanded="true" />
-                <element signature="e#3431#3700#1" expanded="true" />
-                <element signature="e#3946#4118#1" expanded="true" />
-                <element signature="e#4265#4485#1" expanded="true" />
-                <element signature="e#6712#6884#1" expanded="true" />
-                <element signature="e#7057#7277#1" expanded="true" />
+                <element signature="e#470#4904#0" expanded="false" />
+                <element signature="e#1351#2394#0" expanded="false" />
+                <element signature="e#5037#7902#0" expanded="false" />
+                <element signature="e#11292#14246#0" expanded="false" />
+                <element signature="e#14290#14719#0" expanded="false" />
+                <element signature="e#14769#15219#0" expanded="false" />
+                <element signature="e#15252#18177#0" expanded="false" />
+                <element signature="e#18259#18532#1" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="setup.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="setup.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/setup.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="482">
-              <caret line="109" column="22" lean-forward="false" selection-start-line="109" selection-start-column="22" selection-end-line="109" selection-end-column="22" />
+            <state relative-caret-position="859">
+              <caret line="111" column="22" lean-forward="false" selection-start-line="111" selection-start-column="22" selection-end-line="111" selection-end-column="22" />
               <folding>
                 <element signature="e#0#37#0" expanded="true" />
               </folding>
@@ -130,10 +129,20 @@
         </entry>
       </file>
       <file leaf-file-name="test.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/test/test_flare/test.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="0">
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="test.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/test/test_h/test.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="396">
-              <caret line="18" column="0" lean-forward="false" selection-start-line="18" selection-start-column="0" selection-end-line="22" selection-end-column="43" />
+            <state relative-caret-position="242">
+              <caret line="31" column="6" lean-forward="false" selection-start-line="31" selection-start-column="6" selection-end-line="31" selection-end-column="6" />
               <folding>
                 <element signature="e#0#30#0" expanded="true" />
               </folding>
@@ -176,9 +185,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/discH/src/pot_disc/pot_c_ext/rdens_law.pxd" />
-        <option value="$PROJECT_DIR$/discH/src/pot_disc/pot_c_ext/rdens_law.pyx" />
-        <option value="$PROJECT_DIR$/discH/src/pot_disc/pot_c_ext/rflare_law.pyx" />
         <option value="$PROJECT_DIR$/test/rdens/plot.py" />
         <option value="$PROJECT_DIR$/discH/src/pot_disc/__init__.py" />
         <option value="$PROJECT_DIR$/discH/src/calcH/calcH.py" />
@@ -188,7 +194,6 @@
         <option value="$PROJECT_DIR$/test/test_class/test2.txt" />
         <option value="$PROJECT_DIR$/test/test_class/test.py" />
         <option value="$PROJECT_DIR$/discH/src/discHeigth/c_ext/utility.pyx" />
-        <option value="$PROJECT_DIR$/test/test_h/test.py" />
         <option value="$PROJECT_DIR$/test/test_discint/fitlib.py" />
         <option value="$PROJECT_DIR$/discH/src/discHeigth/c_ext/utility.py" />
         <option value="$PROJECT_DIR$/discH/src/discHeigth/c_ext/fitlib.py" />
@@ -198,18 +203,12 @@
         <option value="$PROJECT_DIR$/test/cython_gsl/test.pyx" />
         <option value="$PROJECT_DIR$/test/test_alfabeta/test.py" />
         <option value="$PROJECT_DIR$/test/cython_gsl/test_cy.py" />
-        <option value="$PROJECT_DIR$/discH/src/pot_halo/pot_c_ext/alfabeta_halo.pxd" />
-        <option value="$PROJECT_DIR$/discH/src/pot_halo/pot_c_ext/plummer_halo.pxd" />
         <option value="$PROJECT_DIR$/discH/src/potential.py" />
         <option value="$PROJECT_DIR$/discH/potential.py" />
-        <option value="$PROJECT_DIR$/discH/dynamic_component.py" />
         <option value="$PROJECT_DIR$/discH/src/discHeigth/discHeigth.py" />
         <option value="$PROJECT_DIR$/discH/src/pardo/Pardo.py" />
         <option value="$PROJECT_DIR$/discH/src/__init__.py" />
         <option value="$PROJECT_DIR$/discH/src/pot_disc/pot_c_ext/integrand_functions.pyx" />
-        <option value="$PROJECT_DIR$/discH/src/pot_halo/pot_c_ext/alfabeta_halo.pyx" />
-        <option value="$PROJECT_DIR$/discH/src/pot_halo/pot_c_ext/plummer_halo.pyx" />
-        <option value="$PROJECT_DIR$/discH/src/pot_halo/__init__.py" />
         <option value="$PROJECT_DIR$/test/test_discint/test2.py" />
         <option value="$PROJECT_DIR$/discH/__init__.py" />
         <option value="$PROJECT_DIR$/discH/dynamics.py" />
@@ -221,12 +220,22 @@
         <option value="$PROJECT_DIR$/discH/src/pot_halo/pot_c_ext/general_halo.pxd" />
         <option value="$PROJECT_DIR$/discH/src/pot_halo/pot_c_ext/isothermal_halo.pxd" />
         <option value="$PROJECT_DIR$/discH/src/pot_halo/pot_c_ext/isothermal_halo.pyx" />
-        <option value="$PROJECT_DIR$/discH/src/pot_halo/pot_halo.py" />
-        <option value="$PROJECT_DIR$/test/test_vcirc/iso.py" />
         <option value="$PROJECT_DIR$/discH/src/pot_halo/pot_c_ext/general_halo.pyx" />
         <option value="$PROJECT_DIR$/discH/src/pot_halo/pot_c_ext/nfw_halo.pxd" />
         <option value="$PROJECT_DIR$/discH/src/pot_halo/pot_c_ext/nfw_halo.pyx" />
+        <option value="$PROJECT_DIR$/discH/src/pot_halo/pot_c_ext/plummer_halo.pxd" />
+        <option value="$PROJECT_DIR$/discH/src/pot_halo/pot_c_ext/plummer_halo.pyx" />
+        <option value="$PROJECT_DIR$/discH/src/pot_halo/pot_c_ext/alfabeta_halo.pxd" />
+        <option value="$PROJECT_DIR$/discH/src/pot_halo/pot_c_ext/alfabeta_halo.pyx" />
+        <option value="$PROJECT_DIR$/test/test_vcirc/iso.py" />
+        <option value="$PROJECT_DIR$/discH/src/pot_halo/pot_c_ext/einasto_halo.pyx.py" />
+        <option value="$PROJECT_DIR$/discH/src/pot_halo/pot_c_ext/einasto_halo.pyx" />
+        <option value="$PROJECT_DIR$/discH/src/pot_halo/pot_c_ext/einasto_halo.pxd" />
+        <option value="$PROJECT_DIR$/discH/src/pot_halo/__init__.py" />
         <option value="$PROJECT_DIR$/setup.py" />
+        <option value="$PROJECT_DIR$/discH/dynamic_component.py" />
+        <option value="$PROJECT_DIR$/discH/src/pot_halo/pot_halo.py" />
+        <option value="$PROJECT_DIR$/test/test_h/test.py" />
       </list>
     </option>
   </component>
@@ -237,10 +246,10 @@
     <sorting>DEFINITION_ORDER</sorting>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="1996" />
-    <option name="y" value="267" />
-    <option name="width" value="2056" />
-    <option name="height" value="1140" />
+    <option name="x" value="-55" />
+    <option name="y" value="82" />
+    <option name="width" value="1353" />
+    <option name="height" value="773" />
   </component>
   <component name="ProjectView">
     <navigator currentView="ProjectPane" proportions="" version="1">
@@ -594,7 +603,7 @@
     <property name="js.eslint.eslintPackage" value="" />
     <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="add_unversioned_files" value="$PROJECT_DIR$/test/test_class/test.txt&#10;/Users/Giuliano/PycharmProjects/discH/test/cython_func_call/test.pyx" />
+    <property name="add_unversioned_files" value="$PROJECT_DIR$/test/test_class/test.txt&#10;/Users/Giuliano/PycharmProjects/discH/test/test_h/test.py&#10;/Users/Giuliano/PycharmProjects/discH/test/cython_func_call/test.pyx" />
   </component>
   <component name="PyConsoleOptionsProvider">
     <option name="myPythonConsoleState">
@@ -619,43 +628,7 @@
       <recent name="$PROJECT_DIR$/test/cython_func_call" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.fitlib">
-    <configuration default="false" name="integrand_functions.pyx" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/discH/src/pot_disc/pot_c_ext" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="discH" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/discH/src/pot_disc/pot_c_ext/integrand_functions.pyx" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <method />
-    </configuration>
-    <configuration default="false" name="calcH" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/discH/src/calcH" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="discH" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/discH/src/calcH/calcH.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <method />
-    </configuration>
+  <component name="RunManager" selected="Python.pot_halo">
     <configuration default="false" name="pot_disc" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -706,6 +679,42 @@
       <module name="discH" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/discH/src/discHeigth/c_ext/fitlib.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <method />
+    </configuration>
+    <configuration default="false" name="einasto_halo.pyx" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/discH/src/pot_halo/pot_c_ext" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="discH" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/discH/src/pot_halo/pot_c_ext/einasto_halo.pyx" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <method />
+    </configuration>
+    <configuration default="false" name="pot_halo" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/discH/src/pot_halo" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="discH" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/discH/src/pot_halo/pot_halo.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <method />
@@ -955,19 +964,19 @@
     </configuration>
     <list size="6">
       <item index="0" class="java.lang.String" itemvalue="Python.discHeigth" />
-      <item index="1" class="java.lang.String" itemvalue="Python.integrand_functions.pyx" />
-      <item index="2" class="java.lang.String" itemvalue="Python.calcH" />
-      <item index="3" class="java.lang.String" itemvalue="Python.pot_disc" />
-      <item index="4" class="java.lang.String" itemvalue="Python.test" />
-      <item index="5" class="java.lang.String" itemvalue="Python.fitlib" />
+      <item index="1" class="java.lang.String" itemvalue="Python.pot_disc" />
+      <item index="2" class="java.lang.String" itemvalue="Python.test" />
+      <item index="3" class="java.lang.String" itemvalue="Python.fitlib" />
+      <item index="4" class="java.lang.String" itemvalue="Python.einasto_halo.pyx" />
+      <item index="5" class="java.lang.String" itemvalue="Python.pot_halo" />
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Python.fitlib" />
-        <item index="1" class="java.lang.String" itemvalue="Python.test" />
-        <item index="2" class="java.lang.String" itemvalue="Python.pot_disc" />
-        <item index="3" class="java.lang.String" itemvalue="Python.calcH" />
-        <item index="4" class="java.lang.String" itemvalue="Python.integrand_functions.pyx" />
+        <item index="0" class="java.lang.String" itemvalue="Python.pot_halo" />
+        <item index="1" class="java.lang.String" itemvalue="Python.einasto_halo.pyx" />
+        <item index="2" class="java.lang.String" itemvalue="Python.fitlib" />
+        <item index="3" class="java.lang.String" itemvalue="Python.test" />
+        <item index="4" class="java.lang.String" itemvalue="Python.pot_disc" />
       </list>
     </recent_temporary>
   </component>
@@ -997,28 +1006,29 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="1996" y="267" width="2056" height="1140" extended-state="0" />
+    <frame x="-55" y="82" width="1353" height="773" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.16916168" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.27440432" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32967034" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.35499206" sideWeight="0.50269026" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3280507" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3296355" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.35974643" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Concurrent Activities Diagram" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.35499206" sideWeight="0.49730977" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39936608" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3296355" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Coverage" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="true" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3296355" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39936608" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1041,15 +1051,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/test/test_discint/oldcpotlib.pyx">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="93">
-          <caret line="1038" column="0" lean-forward="false" selection-start-line="1038" selection-start-column="0" selection-end-line="1039" selection-end-column="41" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/discH/src/discHeigth/c_ext/fitlib.py" />
-    <entry file="file://$PROJECT_DIR$/discH/src/discHeigth/c_ext/utility.py" />
     <entry file="file://$PROJECT_DIR$/test/cython_gsl/setup.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="260">
@@ -1097,39 +1098,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/discH/src/pot_halo/pot_c_ext/alfabeta_halo.pxd">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="40">
-          <caret line="2" column="89" lean-forward="false" selection-start-line="2" selection-start-column="89" selection-end-line="2" selection-end-column="89" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/discH/src/pot_halo/pot_c_ext/plummer_halo.pxd">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="6" column="0" lean-forward="false" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/discH/potential.py" />
-    <entry file="file://$PROJECT_DIR$/discH/dynamic_component.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="127" lean-forward="false" selection-start-line="0" selection-start-column="127" selection-end-line="0" selection-end-column="127" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/discH/src/pot_disc/pot_c_ext/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/discH/src/pot_disc/pot_c_ext/rflare_law.pyx">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="351">
-          <caret line="165" column="16" lean-forward="false" selection-start-line="165" selection-start-column="16" selection-end-line="165" selection-end-column="38" />
         </state>
       </provider>
     </entry>
@@ -1147,21 +1120,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/discH/src/pot_halo/pot_c_ext/alfabeta_halo.pyx">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="20">
-          <caret line="2" column="39" lean-forward="false" selection-start-line="2" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/discH/src/pot_disc/__init__.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/discH/src/pot_halo/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
@@ -1260,20 +1219,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/discH/src/pot_halo/pot_c_ext/general_halo.c">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test/test_flare/test.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/discH/src/pot_halo/pot_c_ext/general_halo.pxd">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="140">
@@ -1287,52 +1232,6 @@
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="e#0#12#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/discH/src/pot_halo/pot_c_ext/plummer_halo.pyx">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="66">
-          <caret line="3" column="0" lean-forward="false" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test/test_h/test.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="396">
-          <caret line="18" column="0" lean-forward="false" selection-start-line="18" selection-start-column="0" selection-end-line="22" selection-end-column="43" />
-          <folding>
-            <element signature="e#0#30#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/discH/src/pot_halo/pot_halo.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1276">
-          <caret line="111" column="11" lean-forward="false" selection-start-line="111" selection-start-column="11" selection-end-line="111" selection-end-column="11" />
-          <folding>
-            <element signature="e#0#47#0" expanded="true" />
-            <element signature="e#1255#2298#0" expanded="false" />
-            <element signature="e#1255#1852#1" expanded="true" />
-            <element signature="e#2919#3290#1" expanded="true" />
-            <element signature="e#3431#3700#1" expanded="true" />
-            <element signature="e#3946#4118#1" expanded="true" />
-            <element signature="e#4265#4485#1" expanded="true" />
-            <element signature="e#6712#6884#1" expanded="true" />
-            <element signature="e#7057#7277#1" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test/test_vcirc/iso.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="902">
-          <caret line="41" column="19" lean-forward="false" selection-start-line="41" selection-start-column="19" selection-end-line="41" selection-end-column="19" />
-          <folding>
-            <element signature="e#0#30#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1361,36 +1260,175 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/discH/src/pot_halo/pot_c_ext/isothermal_halo.pyx">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="44">
-          <caret line="2" column="77" lean-forward="true" selection-start-line="2" selection-start-column="65" selection-end-line="2" selection-end-column="77" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/discH/src/pot_halo/pot_c_ext/isothermal_halo.pxd">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="154">
-          <caret line="7" column="21" lean-forward="false" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="58" />
+          <caret line="7" column="16" lean-forward="true" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="58" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/discH/src/pot_halo/pot_c_ext/nfw_halo.pyx">
+    <entry file="file://$PROJECT_DIR$/test/test_vcirc/iso.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="756">
-          <caret line="281" column="37" lean-forward="false" selection-start-line="281" selection-start-column="37" selection-end-line="281" selection-end-column="37" />
+        <state relative-caret-position="200">
+          <caret line="135" column="6" lean-forward="false" selection-start-line="135" selection-start-column="6" selection-end-line="135" selection-end-column="6" />
+          <folding>
+            <element signature="e#0#30#0" expanded="false" />
+            <element signature="e#559#1156#1" expanded="false" />
+            <element signature="e#1158#1791#1" expanded="false" />
+            <element signature="e#1793#2075#1" expanded="false" />
+            <element signature="e#2077#2545#1" expanded="false" />
+            <element signature="e#2546#2805#1" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/discH/src/pot_halo/pot_c_ext/einasto_halo.pyx.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/discH/src/pot_halo/pot_c_ext/alfabeta_halo.pxd">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="11" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/discH/src/pot_halo/pot_c_ext/plummer_halo.pyx">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="158" column="0" lean-forward="false" selection-start-line="158" selection-start-column="0" selection-end-line="176" selection-end-column="64" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/discH/src/pot_halo/pot_c_ext/plummer_halo.pxd">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="6" selection-end-column="62" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/discH/src/pot_disc/pot_c_ext/rflare_law.pyx">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1314">
+          <caret line="165" column="16" lean-forward="false" selection-start-line="165" selection-start-column="16" selection-end-line="165" selection-end-column="38" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/discH/src/pot_halo/pot_c_ext/einasto_halo.pxd">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="198">
+          <caret line="9" column="0" lean-forward="false" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/discH/src/pot_halo/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="114" lean-forward="false" selection-start-line="0" selection-start-column="114" selection-end-line="0" selection-end-column="114" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/setup.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="482">
-          <caret line="109" column="22" lean-forward="false" selection-start-line="109" selection-start-column="22" selection-end-line="109" selection-end-column="22" />
+        <state relative-caret-position="859">
+          <caret line="111" column="22" lean-forward="false" selection-start-line="111" selection-start-column="22" selection-end-line="111" selection-end-column="22" />
           <folding>
             <element signature="e#0#37#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/discH/dynamic_component.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="127" lean-forward="false" selection-start-line="0" selection-start-column="127" selection-end-line="0" selection-end-column="127" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/discH/src/pot_halo/pot_c_ext/nfw_halo.pyx">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="5852">
+          <caret line="281" column="37" lean-forward="false" selection-start-line="281" selection-start-column="37" selection-end-line="281" selection-end-column="37" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/discH/src/pot_halo/pot_c_ext/isothermal_halo.pyx">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="264">
+          <caret line="18" column="7" lean-forward="false" selection-start-line="18" selection-start-column="7" selection-end-line="18" selection-end-column="7" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/test_flare/test.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/discH/src/pot_halo/pot_c_ext/general_halo.c">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/discH/src/pot_halo/pot_c_ext/alfabeta_halo.pyx">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="331">
+          <caret line="296" column="0" lean-forward="false" selection-start-line="296" selection-start-column="0" selection-end-line="296" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/discH/src/pot_halo/pot_c_ext/einasto_halo.pyx">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="176">
+          <caret line="22" column="0" lean-forward="false" selection-start-line="22" selection-start-column="0" selection-end-line="25" selection-end-column="47" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/discH/src/pot_halo/pot_halo.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="243">
+          <caret line="703" column="16" lean-forward="false" selection-start-line="703" selection-start-column="16" selection-end-line="703" selection-end-column="16" />
+          <folding>
+            <element signature="e#0#47#0" expanded="true" />
+            <element signature="e#470#4904#0" expanded="false" />
+            <element signature="e#1351#2394#0" expanded="false" />
+            <element signature="e#5037#7902#0" expanded="false" />
+            <element signature="e#11292#14246#0" expanded="false" />
+            <element signature="e#14290#14719#0" expanded="false" />
+            <element signature="e#14769#15219#0" expanded="false" />
+            <element signature="e#15252#18177#0" expanded="false" />
+            <element signature="e#18259#18532#1" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/test_h/test.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="242">
+          <caret line="31" column="6" lean-forward="false" selection-start-line="31" selection-start-column="6" selection-end-line="31" selection-end-column="6" />
+          <folding>
+            <element signature="e#0#30#0" expanded="true" />
           </folding>
         </state>
       </provider>

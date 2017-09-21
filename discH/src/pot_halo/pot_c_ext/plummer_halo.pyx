@@ -1,6 +1,6 @@
 #cython: language_level=3, boundscheck=False, cdivision=True, wraparound=False
 from libc.math cimport sqrt, log, asin, pow
-from .general_halo cimport m_calc, potential_core, integrand_core
+from .general_halo cimport m_calc, potential_core, integrand_core, vcirc_core
 from scipy.integrate import quad
 from scipy._lib._ccallback import LowLevelCallable
 import numpy as np
@@ -175,3 +175,155 @@ cpdef potential_plummer(R, Z, d0, rc, e, mcut, toll=1e-4, grid=False):
             return np.array(_potential_plummer_array( R=R, Z=Z, nlen=len(R), mcut=mcut, d0=d0, rc=rc, e=e, toll=toll))
         else:
             raise ValueError('R and Z have different dimension')
+
+
+#####################################################################
+#Vcirc
+cdef double vcirc_integrand_plummer(int n, double *data) nogil:
+    """
+    Integrand function for vcirc  on the plane (Eq. 2.132 in BT2)
+    :param m:
+    :param R:
+    :param rc:
+    :param e:
+    :return:
+    """
+
+
+    cdef:
+        double m = data[0]
+        double R = data[1]
+        double rc = data[2]
+        double e = data[3]
+        double core
+        double dens
+        double x=m/rc
+        double base
+    core=vcirc_core(m, R, e)
+    base=(1+x*x)
+    dens=pow(base,-2.5)
+
+    return core*dens
+
+
+cpdef  _vcirc_plummer_spherical(R, d0, rc):
+    """
+    Circular velocity for a spherical halo (d=d0/(1+(r/rc)^2))
+    :param R: radii array (kpc)
+    :param d0: Central density (Msol/kpc^3)
+    :param rc: Core radius (kpc)
+    :return: an array with the vcirc in km/s
+    """
+    cdef:
+        double G=4.302113488372941e-06 #kpc km2/(msol s^2)
+
+    x=R/rc
+    x2=x*x
+    vinf2=4*np.pi*G*d0*rc*rc/3.
+    den=(1+x2)**1.5
+    vcirc=np.sqrt(vinf2*(x2/den))
+
+    if isinstance(R, float) or isinstance(R, int):
+
+        ret=vcirc
+
+    else:
+
+        ret=np.zeros((len(R),2))
+
+        ret[:,0]=R
+        ret[:,1]=vcirc
+
+    return ret
+
+cdef double _vcirc_plummer(double R, double d0, double rc, double e, double toll):
+    """
+    Calculate Vcirc on a single point on the plane
+    :param R: radii array (kpc)
+    :param d0: Central density (Msol/kpc^3)
+    :param rc: Core radius (kpc)
+    :param e: ellipticity
+    :return:
+    """
+
+    cdef:
+        double G=4.302113488372941e-06 #G constant in  kpc km2/(msol s^2)
+        double cost=4*PI*G
+        double norm
+        double intvcirc
+        double result
+
+    #Integ
+    import discH.src.pot_halo.pot_c_ext.plummer_halo as mod
+    fintegrand=LowLevelCallable.from_cython(mod,'vcirc_integrand_plummer')
+
+    intvcirc=quad(fintegrand,0.,R,args=(R,rc,e),epsabs=toll,epsrel=toll)[0]
+    norm=cost*sqrt(1-e*e)*d0
+
+    result=sqrt(norm*intvcirc)
+
+    return result
+
+
+cdef double[:,:] _vcirc_plummer_array(double[:] R, int nlen, double d0, double rc, double e, double toll):
+    """
+    Calculate Vcirc on a single point on the plane
+    :param R: radii array (kpc)
+    :param d0: Central density (Msol/kpc^3)
+    :param rc: Core radius (kpc)
+    :param e: ellipticity
+    :return:
+    """
+
+    cdef:
+        double G=4.302113488372941e-06 #G constant in  kpc km2/(msol s^2)
+        double cost=4*PI*G*(1-e*e)*d0
+        double intvcirc
+        int i
+        double[:,:] ret=np.empty((nlen,2), dtype=np.dtype("d"))
+
+
+
+
+    #Integ
+    import discH.src.pot_halo.pot_c_ext.plummer_halo as mod
+    fintegrand=LowLevelCallable.from_cython(mod,'vcirc_integrand_plummer')
+
+    for  i in range(nlen):
+
+        ret[i,0]=R[i]
+        intvcirc=quad(fintegrand,0.,R[i],args=(R[i],rc,e),epsabs=toll,epsrel=toll)[0]
+        ret[i,1]=sqrt(cost*intvcirc)
+
+    return ret
+
+
+cpdef vcirc_plummer(R, d0, rc, e, toll=1e-4):
+    """Calculate the Vcirc on the plane of an isothermal halo.
+
+    :param R: Cylindrical radius (memview object)
+    :param d0: Central density at (R,Z)=(0,0) [Msol/kpc^3]
+    :param rc: Core radius [Kpc]
+    :param e: ellipticity
+    :param e: ellipticity
+    :param toll: Tollerance for nquad
+    :return: 2-col array:
+        0-R
+        1-Vcirc(R)
+    """
+
+    if e==0:
+        ret= _vcirc_plummer_spherical(R, d0, rc)
+    else:
+
+        if isinstance(R, float) or isinstance(R, int):
+
+            if R==0: ret=0
+            else: ret= _vcirc_plummer(R, d0, rc,  e,  toll)
+
+        else:
+
+            ret=_vcirc_plummer_array(R, len(R), d0, rc, e, toll)
+            ret[:,1]=np.where(R==0, 0, ret[:,1])
+
+    return ret

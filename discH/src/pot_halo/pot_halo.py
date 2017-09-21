@@ -1,8 +1,9 @@
 from __future__ import division, print_function
 from .pot_c_ext.isothermal_halo import potential_iso,  vcirc_iso
-from .pot_c_ext.nfw_halo import potential_nfw
-from .pot_c_ext.alfabeta_halo import potential_alfabeta
-from .pot_c_ext.plummer_halo import potential_plummer
+from .pot_c_ext.nfw_halo import potential_nfw, vcirc_nfw
+from .pot_c_ext.alfabeta_halo import potential_alfabeta, vcirc_alfabeta
+from .pot_c_ext.plummer_halo import potential_plummer, vcirc_plummer
+from .pot_c_ext.einasto_halo import potential_einasto
 import multiprocessing as mp
 from ..pardo.Pardo import ParDo
 import numpy as np
@@ -147,6 +148,7 @@ class halo(object):
 
         return s
 
+#TODO: la vcirc dell alone isotermo è analitica per ogni e, implementare la formula nella mia tesi
 class isothermal_halo(halo):
 
     def __init__(self,d0,rc,e=0,mcut=100):
@@ -258,6 +260,30 @@ class NFW_halo(halo):
         super(NFW_halo,self).__init__(d0=d0,rc=rs,e=e,mcut=mcut)
         self.name='NFW halo'
 
+    @classmethod
+    def cosmo(cls, c, V200, H=67, e=0, mcut=100):
+        """
+
+        :param c:
+        :param V200:  km/s
+        :param H:  km/s/Mpc
+        :return:
+        """
+
+        num=14.93*(V200/100.)
+        den=(c/10.)*(H/67.)
+        rs=num/den
+
+        rho_crit=8340.*(H/67.)*(H/67.)
+        lc=np.log(1+c)
+        denc=c/(1+c)
+        delta_c=(c*c*c) / (lc - denc)
+        d0=rho_crit*delta_c
+
+
+        return cls(d0=d0, rs=rs, e=e, mcut=mcut)
+
+
     def _potential_serial(self, R, Z, grid=False, toll=1e-4, mcut=None):
         """Calculate the potential in R and Z using a serial code
 
@@ -303,6 +329,34 @@ class NFW_halo(halo):
 
         return htab
 
+    def _vcirc_serial(self, R, toll=1e-4):
+        """Calculate the Vcirc in R using a serial code
+        :param R: Cylindrical radius [kpc]
+        :param toll: tollerance for quad integration
+        :return:
+        """
+        self.set_toll(toll)
+
+        return np.array(vcirc_nfw(R, self.d0, self.rc, self.e, toll=self.toll))
+
+    def _vcirc_parallel(self, R, toll=1e-4, nproc=1):
+        """Calculate the Vcirc in R using a parallelized code
+        :param R: Cylindrical radius [kpc]
+        :param toll: tollerance for quad integration
+        :param nproc: Number of processes
+        :return:
+        """
+
+        self.set_toll(toll)
+
+        pardo=ParDo(nproc=nproc)
+        pardo.set_func(vcirc_nfw)
+
+        htab=pardo.run_grid(R,args=(self.d0, self.rc, self.e, self.toll))
+
+        return htab
+
+
     def __str__(self):
 
         s=''
@@ -313,7 +367,6 @@ class NFW_halo(halo):
         s+='mcut: %.3f \n'%self.mcut
 
         return s
-
 
 class alfabeta_halo(halo):
 
@@ -369,6 +422,33 @@ class alfabeta_halo(halo):
 
             htab = pardo.run(R,Z, args=(self.d0, self.alfa, self.beta, self.rc, self.e, mcut, self.toll, grid))
 
+
+        return htab
+
+    def _vcirc_serial(self, R, toll=1e-4):
+        """Calculate the Vcirc in R using a serial code
+        :param R: Cylindrical radius [kpc]
+        :param toll: tollerance for quad integration
+        :return:
+        """
+        self.set_toll(toll)
+
+        return np.array(vcirc_alfabeta(R, self.d0, self.rc, self.alfa, self.beta, self.e, toll=self.toll))
+
+    def _vcirc_parallel(self, R, toll=1e-4, nproc=1):
+        """Calculate the Vcirc in R using a parallelized code
+        :param R: Cylindrical radius [kpc]
+        :param toll: tollerance for quad integration
+        :param nproc: Number of processes
+        :return:
+        """
+
+        self.set_toll(toll)
+
+        pardo=ParDo(nproc=nproc)
+        pardo.set_func(vcirc_alfabeta)
+
+        htab=pardo.run_grid(R,args=(self.d0, self.rc, self.alfa, self.beta, self.e, self.toll))
 
         return htab
 
@@ -483,6 +563,32 @@ class plummer_halo(halo):
 
         return htab
 
+    def _vcirc_serial(self, R, toll=1e-4):
+        """Calculate the Vcirc in R using a serial code
+        :param R: Cylindrical radius [kpc]
+        :param toll: tollerance for quad integration
+        :return:
+        """
+        self.set_toll(toll)
+
+        return np.array(vcirc_plummer(R, self.d0, self.rc, self.e, toll=self.toll))
+
+    def _vcirc_parallel(self, R, toll=1e-4, nproc=1):
+        """Calculate the Vcirc in R using a parallelized code
+        :param R: Cylindrical radius [kpc]
+        :param toll: tollerance for quad integration
+        :param nproc: Number of processes
+        :return:
+        """
+
+        self.set_toll(toll)
+
+        pardo=ParDo(nproc=nproc)
+        pardo.set_func(vcirc_plummer)
+
+        htab=pardo.run_grid(R,args=(self.d0, self.rc, self.e, self.toll))
+
+        return htab
 
     def __str__(self):
 
@@ -491,6 +597,107 @@ class plummer_halo(halo):
         s+='Mass: %.2e Msun \n'%self.mass
         s+='d0: %.2e Msun/kpc3 \n'%self.d0
         s+='rc: %.2f\n'%self.rc
+        s+='e: %.3f \n'%self.e
+        s+='mcut: %.3f \n'%self.mcut
+
+        return s
+
+class einasto_halo(halo):
+
+    def __init__(self,d0,rs,n,e=0,mcut=100):
+        """einasto halo d=d0*exp(-dn*(r/rs)^(1/n))
+
+        :param d0:  Central density in Msun/kpc^3
+        :param rs:  Scale radius in kpc
+        :param n:
+        :param e:  eccentricity (sqrt(1-b^2/a^2))
+        :param mcut: elliptical radius where dens(m>mcut)=0
+        """
+
+        self.rs=rs
+        super(einasto_halo,self).__init__(d0=d0,rc=rs,e=e,mcut=mcut)
+        dnn=self.dn(n)
+        self.de=self.d0/np.exp(dnn)
+        self.n=n
+        self.name='Einasto halo'
+
+    @classmethod
+    def de(cls,de,rs,n,e=0,mcut=100):
+
+        dnn=cls.dn(n)
+        d0=de*np.exp(dnn)
+
+        return cls(d0=d0, rs=rs, n=n, e=e, mcut=mcut)
+
+
+
+    def _potential_serial(self, R, Z, grid=False, toll=1e-4, mcut=None):
+        """Calculate the potential in R and Z using a serial code
+
+        :param R: Cylindrical radius [kpc]
+        :param Z: Cylindrical height [kpc]
+        :param grid:  if True calculate the potential in a 2D grid in R and Z
+        :param toll: tollerance for quad integration
+        :param mcut: elliptical radius where dens(m>mcut)=0
+        :return:
+        """
+
+
+        self.set_toll(toll)
+
+
+        return  potential_einasto(R, Z, d0=self.d0, rs=self.rc, n=self.n, e=self.e, mcut=mcut, toll=self.toll, grid=grid)
+
+    def _potential_parallel(self, R, Z, grid=False, toll=1e-4, mcut=None, nproc=2):
+        """Calculate the potential in R and Z using a parallelized code.
+
+        :param R: Cylindrical radius [kpc]
+        :param Z: Cylindrical height [kpc]
+        :param grid:  if True calculate the potential in a 2D grid in R and Z
+        :param toll: tollerance for quad integration
+        :param mcut: elliptical radius where dens(m>mcut)=0
+        :return:
+        """
+
+        self.set_toll(toll)
+
+
+        pardo=ParDo(nproc=nproc)
+        pardo.set_func(potential_einasto)
+
+        if len(R)!=len(Z) or grid==True:
+
+            htab=pardo.run_grid(R,args=(Z,self.d0,self.rc, self.n, self.e, mcut,self.toll,grid))
+
+        else:
+
+            htab = pardo.run(R,Z, args=(self.d0, self.rc, self.n, self.e, mcut, self.toll, grid))
+        cpdef
+
+        return htab
+
+    @staticmethod
+    def dn(n):
+
+        n2=n*n
+        n3=n2*n
+        n4=n3*n
+        a1 = -1. / 3.
+        a2 = 8. / (1215. * n)
+        a3 = 184. / (229635. * n2)
+        a4 = 1048 / (31000725. * n3)
+        a5 = -17557576 / (1242974068875. * n4)
+
+        return a0+a1+a2+a3+a4+a5
+
+    def __str__(self):
+
+        s=''
+        s+='Model: %s\n'%self.name
+        s+='d0: %.2e Msun/kpc3 \n'%self.d0
+        s+='de: %.2e Msun/kpc3 \n'%self.de
+        s+='rs: %.2f\n'%self.rc
+        s+='n: %.2f\n'%self.n
         s+='e: %.3f \n'%self.e
         s+='mcut: %.3f \n'%self.mcut
 

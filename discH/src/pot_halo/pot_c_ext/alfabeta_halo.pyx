@@ -1,6 +1,6 @@
 #cython: language_level=3, boundscheck=False, cdivision=True, wraparound=False
 from libc.math cimport sqrt, log, asin, pow
-from .general_halo cimport m_calc, potential_core, integrand_core
+from .general_halo cimport m_calc, potential_core, integrand_core, vcirc_core
 from scipy.integrate import quad
 from scipy._lib._ccallback import LowLevelCallable
 from scipy.special.cython_special cimport hyp2f1
@@ -263,3 +263,126 @@ cpdef potential_alfabeta(R, Z, d0, alfa, beta, rc, e, mcut, toll=1e-4, grid=Fals
             return np.array(_potential_alfabeta_array( R=R, Z=Z, nlen=len(R), mcut=mcut, d0=d0, alfa=alfa, beta=beta, rc=rc, e=e, toll=toll))
         else:
             raise ValueError('R and Z have different dimension')
+
+#####################################################################
+#Vcirc
+cdef double vcirc_integrand_alfabeta(int n, double *data) nogil:
+    """
+    Integrand function for vcirc  on the plane (Eq. 2.132 in BT2)
+    :param m:
+    :param R:
+    :param rc:
+    :param e:
+    :return:
+    """
+
+
+    cdef:
+        double m      = data[0]
+        double R      = data[1]
+        double rc     = data[2]
+        double alpha  = data[3]
+        double beta   = data[4]
+        double e      = data[5]
+        double ainn   = -alpha
+        double aout   = alpha-beta
+        double core
+        double dens
+        double x=m/rc
+        double base
+
+    core=vcirc_core(m, R, e)
+
+    dens=pow(x, ainn) * pow(1+x, aout)
+
+    return core*dens
+
+
+
+cdef double _vcirc_alfabeta(double R, double d0, double rc, double alpha, double beta, double e, double toll):
+    """
+    Calculate Vcirc on a single point on the plane
+    :param R: radii array (kpc)
+    :param d0: Central density (Msol/kpc^3)
+    :param rc: Core radius (kpc)
+    :param e: ellipticity
+    :return:
+    """
+
+    cdef:
+        double G=4.302113488372941e-06 #G constant in  kpc km2/(msol s^2)
+        double cost=4*PI*G
+        double norm
+        double intvcirc
+        double result
+
+    #Integ
+    import discH.src.pot_halo.pot_c_ext.alfabeta_halo as mod
+    fintegrand=LowLevelCallable.from_cython(mod,'vcirc_integrand_afabeta')
+
+    intvcirc=quad(fintegrand,0.,R,args=(R,rc,alpha,beta,e),epsabs=toll,epsrel=toll)[0]
+    norm=cost*sqrt(1-e*e)*d0
+
+    result=sqrt(norm*intvcirc)
+
+    return result
+
+
+cdef double[:,:] _vcirc_alfabeta_array(double[:] R, int nlen, double d0, double rc, double alpha, double beta, double e, double toll):
+    """
+    Calculate Vcirc on a single point on the plane
+    :param R: radii array (kpc)
+    :param d0: Central density (Msol/kpc^3)
+    :param rc: Core radius (kpc)
+    :param e: ellipticity
+    :return:
+    """
+
+    cdef:
+        double G=4.302113488372941e-06 #G constant in  kpc km2/(msol s^2)
+        double cost=4*PI*G*(1-e*e)*d0
+        double intvcirc
+        int i
+        double[:,:] ret=np.empty((nlen,2), dtype=np.dtype("d"))
+
+
+
+
+    #Integ
+    import discH.src.pot_halo.pot_c_ext.alfabeta_halo as mod
+    fintegrand=LowLevelCallable.from_cython(mod,'vcirc_integrand_alfabeta')
+
+    for  i in range(nlen):
+
+        ret[i,0]=R[i]
+        intvcirc=quad(fintegrand,0.,R[i],args=(R[i],rc,alpha,beta,e),epsabs=toll,epsrel=toll)[0]
+        ret[i,1]=sqrt(cost*intvcirc)
+
+    return ret
+
+
+cpdef vcirc_alfabeta(R, d0, rc, alfa, beta, e, toll=1e-4):
+    """Calculate the Vcirc on the plane of an isothermal halo.
+
+    :param R: Cylindrical radius (memview object)
+    :param d0: Central density at (R,Z)=(0,0) [Msol/kpc^3]
+    :param rc: Core radius [Kpc]
+    :param e: ellipticity
+    :param e: ellipticity
+    :param toll: Tollerance for nquad
+    :return: 2-col array:
+        0-R
+        1-Vcirc(R)
+    """
+
+    if isinstance(R, float) or isinstance(R, int):
+
+        if R==0: ret=0
+        else: ret= _vcirc_alfabeta(R, d0, rc, alfa, beta,  e,  toll)
+
+    else:
+
+        ret=_vcirc_alfabeta_array(R, len(R), d0, rc, alfa, beta, e, toll)
+        ret[:,1]=np.where(R==0, 0, ret[:,1])
+
+    return ret

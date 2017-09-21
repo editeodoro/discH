@@ -1,1 +1,1 @@
-from .pot_halo import NFW_halo, isothermal_halo, alfabeta_halo, hernquist_halo, deVacouler_like_halo
+from .pot_halo import NFW_halo, isothermal_halo, alfabeta_halo, hernquist_halo, deVacouler_like_halo, einasto_halo
