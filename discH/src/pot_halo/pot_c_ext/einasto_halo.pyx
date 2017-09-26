@@ -219,3 +219,121 @@ cpdef potential_einasto(R, Z, d0, rs, n, e, mcut, toll=1e-4, grid=False):
             return np.array(_potential_einasto_array( R=R, Z=Z, nlen=len(R), mcut=mcut, d0=d0, rs=rs, n=n, e=e,toll=toll))
         else:
             raise ValueError('R and Z have different dimension')
+
+#####################################################################
+#Vcirc
+cdef double vcirc_integrand_einasto(int n, double *data) nogil:
+    """
+    Integrand function for vcirc  on the plane (Eq. 2.132 in BT2)
+    """
+
+
+    cdef:
+        double m      = data[0]
+        double R      = data[1]
+        double rs     = data[2]
+        double nn      = data[3]
+        double e      = data[4]
+        double x      = m/rs
+        double dn     = dn_func(nn)
+        double ee     = dn*pow(x,1/nn)
+        double dens
+        double core
+
+
+    core = vcirc_core(m, R, e)
+    dens = exp(-ee)
+
+    return core*dens
+
+
+
+cdef double _vcirc_einasto(double R, double d0, double rs, double n, double e, double toll):
+    """
+    Calculate Vcirc on a single point on the plane
+    :param R: radii array (kpc)
+    :param d0: Central density (Msol/kpc^3)
+    :param rs: scale radius, radius where the mass is the half of the total (kpc)
+    :param n:
+    :param e: ellipticity
+    :return:
+    """
+
+    cdef:
+        double G=4.302113488372941e-06 #G constant in  kpc km2/(msol s^2)
+        double cost=4*PI*G
+        double norm
+        double intvcirc
+        double result
+
+    #Integ
+    import discH.src.pot_halo.pot_c_ext.einasto_halo as mod
+    fintegrand=LowLevelCallable.from_cython(mod,'vcirc_integrand_einasto')
+
+    intvcirc=quad(fintegrand,0.,R,args=(R,rs,n,e),epsabs=toll,epsrel=toll)[0]
+    norm=cost*sqrt(1-e*e)*d0
+
+    result=sqrt(norm*intvcirc)
+
+    return result
+
+
+cdef double[:,:] _vcirc_alfabeta_array(double[:] R, int nlen, double d0, double rs, double n, double e, double toll):
+    """
+    Calculate Vcirc on a single point on the plane
+    :param R: radii array (kpc)
+    :param d0: Central density (Msol/kpc^3)
+    :param rs: scale radius, radius where the mass is the half of the total (kpc)
+    :param n:
+    :param e: ellipticity
+    :return:
+    """
+
+    cdef:
+        double G=4.302113488372941e-06 #G constant in  kpc km2/(msol s^2)
+        double cost=4*PI*G*(1-e*e)*d0
+        double intvcirc
+        int i
+        double[:,:] ret=np.empty((nlen,2), dtype=np.dtype("d"))
+
+
+
+
+    #Integ
+    import discH.src.pot_halo.pot_c_ext.einasto_halo as mod
+    fintegrand=LowLevelCallable.from_cython(mod,'vcirc_integrand_einasto')
+
+    for  i in range(nlen):
+
+        ret[i,0]=R[i]
+        intvcirc=quad(fintegrand,0.,R[i],args=(R[i],rs,n,e),epsabs=toll,epsrel=toll)[0]
+        ret[i,1]=sqrt(cost*intvcirc)
+
+    return ret
+
+
+cpdef vcirc_einasto(R, d0, rs, n, e, toll=1e-4):
+    """Calculate the Vcirc on the plane of an isothermal halo.
+
+    :param R: Cylindrical radius (memview object)
+    :param d0: Central density at (R,Z)=(0,0) [Msol/kpc^3]
+    :param rs: scale radius, radius where the mass is the half of the total (kpc)
+    :param n:
+    :param e: ellipticity
+    :param toll: Tollerance for nquad
+    :return: 2-col array:
+        0-R
+        1-Vcirc(R)
+    """
+
+    if isinstance(R, float) or isinstance(R, int):
+
+        if R==0: ret=0
+        else: ret= _vcirc_einasto(R, d0, rs, n,  e,  toll)
+
+    else:
+
+        ret=_vcirc_alfabeta_array(R, len(R), d0, rs, n, e, toll)
+        ret[:,1]=np.where(R==0, 0, ret[:,1])
+
+    return ret

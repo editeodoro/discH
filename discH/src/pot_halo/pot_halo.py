@@ -3,7 +3,7 @@ from .pot_c_ext.isothermal_halo import potential_iso,  vcirc_iso
 from .pot_c_ext.nfw_halo import potential_nfw, vcirc_nfw
 from .pot_c_ext.alfabeta_halo import potential_alfabeta, vcirc_alfabeta
 from .pot_c_ext.plummer_halo import potential_plummer, vcirc_plummer
-from .pot_c_ext.einasto_halo import potential_einasto
+from .pot_c_ext.einasto_halo import potential_einasto, vcirc_einasto
 import multiprocessing as mp
 from ..pardo.Pardo import ParDo
 import numpy as np
@@ -690,6 +690,34 @@ class einasto_halo(halo):
         a5 = -17557576 / (1242974068875. * n4)
 
         return a0+a1+a2+a3+a4+a5
+
+    def _vcirc_serial(self, R, toll=1e-4):
+        """Calculate the Vcirc in R using a serial code
+        :param R: Cylindrical radius [kpc]
+        :param toll: tollerance for quad integration
+        :return:
+        """
+        self.set_toll(toll)
+
+        return np.array(vcirc_einasto(R, self.d0, self.rs, self.n, self.e,self.toll))
+
+    def _vcirc_parallel(self, R, toll=1e-4, nproc=1):
+        """Calculate the Vcirc in R using a parallelized code
+        :param R: Cylindrical radius [kpc]
+        :param toll: tollerance for quad integration
+        :param nproc: Number of processes
+        :return:
+        """
+
+        self.set_toll(toll)
+
+        pardo=ParDo(nproc=nproc)
+        pardo.set_func(vcirc_alfabeta)
+
+        htab=pardo.run_grid(R,args=(self.d0, self.rs, self.n, self.e,self.toll))
+
+        return htab
+
 
     def __str__(self):
 

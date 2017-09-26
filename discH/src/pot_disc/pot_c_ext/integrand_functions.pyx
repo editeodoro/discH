@@ -9,12 +9,12 @@ cimport numpy as np
 import numpy as np
 import ctypes
 cdef double PI=3.14159265358979323846
+from .model_option import checkrd_dict, checkfl_dict
 
 #checkrd: 1-poly_exponential
 #checkfl: 0-constat, 1-poly
 
-checkrd_dict = {'epoly':1., 'fratlaw':2., 'gau':3.}
-checkfl_dict = {'constant':0., 'poly':1., 'asinh':2., 'tanh':3.}
+
 
 ######
 #ZEXP
@@ -219,7 +219,7 @@ cdef double integrand_zgau(int n, double *data) nogil:
 ##########
 
 ######
-#ZEXP
+#Z
 cdef double zsech2(double u, double l, double checkrd, double checkfl, double d0, double d1, double d2, double d3, double d4, double d5, double d6, double d7, double d8, double d9, double f0, double f1, double f2, double f3, double f4, double f5, double f6, double f7, double f8, double f9) nogil:
     """Vertical law: Sech(-l/zd)^2
     l and zd need to have the same physical units
@@ -877,3 +877,6 @@ cpdef potential_disc_thin(R, Z, sigma0, rcoeff, rlaw='epoly', rcut=None, toll=1e
             return np.array(_potential_disc_thin_array(R=R,Z=Z,nlen=nlen,sigma0=sigma0, checkrd=checkrd, rparam=rparam, toll=toll,rcut=rcut))
         else:
             raise ValueError('R and Z have different dimension')
+
+
+

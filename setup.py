@@ -93,7 +93,11 @@ rd_ext=Extension('discH/src/pot_disc/pot_c_ext/rdens_law',sources=rd)
 fd=['discH/src/pot_disc/pot_c_ext/rflare_law.pyx']
 fd_ext=Extension('discH/src/pot_disc/pot_c_ext/rflare_law',sources=fd)
 
+zd=['discH/src/pot_disc/pot_c_ext/zdens_law.pyx']
+zd_ext=Extension('discH/src/pot_disc/pot_c_ext/zdens_law',sources=zd)
 
+vcirc=['discH/src/pot_disc/pot_c_ext/integrand_vcirc.pyx']
+vcirc_ext=Extension('discH/src/pot_disc/pot_c_ext/integrand_vcirc', sources=vcirc)
 
 #ext_modules=cythonize([cy_ext,gh_ext,ih_ext,infw_ext,gd_ext,rd_ext,fd_ext])
 
@@ -105,11 +109,11 @@ fd_ext=Extension('discH/src/pot_disc/pot_c_ext/rflare_law',sources=fd)
                      #)
 
 
-ext_modules=cythonize([gh_ext,ih_ext,infw_ext,gd_ext,rd_ext,fd_ext,iab_ext,ph_ext,eh_ext])
+ext_modules=cythonize([gh_ext,ih_ext,infw_ext,gd_ext,rd_ext,fd_ext,iab_ext,ph_ext,eh_ext,zd_ext,vcirc_ext])
 
 setup(
 		name='discH',
-		version='2.5.0.dev0',
+		version='2.6.6.dev0',
 		author='Giuliano Iorio',
 		author_email='',
 		url='',

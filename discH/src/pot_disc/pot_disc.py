@@ -1,5 +1,6 @@
 from __future__ import division, print_function
 from .pot_c_ext.integrand_functions import potential_disc, potential_disc_thin
+from .pot_c_ext.integrand_vcirc import vcirc_disc
 import multiprocessing as mp
 from ..pardo.Pardo import ParDo
 import  numpy as np
@@ -281,6 +282,57 @@ class disc(object):
 
             htab = pardo.run(R, Z, args=(self.sigma0,self.rparam,self.rlaw, Rcut, toll, grid))
 
+
+        return htab
+
+
+    def vcirc(self, R, toll=1e-4,Rcut=None, zcut=None, nproc=1):
+        """
+
+        :param R:
+        :param toll:
+        :param Rcut:
+        :param zcut:
+        :param nproc:
+        :return:
+        """
+        if Rcut is None:
+            Rcut=self.Rcut
+        else:
+            self.Rcut=Rcut
+
+        if zcut is None:
+            zcut=self.zcut
+        else:
+            self.zcut=zcut
+
+        if nproc==1:
+            return self._vcirc_serial(R=R,toll=toll,Rcut=Rcut,zcut=zcut)
+        else:
+            return self._vcirc_parallel(R=R, toll=toll, Rcut=Rcut, zcut=zcut, nproc=nproc)
+
+
+    def _vcirc_serial(self, R, toll=1e-4, Rcut=None, zcut=None):
+
+        if Rcut is not None: Rcut=Rcut
+        elif (isinstance(R,float) or isinstance(R, int)): Rcut=3*R
+        else: Rcut=3*np.max(R)
+
+        if zcut is not None: zcut=zcut
+        elif (isinstance(R,float) or isinstance(R, int)): zcut=10*R
+        else: zcut=10*np.max(R)
+
+
+        return vcirc_disc(R=R, sigma0=self.sigma0, rcoeff=self.rparam, fcoeff=self.fparam, zlaw=self.zlaw, rlaw=self.rlaw, flaw=self.flaw, rcut=Rcut, zcut=zcut, toll=toll)
+
+
+    def _vcirc_parallel(self, R, toll=1e-4, Rcut=None, zcut=None, nproc=2, **kwargs):
+
+
+        pardo=ParDo(nproc=nproc)
+        pardo.set_func(vcirc_disc)
+
+        htab = pardo.run_grid(R, args=(self.sigma0, self.rparam, self.fparam, self.zlaw, self.rlaw, self.flaw, Rcut, zcut, toll))
 
         return htab
 
