@@ -1,11 +1,15 @@
 from __future__ import division, print_function
 from .pot_c_ext.integrand_functions import potential_disc, potential_disc_thin
-from .pot_c_ext.integrand_vcirc import vcirc_disc
+from .pot_c_ext.integrand_vcirc import vcirc_disc, vcirc_disc_thin
+from .pot_c_ext.rflare_law import flare as flare_func
+from .pot_c_ext.rdens_law import rdens as rdens_func
+from .pot_c_ext.zdens_law import hwhm_fact
 import multiprocessing as mp
 from ..pardo.Pardo import ParDo
 import  numpy as np
 from scipy.optimize import curve_fit
 import emcee
+from .pot_c_ext.model_option import checkfl_dict, checkrd_dict
 
 def _fit_utility(f,rfit_array,p0):
 
@@ -137,12 +141,17 @@ class disc(object):
         else: self.fparam[:]=fparam
 
         if zlaw=='dirac':
-            self._pot_serial = self._potential_serial_thin
-            self._pot_parallel = self._potential_parallel_thin
+            self._pot_serial    =   self._potential_serial_thin
+            self._pot_parallel  =   self._potential_parallel_thin
+            self._vc_serial     =   self._vcirc_serial_thin
+            self._vc_parallel   =   self._vcirc_parallel_thin
+            self.flare         =    self._flare_thin
         else:
-            self._pot_serial = self._potential_serial
-            self._pot_parallel =  self._potential_parallel
-
+            self._pot_serial    =   self._potential_serial
+            self._pot_parallel  =   self._potential_parallel
+            self._vc_serial     =   self._vcirc_serial
+            self._vc_parallel   =   self._vcirc_parallel
+            self.flare          =   self._flare
 
 
     def potential(self,R,Z,grid=False,toll=1e-4,Rcut=None, zcut=None, nproc=1):
@@ -307,12 +316,12 @@ class disc(object):
             self.zcut=zcut
 
         if nproc==1:
-            return self._vcirc_serial(R=R,toll=toll,Rcut=Rcut,zcut=zcut)
+            return self._vc_serial(R=R,toll=toll,Rcut=Rcut,zcut=zcut)
         else:
-            return self._vcirc_parallel(R=R, toll=toll, Rcut=Rcut, zcut=zcut, nproc=nproc)
+            return self._vc_parallel(R=R, toll=toll, Rcut=Rcut, zcut=zcut, nproc=nproc)
 
 
-    def _vcirc_serial(self, R, toll=1e-4, Rcut=None, zcut=None):
+    def _vcirc_serial(self, R, toll=1e-4, Rcut=None, zcut=None, **kwargs):
 
         if Rcut is not None: Rcut=Rcut
         elif (isinstance(R,float) or isinstance(R, int)): Rcut=3*R
@@ -326,6 +335,15 @@ class disc(object):
         return vcirc_disc(R=R, sigma0=self.sigma0, rcoeff=self.rparam, fcoeff=self.fparam, zlaw=self.zlaw, rlaw=self.rlaw, flaw=self.flaw, rcut=Rcut, zcut=zcut, toll=toll)
 
 
+    def _vcirc_serial_thin(self, R, toll=1e-4, Rcut=None, **kwargs):
+
+        if Rcut is not None: Rcut=Rcut
+        elif (isinstance(R,float) or isinstance(R, int)): Rcut=3*R
+        else: Rcut=3*np.max(R)
+
+
+        return vcirc_disc_thin(R=R, sigma0=self.sigma0, rcoeff=self.rparam, rlaw=self.rlaw,  rcut=Rcut, toll=toll)
+
     def _vcirc_parallel(self, R, toll=1e-4, Rcut=None, zcut=None, nproc=2, **kwargs):
 
 
@@ -335,6 +353,44 @@ class disc(object):
         htab = pardo.run_grid(R, args=(self.sigma0, self.rparam, self.fparam, self.zlaw, self.rlaw, self.flaw, Rcut, zcut, toll))
 
         return htab
+
+    def _vcirc_parallel_thin(self, R, toll=1e-4, Rcut=None,  nproc=2, **kwargs):
+
+
+        pardo=ParDo(nproc=nproc)
+        pardo.set_func(vcirc_disc_thin)
+
+        htab = pardo.run_grid(R, args=(self.sigma0, self.rparam, self.rlaw, Rcut, toll))
+
+        return htab
+
+    def _flare(self, R, HWHM=False):
+
+        checkfli=checkfl_dict[self.flaw]
+        ret = flare_func(R, checkfli, *self.fparam)
+
+        if HWHM:
+            zd_to_HWHM = hwhm_fact[self.zlaw]
+            ret[:,1]=ret[:,1]*zd_to_HWHM
+
+        return ret
+
+    def _flare_thin(self, R, **kwargs):
+
+
+        if isinstance(R, int) or isinstance(R, float):
+            return np.array([R,0])
+        elif isinstance(R, list) or isinstance(R, float) or isinstance(R, np.ndarray):
+            ret=np.zeros(shape=(len(R),2))
+            ret[:,0]=R
+            return ret
+
+    def Sdens(self, R):
+
+        checkrdi=checkrd_dict[self.rlaw]
+
+        return self.sigma0*rdens_func(R, checkrdi, *self.rparam)
+
 
     def __str__(self):
 
@@ -364,6 +420,7 @@ class Exponential_disc(disc):
 
         super(Exponential_disc,self).__init__(sigma0=sigma0,rparam=rparam,fparam=fparam,zlaw=zlaw,rlaw='epoly',flaw=flaw,Rcut=Rcut, zcut=zcut)
         self.name='Exponential disc'
+
 
     @classmethod
     def thin(cls,sigma0=None,Rd=None,rfit_array=None, Rcut=50, zcut=30,**kwargs):

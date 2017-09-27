@@ -752,10 +752,24 @@ static double __pyx_f_5discH_3src_8pot_disc_9pot_c_ext_9zdens_law_zsech2(double,
 int __pyx_module_is_main_discH__src__pot_disc__pot_c_ext__zdens_law = 0;
 
 /* Implementation of 'discH.src.pot_disc.pot_c_ext.zdens_law' */
+static const char __pyx_k_exp[] = "exp";
+static const char __pyx_k_gau[] = "gau";
 static const char __pyx_k_main[] = "__main__";
 static const char __pyx_k_test[] = "__test__";
+static const char __pyx_k_dirac[] = "dirac";
+static const char __pyx_k_sech2[] = "sech2";
+static const char __pyx_k_hwhm_fact[] = "hwhm_fact";
+static PyObject *__pyx_n_u_dirac;
+static PyObject *__pyx_n_u_exp;
+static PyObject *__pyx_n_u_gau;
+static PyObject *__pyx_n_s_hwhm_fact;
 static PyObject *__pyx_n_s_main;
+static PyObject *__pyx_n_u_sech2;
 static PyObject *__pyx_n_s_test;
+static PyObject *__pyx_float_0_693;
+static PyObject *__pyx_float_0_881;
+static PyObject *__pyx_float_1_177;
+static PyObject *__pyx_int_0;
 
 /* "discH/src/pot_disc/pot_c_ext/zdens_law.pyx":9
  * #all normlised to the integral from -infty to infty.
@@ -1092,7 +1106,12 @@ static struct PyModuleDef __pyx_moduledef = {
 #endif
 
 static __Pyx_StringTabEntry __pyx_string_tab[] = {
+  {&__pyx_n_u_dirac, __pyx_k_dirac, sizeof(__pyx_k_dirac), 0, 1, 0, 1},
+  {&__pyx_n_u_exp, __pyx_k_exp, sizeof(__pyx_k_exp), 0, 1, 0, 1},
+  {&__pyx_n_u_gau, __pyx_k_gau, sizeof(__pyx_k_gau), 0, 1, 0, 1},
+  {&__pyx_n_s_hwhm_fact, __pyx_k_hwhm_fact, sizeof(__pyx_k_hwhm_fact), 0, 0, 1, 1},
   {&__pyx_n_s_main, __pyx_k_main, sizeof(__pyx_k_main), 0, 0, 1, 1},
+  {&__pyx_n_u_sech2, __pyx_k_sech2, sizeof(__pyx_k_sech2), 0, 1, 0, 1},
   {&__pyx_n_s_test, __pyx_k_test, sizeof(__pyx_k_test), 0, 0, 1, 1},
   {0, 0, 0, 0, 0, 0, 0}
 };
@@ -1109,6 +1128,10 @@ static int __Pyx_InitCachedConstants(void) {
 
 static int __Pyx_InitGlobals(void) {
   if (__Pyx_InitStrings(__pyx_string_tab) < 0) __PYX_ERR(0, 1, __pyx_L1_error);
+  __pyx_float_0_693 = PyFloat_FromDouble(0.693); if (unlikely(!__pyx_float_0_693)) __PYX_ERR(0, 1, __pyx_L1_error)
+  __pyx_float_0_881 = PyFloat_FromDouble(0.881); if (unlikely(!__pyx_float_0_881)) __PYX_ERR(0, 1, __pyx_L1_error)
+  __pyx_float_1_177 = PyFloat_FromDouble(1.177); if (unlikely(!__pyx_float_1_177)) __PYX_ERR(0, 1, __pyx_L1_error)
+  __pyx_int_0 = PyInt_FromLong(0); if (unlikely(!__pyx_int_0)) __PYX_ERR(0, 1, __pyx_L1_error)
   return 0;
   __pyx_L1_error:;
   return -1;
@@ -1217,9 +1240,25 @@ PyMODINIT_FUNC PyInit_zdens_law(void)
  * 
  * cdef double PI=3.14159265358979323846             # <<<<<<<<<<<<<<
  * 
- * 
+ * hwhm_fact = {'exp': 0.693, 'sech2': 0.881, 'gau': 1.177, 'dirac': 0} #Factor to pass from the Zd to the HWHM
  */
   __pyx_v_5discH_3src_8pot_disc_9pot_c_ext_9zdens_law_PI = 3.14159265358979323846;
+
+  /* "discH/src/pot_disc/pot_c_ext/zdens_law.pyx":6
+ * cdef double PI=3.14159265358979323846
+ * 
+ * hwhm_fact = {'exp': 0.693, 'sech2': 0.881, 'gau': 1.177, 'dirac': 0} #Factor to pass from the Zd to the HWHM             # <<<<<<<<<<<<<<
+ * #all normlised to the integral from -infty to infty.
+ * 
+ */
+  __pyx_t_1 = PyDict_New(); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 6, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_exp, __pyx_float_0_693) < 0) __PYX_ERR(0, 6, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_sech2, __pyx_float_0_881) < 0) __PYX_ERR(0, 6, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_gau, __pyx_float_1_177) < 0) __PYX_ERR(0, 6, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_dirac, __pyx_int_0) < 0) __PYX_ERR(0, 6, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_hwhm_fact, __pyx_t_1) < 0) __PYX_ERR(0, 6, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
   /* "discH/src/pot_disc/pot_c_ext/zdens_law.pyx":1
  * #cython: language_level=3, boundscheck=False, cdivision=True, wraparound=False             # <<<<<<<<<<<<<<

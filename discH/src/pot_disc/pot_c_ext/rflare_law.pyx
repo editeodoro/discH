@@ -66,34 +66,8 @@ cdef double poly_flare_der(double R, double a0, double a1, double a2, double a3,
 
     return der
 
-def poly_flarew(R, coeff, Rlimit=None):
-    """
-    Polynomial flaring
-    :param R: Cilindrical radius
-    :param param:
-        Coefficent of the polynomial function (max 7h order), e.g. 3th order= param[0]+param[1]*x+param[2]*x*x+param[3]*x*x*x
-        NB: a8 and a9 are special values used to make the scale heigth constant at a9 beyond a certain Radial limit a8
-    :param ndim: length of the param list or order of the polynomial
-    :return: Height scale at radius R
-    """
 
-    nlen=len(coeff)
 
-    if Rlimit is not None:
-
-        zdlimit=0
-        for i in range(nlen):
-            zdlimit+=coeff[i]*Rlimit**i
-
-    else:
-        zdlimit=0
-        Rlimit=np.max(R)+1
-
-    res=0
-    for i in range(nlen):
-        res+=coeff[i]*R**i
-
-    return np.where(R>Rlimit,zdlimit,res)
 
 cdef double constant(double R, double a0, double a1, double a2, double a3, double a4, double a5, double a6, double a7, double a8, double a9) nogil:
     """
@@ -111,6 +85,7 @@ cdef double constant(double R, double a0, double a1, double a2, double a3, doubl
     :param a9:
     :return:
     """
+
     return a0
 
 cdef double constant_der(double R, double a0, double a1, double a2, double a3, double a4, double a5, double a6, double a7, double a8, double a9) nogil:
@@ -131,23 +106,7 @@ cdef double constant_der(double R, double a0, double a1, double a2, double a3, d
     """
     return 0
 
-cpdef double constantw(double R, double zd):
-    """
 
-    :param R:
-    :param a0: constant zd
-    :param a1:
-    :param a2:
-    :param a3:
-    :param a4:
-    :param a5:
-    :param a6:
-    :param a7:
-    :param a8:
-    :param a9:
-    :return:
-    """
-    return zd
 
 cdef double asinh_flare(double R, double a0, double a1, double a2, double a3, double a4, double a5, double a6, double a7, double a8, double a9) nogil:
     """
@@ -216,35 +175,6 @@ cdef double asinh_flare_der(double R, double a0, double a1, double a2, double a3
     return  num/den
 
 
-def asinh_flarew(R, h0, Rf, c, Rlimit=None):
-    """
-
-    :param R:
-    :param a0:
-    :param a1: Rf
-    :param a2: c
-    :param a3:
-    :param a4:
-    :param a5:
-    :param a6:
-    :param a7:
-    :param a8: Rlimit
-    :param a9:
-    :return:
-    """
-
-
-    if Rlimit is not None:
-        xl=Rlimit/Rf
-        zdlimit=h0+c*np.arcsinh(xl*xl)
-    else:
-        zdlimit=0
-        Rlimit=np.max(R)+1
-
-    x=R/Rf
-    y=h0+c*np.arcsinh(x*x)
-
-    return  np.where(R>Rlimit,zdlimit,y)
 
 cdef double tanh_flare(double R, double a0, double a1, double a2, double a3, double a4, double a5, double a6, double a7, double a8, double a9) nogil:
     """
@@ -315,32 +245,45 @@ cdef double tanh_flare_der(double R, double a0, double a1, double a2, double a3,
 
     return  num/den
 
-def tanh_flarew(R, h0, Rf, c, Rlimit=None):
+
+cpdef flare(R, checkfl,  double a0, double a1, double a2, double a3, double a4, double a5, double a6, double a7, double a8, double a9):
+    """
+    Return flaring
+    :param R: Cilindrical radius
+    :param param:
+        Coefficent of the polynomial function (max 7h order), e.g. 3th order= param[0]+param[1]*x+param[2]*x*x+param[3]*x*x*x
+        NB: a8 and a9 are special values used to make the scale heigth constant at a9 beyond a certain Radial limit a8
+    :param ndim: length of the param list or order of the polynomial
+    :return: Height scale at radius R
     """
 
-    :param R:
-    :param a0: h0, i.e., zd at R=0
-    :param a1: Rf
-    :param a2: c
-    :param a3:
-    :param a4:
-    :param a5:
-    :param a6:
-    :param a7:
-    :param a8: Rlimit
-    :param a9: zdlimit
-    :return:
-    """
+    cdef:
+        int i
+        double Rtmp
+
+    checkfli=int(checkfl)
+    #Flare law
+    if checkfli==0 :
+        flare_func        = constant
+    elif checkfli==1:
+        flare_func        = poly_flare
+    elif checkfli==2:
+        flare_func        = asinh_flare
+    elif checkfli==3:
+        flare_func        = tanh_flare
+
+    if isinstance(R, int) or isinstance(R, float):
+        ret=np.array([R,0])
+        ret[0,1]=flare_func(R, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9)
+
+    elif isinstance(R, list) or isinstance(R, tuple) or isinstance(R, np.ndarray):
+
+        ret=np.zeros(shape=(len(R),2))
+        ret[:,0]=R
+
+        for i in range(len(R)):
+            Rtmp=ret[i,0]
+            ret[i,1]= flare_func(Rtmp, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9)
 
 
-    if Rlimit is not None:
-        xl=Rlimit/Rf
-        zdlimit=h0+c*np.tanh(xl*xl)
-    else:
-        zdlimit=0
-        Rlimit=np.max(R)+1
-
-    x=R/Rf
-    y=h0+c*np.tanh(x*x)
-
-    return  np.where(R>Rlimit,zdlimit,y)
+    return ret

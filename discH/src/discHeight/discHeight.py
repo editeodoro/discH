@@ -121,6 +121,8 @@ class discHeight(object):
 
             #new model
             self.disc_component=comp.change_flaring(flaw=flaw,zlaw=zlaw,polycoeff=ftab,h0=ftab[0], Rf=ftab[1], c=ftab[2], Rlimit=Rlimit)
+
+
             print('//////////////////////////////////////////////////////////////////////////////')
             sys.stdout.flush()
             print('Iter-%i:'%(count+1))

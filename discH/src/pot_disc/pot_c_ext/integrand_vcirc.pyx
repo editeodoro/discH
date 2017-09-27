@@ -438,7 +438,7 @@ cdef double integrand_vcirc_zdirac(int n, double *data) nogil:
         double R = data[1]
 
 
-    if (R==0) | (u==0): return 0 #Singularity of the integral
+    if (R==0) | (u==0) | (R==u): return 0 #Singularity of the integral
 
     cdef:
         double checkrd = data[2]
@@ -538,7 +538,7 @@ cdef double _vcirc_disc(double R, int zlaw, double sigma0, double checkrd, doubl
     return vc*kpc_to_km #vc in km/s
 
 cpdef double[:,:] _vcirc_disc_array(double[:] R, int nlen, int zlaw, double sigma0, double checkrd, double checkfl, double[:] rparam, double[:] fparam, double toll, double rcut, double zcut):
-    """Potential disc for an array of R
+    """Vcirc disc for an array of R
     :param R: Radial coordinate  (list)
     :param nlen: length of the array R and Z (they should have the same dimension)
     :param zlaw: exp, gau or sech2
@@ -628,7 +628,6 @@ cpdef vcirc_disc(R, sigma0, rcoeff, fcoeff, zlaw='gau', rlaw='epoly', flaw='poly
     :param rcut: Radial cut of the density
     :param zcut: Vertical cut of the density
     :param toll: Relative tollerance for quad and nquad
-    :param grid: If True, use the coordinates R and Z to make a grid of values
     :return:  Vcirc at R in km/s
     """
 
@@ -649,12 +648,6 @@ cpdef vcirc_disc(R, sigma0, rcoeff, fcoeff, zlaw='gau', rlaw='epoly', flaw='poly
 
     rparam=np.array(rcoeff,dtype=np.dtype("d"))
     fparam=np.array(fcoeff,dtype=np.dtype("d"))
-
-    u=1
-    l=1
-    d0,d1,d2,d3,d4,d5,d6,d7,d8,d9=rparam
-    f0,f1,f2,f3,f4,f5,f6,f6,f8,f9=fparam
-    a=rhoder_zgau(u,l,checkrd, checkfl, d0,d1,d2,d3,d4,d5,d6,d7,d8,d9, f0,f1,f2,f3,f4,f5,f6,f6,f8,f9)
 
 
 
@@ -684,3 +677,165 @@ cpdef vcirc_disc(R, sigma0, rcoeff, fcoeff, zlaw='gau', rlaw='epoly', flaw='poly
     else:
         raise ValueError('R needs to be a float a int, an numpy array a tuple or a list.')
 
+
+
+#######
+#Vcirc Thin
+cdef double _vcirc_disc_thin(double R, double sigma0, double checkrd,  double[:] rparam,  double toll, double rcut):
+    """Vcirc of a razor thin disc disc for a single value of R
+    :param R: Radial coordinate  (float or int)
+    :param sigma0: Value of the central disc surface density in Msun/kpc2
+    :param checkrd: number to choice the radial surface density law
+    :param rparam:  Params of the radial surface density law
+    :param toll: Relative tollerance for quad and nquad
+    :param rcut: Radial cut of the density
+    :return: Vcirc at R in km/s
+    """
+
+    cdef:
+        double G=4.518359396265313e-39 #kpc^3/(msol s^2)
+        double kpc_to_km=3.08567758e16 #kpc_to_km
+        double cost=(-4*G*sigma0*sqrt(R))
+        #cost has 4 instead of 8 because the int^inf_-inf delta(=1, but  in the formulation
+        #of integrand function we exploit the symmetry and we integrate  2*int^inf_0 dz, so
+        #in this case we need to divide the final result by 2.
+        double intvcirc, vc2, vc
+
+
+
+    #Integ
+    import discH.src.pot_disc.pot_c_ext.integrand_vcirc as mod
+    fintegrand=LowLevelCallable.from_cython(mod,'integrand_vcirc_zdirac')
+
+    cdef:
+        double d0=rparam[0]
+        double d1=rparam[1]
+        double d2=rparam[2]
+        double d3=rparam[3]
+        double d4=rparam[4]
+        double d5=rparam[5]
+        double d6=rparam[6]
+        double d7=rparam[7]
+        double d8=rparam[8]
+        double d9=rparam[9]
+
+    intvcirc=quad(fintegrand,0.,rcut, args=(R,checkrd,d0,d1,d2,d3,d4,d5,d6,d7,d8,d9), epsabs=toll, epsrel=toll,points=(0,R))[0]
+
+    vc2=cost*intvcirc
+
+    if vc2>0:
+        vc=sqrt(vc2) #vc in kpc/s
+    else:
+        vc=-sqrt(-vc2) #vc in kpc/s
+
+
+    return vc*kpc_to_km #vc in km/s
+
+
+cpdef double[:,:] _vcirc_disc_thin_array(double[:] R, int nlen, double sigma0, double checkrd, double[:] rparam,  double toll, double rcut):
+    """Vcirc for a razor-thin disc for an array of R
+    :param R: Radial coordinate  (list)
+    :param nlen: length of the array R and Z (they should have the same dimension)
+    :param sigma0: Value of the central disc surface density in Msun/kpc2
+    :param checkrd: number to choice the radial surface density law
+    :param rparam:  Params of the radial surface density law
+    :param toll: Relative tollerance for quad and nquad
+    :param rcut: Radial cut of the density
+    :return: Vcirc at R in km/s
+    """
+
+    cdef:
+        double G=4.518359396265313e-39 #kpc^3/(msol s^2)
+        double kpc_to_km=3.08567758e16 #kpc_to_km
+        double cost=-(4*G*sigma0)
+        #cost has 4 instead of 8 because the int^inf_-inf delta(=1, but  in the formulation
+        #of integrand function we exploit the symmetry and we integrate  2*int^inf_0 dz, so
+        #in this case we need to divide the final result by 2.
+        double intvcirc, vc2, vc, R_tmp
+        double[:,:] ret=np.empty((nlen,2), dtype=np.dtype("d"))
+        int i
+
+
+
+    #Integ
+    import discH.src.pot_disc.pot_c_ext.integrand_vcirc as mod
+    fintegrand=LowLevelCallable.from_cython(mod,'integrand_vcirc_zdirac')
+
+
+    cdef:
+        double d0=rparam[0]
+        double d1=rparam[1]
+        double d2=rparam[2]
+        double d3=rparam[3]
+        double d4=rparam[4]
+        double d5=rparam[5]
+        double d6=rparam[6]
+        double d7=rparam[7]
+        double d8=rparam[8]
+        double d9=rparam[9]
+
+
+    for  i in range(nlen):
+
+        R_tmp=R[i]
+
+        ret[i,0]=R_tmp
+        intvcirc=quad(fintegrand,0.,rcut, args=(R_tmp,checkrd,d0,d1,d2,d3,d4,d5,d6,d7,d8,d9), epsabs=toll, epsrel=toll,points=(0,R_tmp))[0]
+
+        vc2=cost*intvcirc*sqrt(R_tmp)
+
+        if vc2>0:
+            vc  =   sqrt(vc2) #vc in kpc/s
+        else:
+            vc  =   -sqrt(-vc2) #vc in kpc/s
+
+
+        ret[i,1]=vc*kpc_to_km #vc in km/s
+
+    return ret
+
+
+cpdef vcirc_disc_thin(R, sigma0, rcoeff, rlaw='epoly', rcut=None, toll=1e-4):
+    """Wrapper for the vcirc of a razor-thin disc
+
+    :param R: Radial coordinates
+    :param sigma0: Value of the central disc surface density in Msun/kpc2
+    :param rcoeff: Params of the radial surface density law
+    :param rlaw: Radial surface density law
+    :param rcut: Radial cut of the density
+    :param toll: Relative tollerance for quad and nquad
+    :return:  Vcirc at R in km/s
+    """
+
+
+    #Rdens
+    if rlaw in checkrd_dict: checkrd=checkrd_dict[rlaw]
+    else: raise NotImplementedError('Dens law %s not implmented'%rlaw)
+
+
+    rparam=np.array(rcoeff,dtype=np.dtype("d"))
+
+
+
+    if isinstance(R, float) or isinstance(R, int):
+        R=float(R)
+        if rcut is None:
+            rcut=2*R
+
+
+        ret=[R,0]
+        ret[1]=_vcirc_disc_thin(R=R, sigma0=sigma0, checkrd=checkrd, rparam=rparam, toll=toll,rcut=rcut)
+
+        return np.array(ret)
+
+    elif isinstance(R, list) or isinstance(R, tuple) or isinstance(R, np.ndarray):
+        if rcut is None:
+            rcut=2*np.max(R)
+
+        R=np.array(R,dtype=np.dtype("d"))
+        nlenR=len(R)
+        ret=np.array(_vcirc_disc_thin_array(R=R, nlen=nlenR, sigma0=sigma0, checkrd=checkrd,  rparam=rparam, toll=toll,rcut=rcut))
+        return  ret
+
+    else:
+        raise ValueError('R needs to be a float a int, an numpy array a tuple or a list.')

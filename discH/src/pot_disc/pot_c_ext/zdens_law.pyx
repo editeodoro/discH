@@ -3,7 +3,7 @@ from libc.math cimport sqrt, log, asin, exp, abs, pow, asinh, tanh, cosh, fabs
 
 cdef double PI=3.14159265358979323846
 
-
+hwhm_fact = {'exp': 0.693, 'sech2': 0.881, 'gau': 1.177, 'dirac': 0} #Factor to pass from the Zd to the HWHM
 #all normlised to the integral from -infty to infty.
 
 cdef double zexp(double z, double zd) nogil:

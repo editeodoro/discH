@@ -69,24 +69,6 @@ cdef double poly_exponential_der(double R, double a0, double a1, double a2, doub
 
     return  polyder_exp + poly_expder
 
-def poly_exponentialw(R, Rd, coeff):
-
-
-
-    nlen=len(coeff)
-
-    if nlen>0:
-        res=0
-        for i in range(nlen):
-            res+=coeff[i]*R**i
-        res=res/coeff[0]
-    else:
-        res=1
-
-
-    return res*np.exp(-R/Rd)
-
-
 
 cdef double gaussian(double R, double a0, double a1, double a2, double a3, double a4, double a5, double a6, double a7, double a8, double a9) nogil:
 
@@ -120,18 +102,6 @@ cdef double gaussian_der(double R, double a0, double a1, double a2, double a3, d
 
     return gaunorm*derfact
 
-
-def gaussianw(R,sigmad,R0):
-
-    sigmad2=sigmad*sigmad
-
-    earg=(R-R0)*(R-R0)/(sigmad2)
-    eargnorm=(R0*R0)/(sigmad2)
-
-    rexp=np.exp(-0.5*earg)
-    rexpnorm=np.exp(-0.5*eargnorm)
-
-    return rexp/rexpnorm
 
 cdef double fratlaw(double R, double a0, double a1, double a2, double a3, double a4, double a5, double a6, double a7, double a8, double a9) nogil:
 
@@ -173,15 +143,42 @@ cdef double fratlaw_der(double R, double a0, double a1, double a2, double a3, do
 
     return parta+partb
 
-def fratlaww(R, Rd, Rd2, alpha):
+cpdef rdens(R, checkrd,  double a0, double a1, double a2, double a3, double a4, double a5, double a6, double a7, double a8, double a9):
+    """
+    Return Sup density
+    :param R: Cilindrical radius
+    :param rparam:
 
-    xd=R/Rd
-    xd2=R/Rd2
-    mult1=(1+xd2)**alpha
-    mult2=np.exp(-xd)
+    """
 
-    return mult1*mult2
+    cdef:
+        int i
+        double Rtmp
 
+    checkrdi=int(checkrd)
+    #Flare law
+    if checkrdi==1:
+        rdens_func        = poly_exponential
+    elif checkrdi==2:
+        rdens_func        = fratlaw
+    elif checkrdi==3:
+        rdens_func        = gaussian
+
+    if isinstance(R, int) or isinstance(R, float):
+        ret=np.array([R,0])
+        ret[0,1]=rdens_func(R, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9)
+
+    elif isinstance(R, list) or isinstance(R, tuple) or isinstance(R, np.ndarray):
+
+        ret=np.zeros(shape=(len(R),2))
+        ret[:,0]=R
+
+        for i in range(len(R)):
+            Rtmp=ret[i,0]
+            ret[i,1]= rdens_func(Rtmp, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9)
+
+
+    return ret
 
 
 
