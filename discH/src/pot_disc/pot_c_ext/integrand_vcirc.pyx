@@ -43,7 +43,7 @@ cdef double rhoder_zexp(double u, double l, double checkrd, double checkfl, doub
 
     elif checkrdi==3:
         densr      = gaussian(u, d0, d1, d2, d3, d4, d5, d6, d7, d8, d9)
-        densr      = gaussian_der(u, d0, d1, d2, d3, d4, d5, d6, d7, d8, d9)
+        densr_der  = gaussian_der(u, d0, d1, d2, d3, d4, d5, d6, d7, d8, d9)
 
     #Flare law
     if checkfli==0 :
@@ -169,7 +169,7 @@ cdef double rhoder_zgau(double u, double l, double checkrd, double checkfl, doub
 
     elif checkrdi==3:
         densr      = gaussian(u, d0, d1, d2, d3, d4, d5, d6, d7, d8, d9)
-        densr      = gaussian_der(u, d0, d1, d2, d3, d4, d5, d6, d7, d8, d9)
+        densr_der  = gaussian_der(u, d0, d1, d2, d3, d4, d5, d6, d7, d8, d9)
 
     #Flare law
     if checkfli==0 :
@@ -300,7 +300,7 @@ cdef double rhoder_zsech2(double u, double l, double checkrd, double checkfl, do
 
     elif checkrdi==3:
         densr      = gaussian(u, d0, d1, d2, d3, d4, d5, d6, d7, d8, d9)
-        densr      = gaussian_der(u, d0, d1, d2, d3, d4, d5, d6, d7, d8, d9)
+        densr_der  = gaussian_der(u, d0, d1, d2, d3, d4, d5, d6, d7, d8, d9)
 
     #Flare law
     if checkfli==0 :

@@ -8,6 +8,22 @@ import multiprocessing as mp
 from ..pardo.Pardo import ParDo
 import numpy as np
 
+def cartesian(*arrays):
+    """
+    Make a cartesian combined arrays from different arrays e.g.
+    al=np.linspace(0.2,5,50)
+    ql=np.linspace(0.1,2,50)
+    par=cartesian(al,ql)
+    :param arrays:
+    :return:
+    """
+    mesh = np.meshgrid(*arrays)  # standard numpy meshgrid
+    dim = len(mesh)  # number of dimensions
+    elements = mesh[0].size  # number of elements, any index will do
+    flat = np.concatenate(mesh).ravel()  # flatten the whole meshgrid
+    reshape = np.reshape(flat, (dim, elements)).T  # reshape and transpose
+    return reshape
+
 class halo(object):
     """
     Super class for halo potentials
@@ -137,6 +153,47 @@ class halo(object):
         """
         raise NotImplementedError('Potential parallel not implemented for this class')
 
+
+    def dens(self, R, Z=None, grid=False):
+        """
+        Evaulate the density at the point (R,Z)
+        :param R: float int or iterable
+        :param z: float int or iterable, if Z is None R=m elliptical radius (m=sqrt(R*R+Z*Z/(1-e^2)) if e=0 spherical radius)
+        :param grid:  if True calculate the potential in a 2D grid in R and Z, if len(R)!=len(Z) grid is True by default
+        :return:  2D array with: col-0 R, col-1 dens(m) if Z is None or col-0 R, col-1 Z, col-2 dens(R,Z)
+        """
+
+        if isinstance(R, int) or isinstance(R, float):  R = np.array([R, ])
+
+        if Z is not None:
+
+            if isinstance(Z, int) or isinstance(Z, float):  Z = np.array([Z, ])
+
+
+            if grid==True or len(R)!=len(Z):
+
+                ret=np.zeros(shape=(len(R)*len(Z),3))
+
+                coord=cartesian(R,Z)
+                ret[:,:1]=coord
+                ret[:,2]=self._dens(coord[:,0],coord[:,1])
+
+            else:
+
+                ret=np.zeros(shape=(len(R),3))
+                ret[:,0]=R
+                ret[:,1]=Z
+                ret[:,2]=self._dens(R,Z)
+
+        else:
+
+            ret=np.zeros(shape=(len(R),2))
+
+            ret[:,0]=R
+            ret[:,1]=self._dens(R)
+
+        return ret
+
     def __str__(self):
 
         s=''
@@ -233,6 +290,19 @@ class isothermal_halo(halo):
         htab=pardo.run_grid(R,args=(self.d0, self.rc, self.e, self.toll))
 
         return htab
+
+    def _dens(self, R, Z=0):
+
+        q2=1-self.e*self.e
+
+        m=np.sqrt(R*R+Z*Z/q2)
+
+        x=m/self.rc
+
+        num=self.d0
+        den=(1+x*x)
+
+        return num/den
 
     def __str__(self):
 
@@ -356,6 +426,18 @@ class NFW_halo(halo):
 
         return htab
 
+    def _dens(self, R, Z=0):
+
+        q2 = 1 - self.e * self.e
+
+        m = np.sqrt(R * R + Z * Z / q2)
+
+        x = m / self.rs
+
+        num = self.d0
+        den = (x)*(1 + x)*(1 + x)
+
+        return num / den
 
     def __str__(self):
 
@@ -371,6 +453,15 @@ class NFW_halo(halo):
 class alfabeta_halo(halo):
 
     def __init__(self,d0,rs,alfa,beta,e=0,mcut=100):
+        """
+        dens=d0/( (x^alfa) * (1+x)^(beta-alfa))
+        :param d0:
+        :param rs:
+        :param alfa:
+        :param beta:
+        :param e:
+        :param mcut:
+        """
 
         if alfa>=2:
             raise ValueError('alpha must be <2')
@@ -452,6 +543,21 @@ class alfabeta_halo(halo):
 
         return htab
 
+    def _dens(self, R, Z=0):
+
+        q2 = 1 - self.e * self.e
+
+        m = np.sqrt(R * R + Z * Z / q2)
+
+        x = m / self.rs
+
+        num  = self.d0
+        denA = x**self.alfa
+        denB = (1+x)**(self.beta-self.alfa)
+        den=denA*denB
+
+        return num / den
+
     def __str__(self):
 
         s=''
@@ -468,6 +574,13 @@ class alfabeta_halo(halo):
 class hernquist_halo(alfabeta_halo):
 
     def __init__(self,d0,rs,e=0,mcut=100):
+        """
+        dens=d0/( (x) * (1+x)^(3))
+        :param d0:
+        :param rs:
+        :param e:
+        :param mcut:
+        """
 
         alfa=1
         beta=4
@@ -488,6 +601,13 @@ class hernquist_halo(alfabeta_halo):
 class deVacouler_like_halo(alfabeta_halo):
 
     def __init__(self,d0,rs,e=0,mcut=100):
+        """
+        Approximation of the 3D deprojection of the R^(1/4) law (De Vacouler) with alfa-beta model dens=d0/( x^(3/2) * (1+x)^(5/2) )
+        :param d0:
+        :param rs:
+        :param e:
+        :param mcut:
+        """
         alfa=1.5
         beta=4
         super(deVacouler_like_halo, self).__init__(d0=d0, rs=rs, alfa=alfa, beta=beta, e=e, mcut=mcut)
@@ -507,6 +627,14 @@ class deVacouler_like_halo(alfabeta_halo):
 class plummer_halo(halo):
 
     def __init__(self,rc,d0=None,mass=None,e=0,mcut=100):
+        """
+        dens=d0/((1+(r/rs)^2)^-5/2)
+        :param rc:
+        :param d0:
+        :param mass:
+        :param e:
+        :param mcut:
+        """
 
         if (d0 is None) and (mass is None):
             raise ValueError('d0 or mass must be set')
@@ -589,6 +717,20 @@ class plummer_halo(halo):
         htab=pardo.run_grid(R,args=(self.d0, self.rc, self.e, self.toll))
 
         return htab
+
+    def _dens(self, R, Z=0):
+
+        q2 = 1 - self.e * self.e
+
+        m = np.sqrt(R * R + Z * Z / q2)
+
+        x = m / self.rc
+
+        num = self.d0
+        den = (1 + x * x)**(2.5)
+
+        return num / den
+
 
     def __str__(self):
 
@@ -717,6 +859,24 @@ class einasto_halo(halo):
         htab=pardo.run_grid(R,args=(self.d0, self.rs, self.n, self.e,self.toll))
 
         return htab
+
+
+
+    def _dens(self, R, Z=0):
+
+        q2 = 1 - self.e * self.e
+
+        m = np.sqrt(R * R + Z * Z / q2)
+
+        x = m / self.rc
+
+        dnn=self.dn(self.n)
+
+        A=x**(1/self.n)
+
+        ret=self.d0*np.exp(-dnn*A)
+
+        return ret
 
 
     def __str__(self):

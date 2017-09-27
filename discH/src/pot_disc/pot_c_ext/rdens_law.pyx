@@ -30,30 +30,28 @@ cdef double poly_exponential(double R, double a0, double a1, double a2, double a
 
     Rd=a0
 
-    if a1==0:
-        return 0
-    else:
-        res=a1
 
-        recursiveR=R
-        res+=a2*recursiveR
-        recursiveR=recursiveR*R
-        res+=a3*recursiveR
-        recursiveR=recursiveR*R
-        res+=a4*recursiveR
-        recursiveR=recursiveR*R
-        res+=a5*recursiveR
-        recursiveR=recursiveR*R
-        res+=a6*recursiveR
-        recursiveR=recursiveR*R
-        res+=a7*recursiveR
-        recursiveR=recursiveR*R
-        res+=a8*recursiveR
-        recursiveR=recursiveR*R
-        res+=a9*recursiveR
-        res=res/a1 #Normalised over sigma0
+    res=a1
 
-        return res*exp(-R/Rd)
+    recursiveR=R
+    res+=a2*recursiveR
+    recursiveR=recursiveR*R
+    res+=a3*recursiveR
+    recursiveR=recursiveR*R
+    res+=a4*recursiveR
+    recursiveR=recursiveR*R
+    res+=a5*recursiveR
+    recursiveR=recursiveR*R
+    res+=a6*recursiveR
+    recursiveR=recursiveR*R
+    res+=a7*recursiveR
+    recursiveR=recursiveR*R
+    res+=a8*recursiveR
+    recursiveR=recursiveR*R
+    res+=a9*recursiveR
+    res=res #Normalised over sigma0
+
+    return res*exp(-R/Rd)
 
 cdef double poly_exponential_der(double R, double a0, double a1, double a2, double a3, double a4, double a5, double a6, double a7, double a8, double a9) nogil:
     #NB a0=Rd
@@ -98,7 +96,7 @@ cdef double gaussian_der(double R, double a0, double a1, double a2, double a3, d
         double gaunorm, derfact
 
     gaunorm=gaussian(R, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9)
-    derfact=(R-R0)/(sigmad*sigmad)
+    derfact=-(R-R0)/(sigmad*sigmad)
 
     return gaunorm*derfact
 

@@ -687,12 +687,21 @@ class PolyExponential_disc(disc):
     def __init__(self,sigma0,Rd,coeff,fparam,zlaw='gau',flaw='poly',Rcut=50, zcut=30):
 
         if isinstance(coeff,float) or isinstance(coeff,int):
-            coeff=[1,]
-        elif len(coeff)>8:
+            self.coeff=[1,]
+        elif coeff[0]!=0:
+            coeff=np.array(coeff)
+            self.coeff=coeff/coeff[0]
+        else:
+            print('Warning, the Surface density is 0 at R=0, Sigma0 is not the value of the centrla surface density')
+            self.coeff=coeff
+
+        if len(coeff)>8:
             raise NotImplementedError('Maximum polynomial degree is 8')
 
-        rparam=np.array([Rd,]+list(coeff))
-        self.coeff=coeff
+
+
+
+        rparam=np.array([Rd,]+list(self.coeff))
         self.Rd=Rd
 
         super(PolyExponential_disc,self).__init__(sigma0=sigma0,rparam=rparam,fparam=fparam,zlaw=zlaw,rlaw='epoly',flaw=flaw, Rcut=Rcut, zcut=zcut)
@@ -1125,7 +1134,7 @@ class Gaussian_disc(disc):
             fparam[-1] = flimit
             fparam[-2] = Rlimit
 
-        cls_ret=cls(sigma0=sigma0, sigmad=sigmad, R0=R0, fparam=fparam, zlaw=zlaw, flaw='poly', Rcut=Rcut, zcut=zcut)
+        cls_ret=cls(sigma0=sigma0, sigmad=sigmad, R0=R0, fparam=fparam, zlaw=zlaw, flaw='asinh', Rcut=Rcut, zcut=zcut)
         cls_ret.Rlimit=Rlimit
 
         return cls_ret

@@ -2690,7 +2690,7 @@ static double __pyx_f_5discH_3src_8pot_disc_9pot_c_ext_15integrand_vcirc_rhoder_
  * 
  *     elif checkrdi==3:             # <<<<<<<<<<<<<<
  *         densr      = gaussian(u, d0, d1, d2, d3, d4, d5, d6, d7, d8, d9)
- *         densr      = gaussian_der(u, d0, d1, d2, d3, d4, d5, d6, d7, d8, d9)
+ *         densr_der  = gaussian_der(u, d0, d1, d2, d3, d4, d5, d6, d7, d8, d9)
  */
     case 3:
 
@@ -2698,7 +2698,7 @@ static double __pyx_f_5discH_3src_8pot_disc_9pot_c_ext_15integrand_vcirc_rhoder_
  * 
  *     elif checkrdi==3:
  *         densr      = gaussian(u, d0, d1, d2, d3, d4, d5, d6, d7, d8, d9)             # <<<<<<<<<<<<<<
- *         densr      = gaussian_der(u, d0, d1, d2, d3, d4, d5, d6, d7, d8, d9)
+ *         densr_der  = gaussian_der(u, d0, d1, d2, d3, d4, d5, d6, d7, d8, d9)
  * 
  */
     __pyx_v_densr = __pyx_f_5discH_3src_8pot_disc_9pot_c_ext_9rdens_law_gaussian(__pyx_v_u, __pyx_v_d0, __pyx_v_d1, __pyx_v_d2, __pyx_v_d3, __pyx_v_d4, __pyx_v_d5, __pyx_v_d6, __pyx_v_d7, __pyx_v_d8, __pyx_v_d9);
@@ -2706,18 +2706,18 @@ static double __pyx_f_5discH_3src_8pot_disc_9pot_c_ext_15integrand_vcirc_rhoder_
     /* "discH/src/pot_disc/pot_c_ext/integrand_vcirc.pyx":46
  *     elif checkrdi==3:
  *         densr      = gaussian(u, d0, d1, d2, d3, d4, d5, d6, d7, d8, d9)
- *         densr      = gaussian_der(u, d0, d1, d2, d3, d4, d5, d6, d7, d8, d9)             # <<<<<<<<<<<<<<
+ *         densr_der  = gaussian_der(u, d0, d1, d2, d3, d4, d5, d6, d7, d8, d9)             # <<<<<<<<<<<<<<
  * 
  *     #Flare law
  */
-    __pyx_v_densr = __pyx_f_5discH_3src_8pot_disc_9pot_c_ext_9rdens_law_gaussian_der(__pyx_v_u, __pyx_v_d0, __pyx_v_d1, __pyx_v_d2, __pyx_v_d3, __pyx_v_d4, __pyx_v_d5, __pyx_v_d6, __pyx_v_d7, __pyx_v_d8, __pyx_v_d9);
+    __pyx_v_densr_der = __pyx_f_5discH_3src_8pot_disc_9pot_c_ext_9rdens_law_gaussian_der(__pyx_v_u, __pyx_v_d0, __pyx_v_d1, __pyx_v_d2, __pyx_v_d3, __pyx_v_d4, __pyx_v_d5, __pyx_v_d6, __pyx_v_d7, __pyx_v_d8, __pyx_v_d9);
 
     /* "discH/src/pot_disc/pot_c_ext/integrand_vcirc.pyx":44
  *         densr_der  = fratlaw_der(u, d0, d1, d2, d3, d4, d5, d6, d7, d8, d9)
  * 
  *     elif checkrdi==3:             # <<<<<<<<<<<<<<
  *         densr      = gaussian(u, d0, d1, d2, d3, d4, d5, d6, d7, d8, d9)
- *         densr      = gaussian_der(u, d0, d1, d2, d3, d4, d5, d6, d7, d8, d9)
+ *         densr_der  = gaussian_der(u, d0, d1, d2, d3, d4, d5, d6, d7, d8, d9)
  */
     break;
     default: break;
@@ -3434,7 +3434,7 @@ static double __pyx_f_5discH_3src_8pot_disc_9pot_c_ext_15integrand_vcirc_rhoder_
  * 
  *     elif checkrdi==3:             # <<<<<<<<<<<<<<
  *         densr      = gaussian(u, d0, d1, d2, d3, d4, d5, d6, d7, d8, d9)
- *         densr      = gaussian_der(u, d0, d1, d2, d3, d4, d5, d6, d7, d8, d9)
+ *         densr_der  = gaussian_der(u, d0, d1, d2, d3, d4, d5, d6, d7, d8, d9)
  */
     case 3:
 
@@ -3442,7 +3442,7 @@ static double __pyx_f_5discH_3src_8pot_disc_9pot_c_ext_15integrand_vcirc_rhoder_
  * 
  *     elif checkrdi==3:
  *         densr      = gaussian(u, d0, d1, d2, d3, d4, d5, d6, d7, d8, d9)             # <<<<<<<<<<<<<<
- *         densr      = gaussian_der(u, d0, d1, d2, d3, d4, d5, d6, d7, d8, d9)
+ *         densr_der  = gaussian_der(u, d0, d1, d2, d3, d4, d5, d6, d7, d8, d9)
  * 
  */
     __pyx_v_densr = __pyx_f_5discH_3src_8pot_disc_9pot_c_ext_9rdens_law_gaussian(__pyx_v_u, __pyx_v_d0, __pyx_v_d1, __pyx_v_d2, __pyx_v_d3, __pyx_v_d4, __pyx_v_d5, __pyx_v_d6, __pyx_v_d7, __pyx_v_d8, __pyx_v_d9);
@@ -3450,18 +3450,18 @@ static double __pyx_f_5discH_3src_8pot_disc_9pot_c_ext_15integrand_vcirc_rhoder_
     /* "discH/src/pot_disc/pot_c_ext/integrand_vcirc.pyx":172
  *     elif checkrdi==3:
  *         densr      = gaussian(u, d0, d1, d2, d3, d4, d5, d6, d7, d8, d9)
- *         densr      = gaussian_der(u, d0, d1, d2, d3, d4, d5, d6, d7, d8, d9)             # <<<<<<<<<<<<<<
+ *         densr_der  = gaussian_der(u, d0, d1, d2, d3, d4, d5, d6, d7, d8, d9)             # <<<<<<<<<<<<<<
  * 
  *     #Flare law
  */
-    __pyx_v_densr = __pyx_f_5discH_3src_8pot_disc_9pot_c_ext_9rdens_law_gaussian_der(__pyx_v_u, __pyx_v_d0, __pyx_v_d1, __pyx_v_d2, __pyx_v_d3, __pyx_v_d4, __pyx_v_d5, __pyx_v_d6, __pyx_v_d7, __pyx_v_d8, __pyx_v_d9);
+    __pyx_v_densr_der = __pyx_f_5discH_3src_8pot_disc_9pot_c_ext_9rdens_law_gaussian_der(__pyx_v_u, __pyx_v_d0, __pyx_v_d1, __pyx_v_d2, __pyx_v_d3, __pyx_v_d4, __pyx_v_d5, __pyx_v_d6, __pyx_v_d7, __pyx_v_d8, __pyx_v_d9);
 
     /* "discH/src/pot_disc/pot_c_ext/integrand_vcirc.pyx":170
  *         densr_der  = fratlaw_der(u, d0, d1, d2, d3, d4, d5, d6, d7, d8, d9)
  * 
  *     elif checkrdi==3:             # <<<<<<<<<<<<<<
  *         densr      = gaussian(u, d0, d1, d2, d3, d4, d5, d6, d7, d8, d9)
- *         densr      = gaussian_der(u, d0, d1, d2, d3, d4, d5, d6, d7, d8, d9)
+ *         densr_der  = gaussian_der(u, d0, d1, d2, d3, d4, d5, d6, d7, d8, d9)
  */
     break;
     default: break;
@@ -4178,7 +4178,7 @@ static double __pyx_f_5discH_3src_8pot_disc_9pot_c_ext_15integrand_vcirc_rhoder_
  * 
  *     elif checkrdi==3:             # <<<<<<<<<<<<<<
  *         densr      = gaussian(u, d0, d1, d2, d3, d4, d5, d6, d7, d8, d9)
- *         densr      = gaussian_der(u, d0, d1, d2, d3, d4, d5, d6, d7, d8, d9)
+ *         densr_der  = gaussian_der(u, d0, d1, d2, d3, d4, d5, d6, d7, d8, d9)
  */
     case 3:
 
@@ -4186,7 +4186,7 @@ static double __pyx_f_5discH_3src_8pot_disc_9pot_c_ext_15integrand_vcirc_rhoder_
  * 
  *     elif checkrdi==3:
  *         densr      = gaussian(u, d0, d1, d2, d3, d4, d5, d6, d7, d8, d9)             # <<<<<<<<<<<<<<
- *         densr      = gaussian_der(u, d0, d1, d2, d3, d4, d5, d6, d7, d8, d9)
+ *         densr_der  = gaussian_der(u, d0, d1, d2, d3, d4, d5, d6, d7, d8, d9)
  * 
  */
     __pyx_v_densr = __pyx_f_5discH_3src_8pot_disc_9pot_c_ext_9rdens_law_gaussian(__pyx_v_u, __pyx_v_d0, __pyx_v_d1, __pyx_v_d2, __pyx_v_d3, __pyx_v_d4, __pyx_v_d5, __pyx_v_d6, __pyx_v_d7, __pyx_v_d8, __pyx_v_d9);
@@ -4194,18 +4194,18 @@ static double __pyx_f_5discH_3src_8pot_disc_9pot_c_ext_15integrand_vcirc_rhoder_
     /* "discH/src/pot_disc/pot_c_ext/integrand_vcirc.pyx":303
  *     elif checkrdi==3:
  *         densr      = gaussian(u, d0, d1, d2, d3, d4, d5, d6, d7, d8, d9)
- *         densr      = gaussian_der(u, d0, d1, d2, d3, d4, d5, d6, d7, d8, d9)             # <<<<<<<<<<<<<<
+ *         densr_der  = gaussian_der(u, d0, d1, d2, d3, d4, d5, d6, d7, d8, d9)             # <<<<<<<<<<<<<<
  * 
  *     #Flare law
  */
-    __pyx_v_densr = __pyx_f_5discH_3src_8pot_disc_9pot_c_ext_9rdens_law_gaussian_der(__pyx_v_u, __pyx_v_d0, __pyx_v_d1, __pyx_v_d2, __pyx_v_d3, __pyx_v_d4, __pyx_v_d5, __pyx_v_d6, __pyx_v_d7, __pyx_v_d8, __pyx_v_d9);
+    __pyx_v_densr_der = __pyx_f_5discH_3src_8pot_disc_9pot_c_ext_9rdens_law_gaussian_der(__pyx_v_u, __pyx_v_d0, __pyx_v_d1, __pyx_v_d2, __pyx_v_d3, __pyx_v_d4, __pyx_v_d5, __pyx_v_d6, __pyx_v_d7, __pyx_v_d8, __pyx_v_d9);
 
     /* "discH/src/pot_disc/pot_c_ext/integrand_vcirc.pyx":301
  *         densr_der  = fratlaw_der(u, d0, d1, d2, d3, d4, d5, d6, d7, d8, d9)
  * 
  *     elif checkrdi==3:             # <<<<<<<<<<<<<<
  *         densr      = gaussian(u, d0, d1, d2, d3, d4, d5, d6, d7, d8, d9)
- *         densr      = gaussian_der(u, d0, d1, d2, d3, d4, d5, d6, d7, d8, d9)
+ *         densr_der  = gaussian_der(u, d0, d1, d2, d3, d4, d5, d6, d7, d8, d9)
  */
     break;
     default: break;
