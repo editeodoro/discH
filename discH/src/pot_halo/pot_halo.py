@@ -205,7 +205,7 @@ class halo(object):
 
         return s
 
-#TODO: la vcirc dell alone isotermo è analitica per ogni e, implementare la formula nella mia tesi
+#TODO: la vcirc dell alone isotermo e analitica per ogni e, implementare la formula nella mia tesi
 class isothermal_halo(halo):
 
     def __init__(self,d0,rc,e=0,mcut=100):
