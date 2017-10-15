@@ -99,7 +99,7 @@ def _fit_utility_rpoly(degree,rfit_array,nproc=1):
     best_pars = samples[maxlik_idx, :]
     best_like = postprob[maxlik_idx]
 
-
+    del sampler
 
     return best_pars, best_like
 
