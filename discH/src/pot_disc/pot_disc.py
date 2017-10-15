@@ -713,7 +713,7 @@ class PolyExponential_disc(disc):
         #Sigma(R)
         if rfit_array is not None:
             print('Fittin surface density profile...',end='',flush=True)
-            popt,pcov=_fit_utility_rpoly(rfit_degree,rfit_array,nproc=3)
+            popt,pcov=_fit_utility_rpoly(rfit_degree,rfit_array,nproc=1)
             Rd=popt[0]
             sigma0=popt[1]
             coeff=popt[1:]/sigma0
@@ -734,7 +734,7 @@ class PolyExponential_disc(disc):
         #Sigma(R)
         if rfit_array is not None:
             print('Fittin surface density profile...',end='',flush=True)
-            popt,pcov=_fit_utility_rpoly(rfit_degree,rfit_array,nproc=3)
+            popt,pcov=_fit_utility_rpoly(rfit_degree,rfit_array,nproc=1)
             Rd=popt[0]
             sigma0=popt[1]
             coeff=popt[1:]/sigma0
@@ -772,7 +772,7 @@ class PolyExponential_disc(disc):
         #Sigma(R)
         if rfit_array is not None:
             print('Fittin surface density profile...',end='',flush=True)
-            popt,pcov=_fit_utility_rpoly(rfit_degree,rfit_array,nproc=3)
+            popt,pcov=_fit_utility_rpoly(rfit_degree,rfit_array,nproc=1)
             Rd=popt[0]
             sigma0=popt[1]
             coeff=popt[1:]/sigma0
@@ -825,7 +825,7 @@ class PolyExponential_disc(disc):
         #Sigma(R)
         if rfit_array is not None:
             print('Fittin surface density profile...',end='',flush=True)
-            popt,pcov=_fit_utility_rpoly(rfit_degree,rfit_array,nproc=3)
+            popt,pcov=_fit_utility_rpoly(rfit_degree,rfit_array,nproc=1)
             Rd=popt[0]
             sigma0=popt[1]
             coeff=popt[1:]/sigma0
@@ -869,7 +869,7 @@ class PolyExponential_disc(disc):
         #Sigma(R)
         if rfit_array is not None:
             print('Fittin surface density profile...',end='',flush=True)
-            popt,pcov=_fit_utility_rpoly(rfit_degree,rfit_array,nproc=3)
+            popt,pcov=_fit_utility_rpoly(rfit_degree,rfit_array,nproc=1)
             Rd=popt[0]
             sigma0=popt[1]
             coeff=popt[1:]/sigma0
