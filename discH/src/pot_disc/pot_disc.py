@@ -91,7 +91,7 @@ def _fit_utility_rpoly(degree,rfit_array,nproc=1):
 
     pos = [x0 + 1e-4 * np.random.randn(ndim) for i in range(nwalkers)]
     sampler = emcee.EnsembleSampler(nwalkers, ndim, _lnprob_halo, args=(R, Sigma, Sigma_err),threads=nproc)
-    sampler.run_mcmc(pos, 400)
+    sampler.run_mcmc(pos, 200)
 
     samples = sampler.flatchain[50:]
     postprob = sampler.flatlnprobability[50:]
