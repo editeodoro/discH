@@ -141,6 +141,7 @@ cdef double fratlaw_der(double R, double a0, double a1, double a2, double a3, do
 
     return parta+partb
 
+
 cpdef rdens(R, checkrd,  double a0, double a1, double a2, double a3, double a4, double a5, double a6, double a7, double a8, double a9):
     """
     Return Sup density
@@ -177,6 +178,7 @@ cpdef rdens(R, checkrd,  double a0, double a1, double a2, double a3, double a4, 
 
 
     return ret
+
 
 
 

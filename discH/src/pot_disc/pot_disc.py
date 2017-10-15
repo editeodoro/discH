@@ -87,14 +87,14 @@ def _fit_utility_rpoly(degree,rfit_array,nproc=1):
         raise ValueError('Maximum degree is 8')
 
     x0 = [np.mean(R)/2.,Sigma[0]]+list(np.zeros(degree-1))
-    ndim, nwalkers = degree+1, 100
+    ndim, nwalkers = degree+1, 50
 
     pos = [x0 + 1e-4 * np.random.randn(ndim) for i in range(nwalkers)]
     sampler = emcee.EnsembleSampler(nwalkers, ndim, _lnprob_halo, args=(R, Sigma, Sigma_err),threads=nproc)
-    sampler.run_mcmc(pos, 500)
+    sampler.run_mcmc(pos, 400)
 
-    samples = sampler.flatchain[100:]
-    postprob = sampler.flatlnprobability[100:]
+    samples = sampler.flatchain[50:]
+    postprob = sampler.flatlnprobability[50:]
     maxlik_idx = np.argmax(postprob)
     best_pars = samples[maxlik_idx, :]
     best_like = postprob[maxlik_idx]
@@ -713,7 +713,7 @@ class PolyExponential_disc(disc):
         #Sigma(R)
         if rfit_array is not None:
             print('Fittin surface density profile...',end='',flush=True)
-            popt,pcov=_fit_utility_rpoly(rfit_degree,rfit_array,nproc=1)
+            popt,pcov=_fit_utility_rpoly(rfit_degree,rfit_array,nproc=3)
             Rd=popt[0]
             sigma0=popt[1]
             coeff=popt[1:]/sigma0
@@ -734,7 +734,7 @@ class PolyExponential_disc(disc):
         #Sigma(R)
         if rfit_array is not None:
             print('Fittin surface density profile...',end='',flush=True)
-            popt,pcov=_fit_utility_rpoly(rfit_degree,rfit_array,nproc=1)
+            popt,pcov=_fit_utility_rpoly(rfit_degree,rfit_array,nproc=3)
             Rd=popt[0]
             sigma0=popt[1]
             coeff=popt[1:]/sigma0
@@ -772,7 +772,7 @@ class PolyExponential_disc(disc):
         #Sigma(R)
         if rfit_array is not None:
             print('Fittin surface density profile...',end='',flush=True)
-            popt,pcov=_fit_utility_rpoly(rfit_degree,rfit_array,nproc=1)
+            popt,pcov=_fit_utility_rpoly(rfit_degree,rfit_array,nproc=3)
             Rd=popt[0]
             sigma0=popt[1]
             coeff=popt[1:]/sigma0
@@ -825,7 +825,7 @@ class PolyExponential_disc(disc):
         #Sigma(R)
         if rfit_array is not None:
             print('Fittin surface density profile...',end='',flush=True)
-            popt,pcov=_fit_utility_rpoly(rfit_degree,rfit_array,nproc=1)
+            popt,pcov=_fit_utility_rpoly(rfit_degree,rfit_array,nproc=3)
             Rd=popt[0]
             sigma0=popt[1]
             coeff=popt[1:]/sigma0
@@ -869,7 +869,7 @@ class PolyExponential_disc(disc):
         #Sigma(R)
         if rfit_array is not None:
             print('Fittin surface density profile...',end='',flush=True)
-            popt,pcov=_fit_utility_rpoly(rfit_degree,rfit_array,nproc=1)
+            popt,pcov=_fit_utility_rpoly(rfit_degree,rfit_array,nproc=3)
             Rd=popt[0]
             sigma0=popt[1]
             coeff=popt[1:]/sigma0
@@ -1246,7 +1246,6 @@ class Gaussian_disc(disc):
         else:
             s+='Rlimit: %.3f kpc \n'%self.Rlimit
         return s
-
 
 class Frat_disc(disc):
 
