@@ -164,7 +164,8 @@ cpdef rdens(R, checkrd,  double a0, double a1, double a2, double a3, double a4, 
         rdens_func        = gaussian
 
     if isinstance(R, int) or isinstance(R, float):
-        ret=np.array([R,0])
+        ret=np.array([[R, 0]])
+
         ret[0,1]=rdens_func(R, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9)
 
     elif isinstance(R, list) or isinstance(R, tuple) or isinstance(R, np.ndarray):
