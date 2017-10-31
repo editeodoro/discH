@@ -118,7 +118,8 @@ def _funco_fratlaw(x,R):
 	
 def _lnprob_halo_fratlaw(x, R, yteo, yerr):
 
-    if x[0]<0:
+    s0, Rd, Rd2, alpha = x
+    if s0<0 or Rd<0 or Rd2<0:
         return -np.inf
 
     yobs=_funco_fratlaw(x,R)
