@@ -5,8 +5,6 @@ from .pot_c_ext.alfabeta_halo import potential_alfabeta, vcirc_alfabeta
 from .pot_c_ext.plummer_halo import potential_plummer, vcirc_plummer
 from .pot_c_ext.einasto_halo import potential_einasto, vcirc_einasto
 from .pot_c_ext.powercut_halo import potential_powercut#, vcirc_powercut
-from .pot_c_ext.triaxial_doublepower_halo import potential_triaxial_doublepower#, vcirc_powercut
-from .pot_c_ext.triaxial_exponential_halo import potential_triaxial_exponential#, vcirc_powercut
 
 import multiprocessing as mp
 from ..pardo.Pardo import ParDo
@@ -209,6 +207,7 @@ class halo(object):
 
         return s
 
+
 #TODO: la vcirc dell alone isotermo e analitica per ogni e, implementare la formula nella mia tesi
 class isothermal_halo(halo):
 
@@ -318,6 +317,7 @@ class isothermal_halo(halo):
         s+='mcut: %.3f \n'%self.mcut
 
         return s
+
 
 class NFW_halo(halo):
 
@@ -454,6 +454,7 @@ class NFW_halo(halo):
 
         return s
 
+
 class alfabeta_halo(halo):
 
     def __init__(self,d0,rs,alfa,beta,e=0,mcut=100):
@@ -575,6 +576,7 @@ class alfabeta_halo(halo):
 
         return s
 
+
 class hernquist_halo(alfabeta_halo):
 
     def __init__(self,d0,rs,e=0,mcut=100):
@@ -602,6 +604,7 @@ class hernquist_halo(alfabeta_halo):
 
         return s
 
+
 class deVacouler_like_halo(alfabeta_halo):
 
     def __init__(self,d0,rs,e=0,mcut=100):
@@ -627,6 +630,7 @@ class deVacouler_like_halo(alfabeta_halo):
         s+='mcut: %.3f \n'%self.mcut
 
         return s
+
 
 class plummer_halo(halo):
 
@@ -747,6 +751,7 @@ class plummer_halo(halo):
         s+='mcut: %.3f \n'%self.mcut
 
         return s
+
 
 class einasto_halo(halo):
 
@@ -1005,265 +1010,4 @@ class powercut_halo(halo):
         s+='e: %.3f \n'%self.e
         s+='mcut: %.3f \n'%self.mcut
         return s
-
-
-class triaxial_doublepower_halo(halo):
-
-    def __init__(self,d0,rc,alpha=1.,beta=3.,a=1.,b=1.,c=1.,mcut=100):
-        """
-        Double power-law triaxial potential (e.g., Dehen potentials, BT08 eq. 2.64)
-        d = d0 / ((m/rc)**(alpha) * (1+m/rc)**(beta-alpha))
-        
-        where m**2 = a**2(x**2/a**2 y**2/b**2 + z**2/c**2)
-
-        Particular doublepower models:
-            - 
-            -
-            - NFW: alpha=1, beta=3
-
-        :param d0:          Central density in Msun/kpc^3
-        :param rc:          Scale radius in kpc
-        :param alpha,beta:  indexes of power laws
-        :param a,b,c:       axis ratios
-        :param mcut:        elliptical radius where dens(m>mcut)=0
-        """
-
-        if alpha<0 or beta<alpha:
-            raise ValueError("alpha must be > 0 and beta>=alpha")    
-        
-        self.alpha = alpha
-        self.beta = beta
-        self.a = a
-        self.b = b
-        self.c = c
-        super(triaxial_doublepower_halo,self).__init__(d0=d0,rc=rc,mcut=mcut)
-        self.name='Triaxial Double Power law'
-
-
-    def __str__(self):
-        s=''
-        s+='Model: %s\n'%self.name
-        s+='Density: d = d0 / ((m/rc)**(alpha) * (1+m/rc)**(beta-alpha)) \n '
-        s+= '   with m**2 = x**2/a**2 + y**2/b**2 + z**2/c**2 \n'
-        s+='d0: %.2e Msun/kpc3 \n'%self.d0
-        s+='rc: %.2f\n'%self.rc
-        s+='alpha: %.2f\n'%self.alpha
-        s+='beta: %.2f\n'%self.beta
-        s+='a: %.2f\n'%self.a
-        s+='b: %.2f\n'%self.b
-        s+='c: %.2f\n'%self.c
-        s+='mcut: %.3f \n'%self.mcut
-        return s
-        
-        
-    def _dens(self, x, y=0, z=0):
-        """ Return density at (x,y,z) """
-        m  = self.a*np.sqrt(x**2/self.a**2+y**2/self.b**2+z**2/self.c**2)
-        d  = self.d0 / ((m/self.rc)**self.alpha * (1+m/self.rc)**(self.beta-self.alpha))
-        return d
-
-
-    def _potential_serial(self, x, y, z, grid=False, toll=1e-4, mcut=None):
-        """Calculate the potential in (x,y,z) using a serial code
-
-        :param x,y,z: Cartesian coordinates [kpc]
-        :param grid:  if True calculate the potential in a 2D grid in R and Z
-        :param toll: tollerance for quad integration
-        :param mcut: elliptical radius where dens(m>mcut)=0
-        """
-        self.set_toll(toll)
-        return potential_triaxial_doublepower(x,y,z,self.d0,self.rc,self.alpha,self.beta,self.a,self.b,self.c,mcut,self.toll,grid)
-
-''' To be implemented
-    def _potential_parallel(self, R, Z, grid=False, toll=1e-4, mcut=None, nproc=2):
-        """Calculate the potential in R and Z using a parallelized code.
-
-        :param R: Cylindrical radius [kpc]
-        :param Z: Cylindrical height [kpc]
-        :param grid:  if True calculate the potential in a 2D grid in R and Z
-        :param toll: tollerance for quad integration
-        :param mcut: elliptical radius where dens(m>mcut)=0
-        :return:
-        """
-
-        self.set_toll(toll)
-
-        pardo=ParDo(nproc=nproc)
-        pardo.set_func(potential_triaxial_doublepower)
-
-        if len(R)!=len(Z) or grid==True:
-            htab = pardo.run_grid(R,args=(Z,self.d0,self.rc,self.rb,self.alpha,self.e,mcut,self.toll,grid))
-        else:
-            htab = pardo.run(R,Z, args=(self.d0,self.rc,self.rb,self.alpha,self.e,mcut,self.toll,grid))
-        
-        return htab
-
-
-    def _vcirc_serial(self, R, toll=1e-4):
-        """Calculate the Vcirc in R using a serial code
-        :param R: Cylindrical radius [kpc]
-        :param toll: tollerance for quad integration
-        :return:
-        """
-        self.set_toll(toll)
-
-        return np.array(vcirc_powercut(R,self.d0,self.rs,self.rb,self.alpha,self.e,self.toll))
-
-    def _vcirc_parallel(self, R, toll=1e-4, nproc=1):
-        """Calculate the Vcirc in R using a parallelized code
-        :param R: Cylindrical radius [kpc]
-        :param toll: tollerance for quad integration
-        :param nproc: Number of processes
-        :return:
-        """
-
-        self.set_toll(toll)
-        pardo=ParDo(nproc=nproc)
-        pardo.set_func(vcirc_powercut)
-        htab=pardo.run_grid(R,args=(self.d0,self.rs,self.rb,self.alpha,self.e,self.toll))
-
-        return htab
-
-
-    def __str__(self):
-
-        s=''
-        s+='Model: %s\n'%self.name
-        s+='d0: %.2e Msun/kpc3 \n'%self.d0
-        s+='rs: %.2f\n'%self.rc
-        s+='rb: %.2f\n'%self.rb
-        s+='alpha: %.2f\n'%self.alpha
-        s+='e: %.3f \n'%self.e
-        s+='mcut: %.3f \n'%self.mcut
-
-        return s
-
-'''
-
-class triaxial_exponential_halo(halo):
-
-    def __init__(self,d0,rc,alpha=1,a=1.,b=1.,c=1.,mcut=100):
-        """
-        Exponential triaxial potential
-        d = d0*exp(-(m/rc)**alpha)
-        
-        where m**2 = a**2(x**2/a**2 y**2/b**2 + z**2/c**2)
-
-        :param d0:          Central density in Msun/kpc^3
-        :param rc:          Scale radius in kpc
-        :param alpha:       power of exp argument
-        :param a,b,c:       axis ratios
-        :param mcut:        elliptical radius where dens(m>mcut)=0
-        """
-
-        if alpha<0:
-            raise ValueError("alpha must be > 0 ")    
-        
-        self.alpha = alpha
-        self.a = a
-        self.b = b
-        self.c = c
-        super(triaxial_exponential_halo,self).__init__(d0=d0,rc=rc,mcut=mcut)
-        self.name='Triaxial Exponential'
-
-
-    def __str__(self):
-        s=''
-        s+='Model: %s\n'%self.name
-        s+='Density: d = d0*exp(-(m/rc)**alpha) \n '
-        s+= '   with m**2 = x**2/a**2 + y**2/b**2 + z**2/c**2 \n'
-        s+='d0: %.2e Msun/kpc3 \n'%self.d0
-        s+='rc: %.2f\n'%self.rc
-        s+='alpha: %.2f\n'%self.alpha
-        s+='a: %.2f\n'%self.a
-        s+='b: %.2f\n'%self.b
-        s+='c: %.2f\n'%self.c
-        s+='mcut: %.3f \n'%self.mcut
-        return s
-        
-        
-    def _dens(self, x, y=0, z=0):
-        """ Return density at (x,y,z) """
-        m  = self.a*np.sqrt(x**2/self.a**2+y**2/self.b**2+z**2/self.c**2)
-        d  = self.d0 * np.exp(-(m/self.rc)**self.alpha)
-        return d
-
-
-    def _potential_serial(self, x, y, z, grid=False, toll=1e-4, mcut=None):
-        """Calculate the potential in (x,y,z) using a serial code
-
-        :param x,y,z: Cartesian coordinates [kpc]
-        :param grid:  if True calculate the potential in a 2D grid in R and Z
-        :param toll: tollerance for quad integration
-        :param mcut: elliptical radius where dens(m>mcut)=0
-        """
-        self.set_toll(toll)
-        return potential_triaxial_exponential(x,y,z,self.d0,self.rc,self.alpha,self.a,self.b,self.c,mcut,self.toll,grid)
-
-''' To be implemented
-    def _potential_parallel(self, R, Z, grid=False, toll=1e-4, mcut=None, nproc=2):
-        """Calculate the potential in R and Z using a parallelized code.
-
-        :param R: Cylindrical radius [kpc]
-        :param Z: Cylindrical height [kpc]
-        :param grid:  if True calculate the potential in a 2D grid in R and Z
-        :param toll: tollerance for quad integration
-        :param mcut: elliptical radius where dens(m>mcut)=0
-        :return:
-        """
-
-        self.set_toll(toll)
-
-        pardo=ParDo(nproc=nproc)
-        pardo.set_func(potential_triaxial_doublepower)
-
-        if len(R)!=len(Z) or grid==True:
-            htab = pardo.run_grid(R,args=(Z,self.d0,self.rc,self.rb,self.alpha,self.e,mcut,self.toll,grid))
-        else:
-            htab = pardo.run(R,Z, args=(self.d0,self.rc,self.rb,self.alpha,self.e,mcut,self.toll,grid))
-        
-        return htab
-
-
-    def _vcirc_serial(self, R, toll=1e-4):
-        """Calculate the Vcirc in R using a serial code
-        :param R: Cylindrical radius [kpc]
-        :param toll: tollerance for quad integration
-        :return:
-        """
-        self.set_toll(toll)
-
-        return np.array(vcirc_powercut(R,self.d0,self.rs,self.rb,self.alpha,self.e,self.toll))
-
-    def _vcirc_parallel(self, R, toll=1e-4, nproc=1):
-        """Calculate the Vcirc in R using a parallelized code
-        :param R: Cylindrical radius [kpc]
-        :param toll: tollerance for quad integration
-        :param nproc: Number of processes
-        :return:
-        """
-
-        self.set_toll(toll)
-        pardo=ParDo(nproc=nproc)
-        pardo.set_func(vcirc_powercut)
-        htab=pardo.run_grid(R,args=(self.d0,self.rs,self.rb,self.alpha,self.e,self.toll))
-
-        return htab
-
-
-    def __str__(self):
-
-        s=''
-        s+='Model: %s\n'%self.name
-        s+='d0: %.2e Msun/kpc3 \n'%self.d0
-        s+='rs: %.2f\n'%self.rc
-        s+='rb: %.2f\n'%self.rb
-        s+='alpha: %.2f\n'%self.alpha
-        s+='e: %.3f \n'%self.e
-        s+='mcut: %.3f \n'%self.mcut
-
-        return s
-
-'''
-
 

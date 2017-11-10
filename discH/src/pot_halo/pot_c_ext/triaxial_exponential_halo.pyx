@@ -131,6 +131,7 @@ cpdef potential_triaxial_exponential(x, y, z, d0, rs, alpha, a, b, c, mcut, toll
         else:
             raise ValueError('x, y and z have different dimension')
 
+
 ''' To be implemented
 #####################################################################
 #Vcirc
