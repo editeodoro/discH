@@ -131,8 +131,6 @@ cdef double[:,:]  _potential_iso_array(double[:] R, double[:] Z, int nlen, doubl
     fintegrand=LowLevelCallable.from_cython(mod,'integrand_hiso')
 
     for  i in range(nlen):
-
-
         ret[i,0]=R[i]
         ret[i,1]=Z[i]
 

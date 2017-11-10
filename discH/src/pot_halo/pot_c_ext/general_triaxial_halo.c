@@ -4,12 +4,16 @@
 {
     "distutils": {
         "depends": [],
-        "name": "discH/src/pot_disc/pot_c_ext/zdens_law",
+        "include_dirs": [
+            "/usr/local/lib/python3.6/site-packages/numpy/core/include",
+            "/usr/local/Cellar/gsl/2.4/include"
+        ],
+        "name": "discH/src/pot_halo/pot_c_ext/general_triaxial_halo",
         "sources": [
-            "discH/src/pot_disc/pot_c_ext/zdens_law.pyx"
+            "discH/src/pot_halo/pot_c_ext/general_triaxial_halo.pyx"
         ]
     },
-    "module_name": "discH/src/pot_disc/pot_c_ext/zdens_law"
+    "module_name": "discH/src/pot_halo/pot_c_ext/general_triaxial_halo"
 }
 END: Cython Metadata */
 
@@ -531,8 +535,8 @@ static CYTHON_INLINE float __PYX_NAN() {
   #endif
 #endif
 
-#define __PYX_HAVE__discH__src__pot_disc__pot_c_ext__zdens_law
-#define __PYX_HAVE_API__discH__src__pot_disc__pot_c_ext__zdens_law
+#define __PYX_HAVE__discH__src__pot_halo__pot_c_ext__general_triaxial_halo
+#define __PYX_HAVE_API__discH__src__pot_halo__pot_c_ext__general_triaxial_halo
 #include <math.h>
 #ifdef _OPENMP
 #include <omp.h>
@@ -737,7 +741,7 @@ static const char *__pyx_filename;
 
 
 static const char *__pyx_f[] = {
-  "discH/src/pot_disc/pot_c_ext/zdens_law.pyx",
+  "discH/src/pot_halo/pot_c_ext/general_triaxial_halo.pyx",
 };
 
 /*--- Type declarations ---*/
@@ -917,83 +921,46 @@ static int __Pyx_InitStrings(__Pyx_StringTabEntry *t);
 
 /* Module declarations from 'libc.math' */
 
-/* Module declarations from 'discH.src.pot_disc.pot_c_ext.zdens_law' */
-static double __pyx_v_5discH_3src_8pot_disc_9pot_c_ext_9zdens_law_PI;
-static double __pyx_f_5discH_3src_8pot_disc_9pot_c_ext_9zdens_law_zexp(double, double); /*proto*/
-static double __pyx_f_5discH_3src_8pot_disc_9pot_c_ext_9zdens_law_zgau(double, double); /*proto*/
-static double __pyx_f_5discH_3src_8pot_disc_9pot_c_ext_9zdens_law_zsech2(double, double); /*proto*/
-#define __Pyx_MODULE_NAME "discH.src.pot_disc.pot_c_ext.zdens_law"
-int __pyx_module_is_main_discH__src__pot_disc__pot_c_ext__zdens_law = 0;
+/* Module declarations from 'discH.src.pot_halo.pot_c_ext.general_triaxial_halo' */
+static double __pyx_v_5discH_3src_8pot_halo_9pot_c_ext_21general_triaxial_halo_PI;
+#define __Pyx_MODULE_NAME "discH.src.pot_halo.pot_c_ext.general_triaxial_halo"
+int __pyx_module_is_main_discH__src__pot_halo__pot_c_ext__general_triaxial_halo = 0;
 
-/* Implementation of 'discH.src.pot_disc.pot_c_ext.zdens_law' */
-static const char __pyx_k_exp[] = "exp";
-static const char __pyx_k_gau[] = "gau";
+/* Implementation of 'discH.src.pot_halo.pot_c_ext.general_triaxial_halo' */
 static const char __pyx_k_main[] = "__main__";
 static const char __pyx_k_test[] = "__test__";
-static const char __pyx_k_dirac[] = "dirac";
-static const char __pyx_k_sech2[] = "sech2";
-static const char __pyx_k_hwhm_fact[] = "hwhm_fact";
 static const char __pyx_k_cline_in_traceback[] = "cline_in_traceback";
 static PyObject *__pyx_n_s_cline_in_traceback;
-static PyObject *__pyx_n_u_dirac;
-static PyObject *__pyx_n_u_exp;
-static PyObject *__pyx_n_u_gau;
-static PyObject *__pyx_n_s_hwhm_fact;
 static PyObject *__pyx_n_s_main;
-static PyObject *__pyx_n_u_sech2;
 static PyObject *__pyx_n_s_test;
-static PyObject *__pyx_float_0_693;
-static PyObject *__pyx_float_0_881;
-static PyObject *__pyx_float_1_177;
-static PyObject *__pyx_int_0;
 
-/* "discH/src/pot_disc/pot_c_ext/zdens_law.pyx":9
- * #all normlised to the integral from -infty to infty.
+/* "discH/src/pot_halo/pot_c_ext/general_triaxial_halo.pyx":6
+ * cdef double PI=3.14159265358979323846
  * 
- * cdef double zexp(double z, double zd) nogil:             # <<<<<<<<<<<<<<
+ * cdef double integrand_core(double s, double a, double b, double c, double psi, double psicut) nogil:             # <<<<<<<<<<<<<<
  *     """
- *     Z=exp(-z/zd)/(2*zd)
+ *     Integrand core function for triaxial potential (eq 2.140 BT08, but in ds)
  */
 
-static double __pyx_f_5discH_3src_8pot_disc_9pot_c_ext_9zdens_law_zexp(double __pyx_v_z, double __pyx_v_zd) {
-  double __pyx_v_norm;
-  double __pyx_v_densz;
+static double __pyx_f_5discH_3src_8pot_halo_9pot_c_ext_21general_triaxial_halo_integrand_core(double __pyx_v_s, double __pyx_v_a, double __pyx_v_b, double __pyx_v_c, double __pyx_v_psi, double __pyx_v_psicut) {
   double __pyx_r;
 
-  /* "discH/src/pot_disc/pot_c_ext/zdens_law.pyx":20
- *         double norm, densz
+  /* "discH/src/pot_halo/pot_c_ext/general_triaxial_halo.pyx":16
+ *     :return:        integrand for eq. 2.140 BT08
+ *     """
+ *     return -2*(psi-psicut) / sqrt((1+s*s*(a*a-1))*(1+s*s*(b*b-1))*(1+s*s*(c*c-1)))             # <<<<<<<<<<<<<<
  * 
- *     norm=(1/(2*zd))             # <<<<<<<<<<<<<<
- *     densz=exp(-fabs(z/zd))
- * 
+ * cdef double potential_core(double a, double b, double c, double intpot) nogil:
  */
-  __pyx_v_norm = (1.0 / (2.0 * __pyx_v_zd));
-
-  /* "discH/src/pot_disc/pot_c_ext/zdens_law.pyx":21
- * 
- *     norm=(1/(2*zd))
- *     densz=exp(-fabs(z/zd))             # <<<<<<<<<<<<<<
- * 
- *     return norm*densz
- */
-  __pyx_v_densz = exp((-fabs((__pyx_v_z / __pyx_v_zd))));
-
-  /* "discH/src/pot_disc/pot_c_ext/zdens_law.pyx":23
- *     densz=exp(-fabs(z/zd))
- * 
- *     return norm*densz             # <<<<<<<<<<<<<<
- * 
- * cdef double zexp_der(double z, double zd) nogil:
- */
-  __pyx_r = (__pyx_v_norm * __pyx_v_densz);
+  __pyx_r = ((-2.0 * (__pyx_v_psi - __pyx_v_psicut)) / sqrt((((1.0 + ((__pyx_v_s * __pyx_v_s) * ((__pyx_v_a * __pyx_v_a) - 1.0))) * (1.0 + ((__pyx_v_s * __pyx_v_s) * ((__pyx_v_b * __pyx_v_b) - 1.0)))) * (1.0 + ((__pyx_v_s * __pyx_v_s) * ((__pyx_v_c * __pyx_v_c) - 1.0))))));
   goto __pyx_L0;
 
-  /* "discH/src/pot_disc/pot_c_ext/zdens_law.pyx":9
- * #all normlised to the integral from -infty to infty.
+  /* "discH/src/pot_halo/pot_c_ext/general_triaxial_halo.pyx":6
+ * cdef double PI=3.14159265358979323846
  * 
- * cdef double zexp(double z, double zd) nogil:             # <<<<<<<<<<<<<<
+ * cdef double integrand_core(double s, double a, double b, double c, double psi, double psicut) nogil:             # <<<<<<<<<<<<<<
  *     """
- *     Z=exp(-z/zd)/(2*zd)
+ *     Integrand core function for triaxial potential (eq 2.140 BT08, but in ds)
  */
 
   /* function exit code */
@@ -1001,257 +968,43 @@ static double __pyx_f_5discH_3src_8pot_disc_9pot_c_ext_9zdens_law_zexp(double __
   return __pyx_r;
 }
 
-/* "discH/src/pot_disc/pot_c_ext/zdens_law.pyx":25
- *     return norm*densz
+/* "discH/src/pot_halo/pot_c_ext/general_triaxial_halo.pyx":18
+ *     return -2*(psi-psicut) / sqrt((1+s*s*(a*a-1))*(1+s*s*(b*b-1))*(1+s*s*(c*c-1)))
  * 
- * cdef double zexp_der(double z, double zd) nogil:             # <<<<<<<<<<<<<<
- *     """
- *     Z=-exp(-z/zd)/(2*zd^2)=-zexp/zd
+ * cdef double potential_core(double a, double b, double c, double intpot) nogil:             # <<<<<<<<<<<<<<
+ *     """ Function to calcualte the potential (Use the formula 2.88b in BT 1987)
+ * 
  */
 
-static double __pyx_f_5discH_3src_8pot_disc_9pot_c_ext_9zdens_law_zexp_der(double __pyx_v_z, double __pyx_v_zd) {
-  double __pyx_v_zder;
+static double __pyx_f_5discH_3src_8pot_halo_9pot_c_ext_21general_triaxial_halo_potential_core(double __pyx_v_a, double __pyx_v_b, double __pyx_v_c, double __pyx_v_intpot) {
+  double __pyx_v_G;
   double __pyx_r;
 
-  /* "discH/src/pot_disc/pot_c_ext/zdens_law.pyx":32
- *     :return:
+  /* "discH/src/pot_halo/pot_c_ext/general_triaxial_halo.pyx":26
  *     """
- *     cdef double zder=-zexp(z,zd)/(zd)             # <<<<<<<<<<<<<<
+ *     cdef:
+ *         double G=4.498658966346282e-12 #G constant in  kpc^3/(msol Myr^2 )             # <<<<<<<<<<<<<<
  * 
- *     return zder
+ *     return -PI*G*b*c/a*intpot
  */
-  __pyx_v_zder = ((-__pyx_f_5discH_3src_8pot_disc_9pot_c_ext_9zdens_law_zexp(__pyx_v_z, __pyx_v_zd)) / __pyx_v_zd);
+  __pyx_v_G = 4.498658966346282e-12;
 
-  /* "discH/src/pot_disc/pot_c_ext/zdens_law.pyx":34
- *     cdef double zder=-zexp(z,zd)/(zd)
+  /* "discH/src/pot_halo/pot_c_ext/general_triaxial_halo.pyx":28
+ *         double G=4.498658966346282e-12 #G constant in  kpc^3/(msol Myr^2 )
  * 
- *     return zder             # <<<<<<<<<<<<<<
+ *     return -PI*G*b*c/a*intpot             # <<<<<<<<<<<<<<
  * 
  * 
  */
-  __pyx_r = __pyx_v_zder;
+  __pyx_r = ((((((-__pyx_v_5discH_3src_8pot_halo_9pot_c_ext_21general_triaxial_halo_PI) * __pyx_v_G) * __pyx_v_b) * __pyx_v_c) / __pyx_v_a) * __pyx_v_intpot);
   goto __pyx_L0;
 
-  /* "discH/src/pot_disc/pot_c_ext/zdens_law.pyx":25
- *     return norm*densz
+  /* "discH/src/pot_halo/pot_c_ext/general_triaxial_halo.pyx":18
+ *     return -2*(psi-psicut) / sqrt((1+s*s*(a*a-1))*(1+s*s*(b*b-1))*(1+s*s*(c*c-1)))
  * 
- * cdef double zexp_der(double z, double zd) nogil:             # <<<<<<<<<<<<<<
- *     """
- *     Z=-exp(-z/zd)/(2*zd^2)=-zexp/zd
- */
-
-  /* function exit code */
-  __pyx_L0:;
-  return __pyx_r;
-}
-
-/* "discH/src/pot_disc/pot_c_ext/zdens_law.pyx":37
+ * cdef double potential_core(double a, double b, double c, double intpot) nogil:             # <<<<<<<<<<<<<<
+ *     """ Function to calcualte the potential (Use the formula 2.88b in BT 1987)
  * 
- * 
- * cdef double zgau(double z, double zd) nogil:             # <<<<<<<<<<<<<<
- *     """
- *     Gau(z)=Exp(-0.5*z^2/zd^2) / (Sqrt(2*pi) *zd)
- */
-
-static double __pyx_f_5discH_3src_8pot_disc_9pot_c_ext_9zdens_law_zgau(double __pyx_v_z, double __pyx_v_zd) {
-  double __pyx_v_norm;
-  double __pyx_v_densz;
-  double __pyx_r;
-
-  /* "discH/src/pot_disc/pot_c_ext/zdens_law.pyx":48
- * 
- *     #3D dens
- *     norm=(1/(sqrt(2*PI)*zd))             # <<<<<<<<<<<<<<
- *     densz=exp(-0.5*(z/zd)*(z/zd))
- * 
- */
-  __pyx_v_norm = (1.0 / (sqrt((2.0 * __pyx_v_5discH_3src_8pot_disc_9pot_c_ext_9zdens_law_PI)) * __pyx_v_zd));
-
-  /* "discH/src/pot_disc/pot_c_ext/zdens_law.pyx":49
- *     #3D dens
- *     norm=(1/(sqrt(2*PI)*zd))
- *     densz=exp(-0.5*(z/zd)*(z/zd))             # <<<<<<<<<<<<<<
- * 
- *     return densz*norm
- */
-  __pyx_v_densz = exp(((-0.5 * (__pyx_v_z / __pyx_v_zd)) * (__pyx_v_z / __pyx_v_zd)));
-
-  /* "discH/src/pot_disc/pot_c_ext/zdens_law.pyx":51
- *     densz=exp(-0.5*(z/zd)*(z/zd))
- * 
- *     return densz*norm             # <<<<<<<<<<<<<<
- * 
- * cdef double zgau_der(double z, double zd) nogil:
- */
-  __pyx_r = (__pyx_v_densz * __pyx_v_norm);
-  goto __pyx_L0;
-
-  /* "discH/src/pot_disc/pot_c_ext/zdens_law.pyx":37
- * 
- * 
- * cdef double zgau(double z, double zd) nogil:             # <<<<<<<<<<<<<<
- *     """
- *     Gau(z)=Exp(-0.5*z^2/zd^2) / (Sqrt(2*pi) *zd)
- */
-
-  /* function exit code */
-  __pyx_L0:;
-  return __pyx_r;
-}
-
-/* "discH/src/pot_disc/pot_c_ext/zdens_law.pyx":53
- *     return densz*norm
- * 
- * cdef double zgau_der(double z, double zd) nogil:             # <<<<<<<<<<<<<<
- *     """
- *     Gau_der(z)=-Exp(-0.5*z^2/zd^2) / (Sqrt(2*pi) *zd) * (z/zd^2) = -Gau(z)*(z/zd^2)
- */
-
-static double __pyx_f_5discH_3src_8pot_disc_9pot_c_ext_9zdens_law_zgau_der(double __pyx_v_z, double __pyx_v_zd) {
-  double __pyx_v_func;
-  double __pyx_v_der_fact;
-  double __pyx_r;
-
-  /* "discH/src/pot_disc/pot_c_ext/zdens_law.pyx":63
- *         double func, der_fact
- * 
- *     func=zgau(z, zd)             # <<<<<<<<<<<<<<
- *     der_fact=-z/(zd*zd)
- * 
- */
-  __pyx_v_func = __pyx_f_5discH_3src_8pot_disc_9pot_c_ext_9zdens_law_zgau(__pyx_v_z, __pyx_v_zd);
-
-  /* "discH/src/pot_disc/pot_c_ext/zdens_law.pyx":64
- * 
- *     func=zgau(z, zd)
- *     der_fact=-z/(zd*zd)             # <<<<<<<<<<<<<<
- * 
- * 
- */
-  __pyx_v_der_fact = ((-__pyx_v_z) / (__pyx_v_zd * __pyx_v_zd));
-
-  /* "discH/src/pot_disc/pot_c_ext/zdens_law.pyx":67
- * 
- * 
- *     return func*der_fact             # <<<<<<<<<<<<<<
- * 
- * cdef double zsech2(double z, double zd) nogil:
- */
-  __pyx_r = (__pyx_v_func * __pyx_v_der_fact);
-  goto __pyx_L0;
-
-  /* "discH/src/pot_disc/pot_c_ext/zdens_law.pyx":53
- *     return densz*norm
- * 
- * cdef double zgau_der(double z, double zd) nogil:             # <<<<<<<<<<<<<<
- *     """
- *     Gau_der(z)=-Exp(-0.5*z^2/zd^2) / (Sqrt(2*pi) *zd) * (z/zd^2) = -Gau(z)*(z/zd^2)
- */
-
-  /* function exit code */
-  __pyx_L0:;
-  return __pyx_r;
-}
-
-/* "discH/src/pot_disc/pot_c_ext/zdens_law.pyx":69
- *     return func*der_fact
- * 
- * cdef double zsech2(double z, double zd) nogil:             # <<<<<<<<<<<<<<
- *     """
- *     Sech2(z)=(Sech(z/zd))^2 / ()
- */
-
-static double __pyx_f_5discH_3src_8pot_disc_9pot_c_ext_9zdens_law_zsech2(double __pyx_v_z, double __pyx_v_zd) {
-  double __pyx_v_norm;
-  double __pyx_v_densz;
-  double __pyx_r;
-
-  /* "discH/src/pot_disc/pot_c_ext/zdens_law.pyx":80
- *         double norm, densz
- * 
- *     norm=(1/(2*zd))             # <<<<<<<<<<<<<<
- *     densz=(1/(cosh(z/zd)) ) *  (1/(cosh(z/zd)) )
- * 
- */
-  __pyx_v_norm = (1.0 / (2.0 * __pyx_v_zd));
-
-  /* "discH/src/pot_disc/pot_c_ext/zdens_law.pyx":81
- * 
- *     norm=(1/(2*zd))
- *     densz=(1/(cosh(z/zd)) ) *  (1/(cosh(z/zd)) )             # <<<<<<<<<<<<<<
- * 
- *     return norm*densz
- */
-  __pyx_v_densz = ((1.0 / cosh((__pyx_v_z / __pyx_v_zd))) * (1.0 / cosh((__pyx_v_z / __pyx_v_zd))));
-
-  /* "discH/src/pot_disc/pot_c_ext/zdens_law.pyx":83
- *     densz=(1/(cosh(z/zd)) ) *  (1/(cosh(z/zd)) )
- * 
- *     return norm*densz             # <<<<<<<<<<<<<<
- * 
- * cdef double zsech2_der(double z, double zd) nogil:
- */
-  __pyx_r = (__pyx_v_norm * __pyx_v_densz);
-  goto __pyx_L0;
-
-  /* "discH/src/pot_disc/pot_c_ext/zdens_law.pyx":69
- *     return func*der_fact
- * 
- * cdef double zsech2(double z, double zd) nogil:             # <<<<<<<<<<<<<<
- *     """
- *     Sech2(z)=(Sech(z/zd))^2 / ()
- */
-
-  /* function exit code */
-  __pyx_L0:;
-  return __pyx_r;
-}
-
-/* "discH/src/pot_disc/pot_c_ext/zdens_law.pyx":85
- *     return norm*densz
- * 
- * cdef double zsech2_der(double z, double zd) nogil:             # <<<<<<<<<<<<<<
- *     """
- *     Sech2_der(z)=-(Sech(z/zd))^2 / (2*zd) *  2*Tanh(z/zd)/zd=  - Sech2(z/zd) * 2*Tanh(z/zd)/zd
- */
-
-static double __pyx_f_5discH_3src_8pot_disc_9pot_c_ext_9zdens_law_zsech2_der(double __pyx_v_z, double __pyx_v_zd) {
-  double __pyx_v_func;
-  double __pyx_v_der_fact;
-  double __pyx_r;
-
-  /* "discH/src/pot_disc/pot_c_ext/zdens_law.pyx":95
- *         double func, der_fact
- * 
- *     func=zsech2(z, zd)             # <<<<<<<<<<<<<<
- *     der_fact=-2*tanh(z/zd)/zd
- * 
- */
-  __pyx_v_func = __pyx_f_5discH_3src_8pot_disc_9pot_c_ext_9zdens_law_zsech2(__pyx_v_z, __pyx_v_zd);
-
-  /* "discH/src/pot_disc/pot_c_ext/zdens_law.pyx":96
- * 
- *     func=zsech2(z, zd)
- *     der_fact=-2*tanh(z/zd)/zd             # <<<<<<<<<<<<<<
- * 
- * 
- */
-  __pyx_v_der_fact = ((-2.0 * tanh((__pyx_v_z / __pyx_v_zd))) / __pyx_v_zd);
-
-  /* "discH/src/pot_disc/pot_c_ext/zdens_law.pyx":99
- * 
- * 
- *     return func*der_fact             # <<<<<<<<<<<<<<
- */
-  __pyx_r = (__pyx_v_func * __pyx_v_der_fact);
-  goto __pyx_L0;
-
-  /* "discH/src/pot_disc/pot_c_ext/zdens_law.pyx":85
- *     return norm*densz
- * 
- * cdef double zsech2_der(double z, double zd) nogil:             # <<<<<<<<<<<<<<
- *     """
- *     Sech2_der(z)=-(Sech(z/zd))^2 / (2*zd) *  2*Tanh(z/zd)/zd=  - Sech2(z/zd) * 2*Tanh(z/zd)/zd
  */
 
   /* function exit code */
@@ -1266,17 +1019,17 @@ static PyMethodDef __pyx_methods[] = {
 #if PY_MAJOR_VERSION >= 3
 #if CYTHON_PEP489_MULTI_PHASE_INIT
 static PyObject* __pyx_pymod_create(PyObject *spec, PyModuleDef *def); /*proto*/
-static int __pyx_pymod_exec_zdens_law(PyObject* module); /*proto*/
+static int __pyx_pymod_exec_general_triaxial_halo(PyObject* module); /*proto*/
 static PyModuleDef_Slot __pyx_moduledef_slots[] = {
   {Py_mod_create, (void*)__pyx_pymod_create},
-  {Py_mod_exec, (void*)__pyx_pymod_exec_zdens_law},
+  {Py_mod_exec, (void*)__pyx_pymod_exec_general_triaxial_halo},
   {0, NULL}
 };
 #endif
 
 static struct PyModuleDef __pyx_moduledef = {
     PyModuleDef_HEAD_INIT,
-    "zdens_law",
+    "general_triaxial_halo",
     0, /* m_doc */
   #if CYTHON_PEP489_MULTI_PHASE_INIT
     0, /* m_size */
@@ -1297,12 +1050,7 @@ static struct PyModuleDef __pyx_moduledef = {
 
 static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_cline_in_traceback, __pyx_k_cline_in_traceback, sizeof(__pyx_k_cline_in_traceback), 0, 0, 1, 1},
-  {&__pyx_n_u_dirac, __pyx_k_dirac, sizeof(__pyx_k_dirac), 0, 1, 0, 1},
-  {&__pyx_n_u_exp, __pyx_k_exp, sizeof(__pyx_k_exp), 0, 1, 0, 1},
-  {&__pyx_n_u_gau, __pyx_k_gau, sizeof(__pyx_k_gau), 0, 1, 0, 1},
-  {&__pyx_n_s_hwhm_fact, __pyx_k_hwhm_fact, sizeof(__pyx_k_hwhm_fact), 0, 0, 1, 1},
   {&__pyx_n_s_main, __pyx_k_main, sizeof(__pyx_k_main), 0, 0, 1, 1},
-  {&__pyx_n_u_sech2, __pyx_k_sech2, sizeof(__pyx_k_sech2), 0, 1, 0, 1},
   {&__pyx_n_s_test, __pyx_k_test, sizeof(__pyx_k_test), 0, 0, 1, 1},
   {0, 0, 0, 0, 0, 0, 0}
 };
@@ -1319,21 +1067,17 @@ static int __Pyx_InitCachedConstants(void) {
 
 static int __Pyx_InitGlobals(void) {
   if (__Pyx_InitStrings(__pyx_string_tab) < 0) __PYX_ERR(0, 1, __pyx_L1_error);
-  __pyx_float_0_693 = PyFloat_FromDouble(0.693); if (unlikely(!__pyx_float_0_693)) __PYX_ERR(0, 1, __pyx_L1_error)
-  __pyx_float_0_881 = PyFloat_FromDouble(0.881); if (unlikely(!__pyx_float_0_881)) __PYX_ERR(0, 1, __pyx_L1_error)
-  __pyx_float_1_177 = PyFloat_FromDouble(1.177); if (unlikely(!__pyx_float_1_177)) __PYX_ERR(0, 1, __pyx_L1_error)
-  __pyx_int_0 = PyInt_FromLong(0); if (unlikely(!__pyx_int_0)) __PYX_ERR(0, 1, __pyx_L1_error)
   return 0;
   __pyx_L1_error:;
   return -1;
 }
 
 #if PY_MAJOR_VERSION < 3
-PyMODINIT_FUNC initzdens_law(void); /*proto*/
-PyMODINIT_FUNC initzdens_law(void)
+PyMODINIT_FUNC initgeneral_triaxial_halo(void); /*proto*/
+PyMODINIT_FUNC initgeneral_triaxial_halo(void)
 #else
-PyMODINIT_FUNC PyInit_zdens_law(void); /*proto*/
-PyMODINIT_FUNC PyInit_zdens_law(void)
+PyMODINIT_FUNC PyInit_general_triaxial_halo(void); /*proto*/
+PyMODINIT_FUNC PyInit_general_triaxial_halo(void)
 #if CYTHON_PEP489_MULTI_PHASE_INIT
 {
   return PyModuleDef_Init(&__pyx_moduledef);
@@ -1373,7 +1117,7 @@ bad:
 }
 
 
-static int __pyx_pymod_exec_zdens_law(PyObject *__pyx_pyinit_module)
+static int __pyx_pymod_exec_general_triaxial_halo(PyObject *__pyx_pyinit_module)
 #endif
 #endif
 {
@@ -1391,7 +1135,7 @@ static int __pyx_pymod_exec_zdens_law(PyObject *__pyx_pyinit_module)
           Py_FatalError("failed to import 'refnanny' module");
   }
   #endif
-  __Pyx_RefNannySetupContext("PyMODINIT_FUNC PyInit_zdens_law(void)", 0);
+  __Pyx_RefNannySetupContext("PyMODINIT_FUNC PyInit_general_triaxial_halo(void)", 0);
   if (__Pyx_check_binary_version() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_empty_tuple = PyTuple_New(0); if (unlikely(!__pyx_empty_tuple)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_empty_bytes = PyBytes_FromStringAndSize("", 0); if (unlikely(!__pyx_empty_bytes)) __PYX_ERR(0, 1, __pyx_L1_error)
@@ -1427,7 +1171,7 @@ static int __pyx_pymod_exec_zdens_law(PyObject *__pyx_pyinit_module)
   Py_INCREF(__pyx_m);
   #else
   #if PY_MAJOR_VERSION < 3
-  __pyx_m = Py_InitModule4("zdens_law", __pyx_methods, 0, 0, PYTHON_API_VERSION); Py_XINCREF(__pyx_m);
+  __pyx_m = Py_InitModule4("general_triaxial_halo", __pyx_methods, 0, 0, PYTHON_API_VERSION); Py_XINCREF(__pyx_m);
   #else
   __pyx_m = PyModule_Create(&__pyx_moduledef);
   #endif
@@ -1446,14 +1190,14 @@ static int __pyx_pymod_exec_zdens_law(PyObject *__pyx_pyinit_module)
   #if PY_MAJOR_VERSION < 3 && (__PYX_DEFAULT_STRING_ENCODING_IS_ASCII || __PYX_DEFAULT_STRING_ENCODING_IS_DEFAULT)
   if (__Pyx_init_sys_getdefaultencoding_params() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   #endif
-  if (__pyx_module_is_main_discH__src__pot_disc__pot_c_ext__zdens_law) {
+  if (__pyx_module_is_main_discH__src__pot_halo__pot_c_ext__general_triaxial_halo) {
     if (PyObject_SetAttrString(__pyx_m, "__name__", __pyx_n_s_main) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   }
   #if PY_MAJOR_VERSION >= 3
   {
     PyObject *modules = PyImport_GetModuleDict(); if (unlikely(!modules)) __PYX_ERR(0, 1, __pyx_L1_error)
-    if (!PyDict_GetItemString(modules, "discH.src.pot_disc.pot_c_ext.zdens_law")) {
-      if (unlikely(PyDict_SetItemString(modules, "discH.src.pot_disc.pot_c_ext.zdens_law", __pyx_m) < 0)) __PYX_ERR(0, 1, __pyx_L1_error)
+    if (!PyDict_GetItemString(modules, "discH.src.pot_halo.pot_c_ext.general_triaxial_halo")) {
+      if (unlikely(PyDict_SetItemString(modules, "discH.src.pot_halo.pot_c_ext.general_triaxial_halo", __pyx_m) < 0)) __PYX_ERR(0, 1, __pyx_L1_error)
     }
   }
   #endif
@@ -1464,12 +1208,8 @@ static int __pyx_pymod_exec_zdens_law(PyObject *__pyx_pyinit_module)
   /*--- Global init code ---*/
   /*--- Variable export code ---*/
   /*--- Function export code ---*/
-  if (__Pyx_ExportFunction("zexp", (void (*)(void))__pyx_f_5discH_3src_8pot_disc_9pot_c_ext_9zdens_law_zexp, "double (double, double)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ExportFunction("zexp_der", (void (*)(void))__pyx_f_5discH_3src_8pot_disc_9pot_c_ext_9zdens_law_zexp_der, "double (double, double)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ExportFunction("zgau", (void (*)(void))__pyx_f_5discH_3src_8pot_disc_9pot_c_ext_9zdens_law_zgau, "double (double, double)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ExportFunction("zgau_der", (void (*)(void))__pyx_f_5discH_3src_8pot_disc_9pot_c_ext_9zdens_law_zgau_der, "double (double, double)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ExportFunction("zsech2", (void (*)(void))__pyx_f_5discH_3src_8pot_disc_9pot_c_ext_9zdens_law_zsech2, "double (double, double)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ExportFunction("zsech2_der", (void (*)(void))__pyx_f_5discH_3src_8pot_disc_9pot_c_ext_9zdens_law_zsech2_der, "double (double, double)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ExportFunction("integrand_core", (void (*)(void))__pyx_f_5discH_3src_8pot_halo_9pot_c_ext_21general_triaxial_halo_integrand_core, "double (double, double, double, double, double, double)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ExportFunction("potential_core", (void (*)(void))__pyx_f_5discH_3src_8pot_halo_9pot_c_ext_21general_triaxial_halo_potential_core, "double (double, double, double, double)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   /*--- Type init code ---*/
   /*--- Type import code ---*/
   /*--- Variable import code ---*/
@@ -1479,34 +1219,18 @@ static int __pyx_pymod_exec_zdens_law(PyObject *__pyx_pyinit_module)
   if (__Pyx_patch_abc() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   #endif
 
-  /* "discH/src/pot_disc/pot_c_ext/zdens_law.pyx":4
- * from libc.math cimport sqrt, log, asin, exp, abs, pow, asinh, tanh, cosh, fabs
+  /* "discH/src/pot_halo/pot_c_ext/general_triaxial_halo.pyx":4
+ * from libc.math cimport sqrt, asin
  * 
  * cdef double PI=3.14159265358979323846             # <<<<<<<<<<<<<<
  * 
- * hwhm_fact = {'exp': 0.693, 'sech2': 0.881, 'gau': 1.177, 'dirac': 0} #Factor to pass from the Zd to the HWHM
+ * cdef double integrand_core(double s, double a, double b, double c, double psi, double psicut) nogil:
  */
-  __pyx_v_5discH_3src_8pot_disc_9pot_c_ext_9zdens_law_PI = 3.14159265358979323846;
+  __pyx_v_5discH_3src_8pot_halo_9pot_c_ext_21general_triaxial_halo_PI = 3.14159265358979323846;
 
-  /* "discH/src/pot_disc/pot_c_ext/zdens_law.pyx":6
- * cdef double PI=3.14159265358979323846
- * 
- * hwhm_fact = {'exp': 0.693, 'sech2': 0.881, 'gau': 1.177, 'dirac': 0} #Factor to pass from the Zd to the HWHM             # <<<<<<<<<<<<<<
- * #all normlised to the integral from -infty to infty.
- * 
- */
-  __pyx_t_1 = __Pyx_PyDict_NewPresized(4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 6, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_exp, __pyx_float_0_693) < 0) __PYX_ERR(0, 6, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_sech2, __pyx_float_0_881) < 0) __PYX_ERR(0, 6, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_gau, __pyx_float_1_177) < 0) __PYX_ERR(0, 6, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_dirac, __pyx_int_0) < 0) __PYX_ERR(0, 6, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_hwhm_fact, __pyx_t_1) < 0) __PYX_ERR(0, 6, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-
-  /* "discH/src/pot_disc/pot_c_ext/zdens_law.pyx":1
+  /* "discH/src/pot_halo/pot_c_ext/general_triaxial_halo.pyx":1
  * #cython: language_level=3, boundscheck=False, cdivision=True, wraparound=False             # <<<<<<<<<<<<<<
- * from libc.math cimport sqrt, log, asin, exp, abs, pow, asinh, tanh, cosh, fabs
+ * from libc.math cimport sqrt, asin
  * 
  */
   __pyx_t_1 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1, __pyx_L1_error)
@@ -1521,11 +1245,11 @@ static int __pyx_pymod_exec_zdens_law(PyObject *__pyx_pyinit_module)
   __Pyx_XDECREF(__pyx_t_1);
   if (__pyx_m) {
     if (__pyx_d) {
-      __Pyx_AddTraceback("init discH.src.pot_disc.pot_c_ext.zdens_law", 0, __pyx_lineno, __pyx_filename);
+      __Pyx_AddTraceback("init discH.src.pot_halo.pot_c_ext.general_triaxial_halo", 0, __pyx_lineno, __pyx_filename);
     }
     Py_DECREF(__pyx_m); __pyx_m = 0;
   } else if (!PyErr_Occurred()) {
-    PyErr_SetString(PyExc_ImportError, "init discH.src.pot_disc.pot_c_ext.zdens_law");
+    PyErr_SetString(PyExc_ImportError, "init discH.src.pot_halo.pot_c_ext.general_triaxial_halo");
   }
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();

@@ -65,7 +65,7 @@ cdef double potential_core(double e, double intpot, double psi) nogil:
 
     cdef:
         double G=4.498658966346282e-12 #G constant in  kpc^3/(msol Myr^2 )
-        double cost=2*PI*G
+        double cost=2*PI*G 
 
     if (e<=0.0001): return -cost*(psi-intpot)
     else: return -cost*(sqrt(1-e*e)/e)*(psi*asin(e)-e*intpot)

@@ -11,7 +11,7 @@ cdef double PI=3.14159265358979323846
 
 
 
-cdef double psi_alfabeta(double d0, double alpha, double beta, double rc, double m) nogil:
+cdef double psi_alfabeta (double d0, double alpha, double beta, double rc, double m) nogil:
     """Auxiliary functions linked to density law alfabeta:
     d=d0*(m/rs)**(-alfa)*(m/rs)**(-(alfa-beta))
 
@@ -22,7 +22,7 @@ cdef double psi_alfabeta(double d0, double alpha, double beta, double rc, double
     :param m:  elliptical radius
     :return:
     """
-
+ 
     cdef:
         double x=m/rc
         double a=alpha, b=beta
