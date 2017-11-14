@@ -278,7 +278,7 @@ cdef double _vcirc_einasto(double R, double d0, double rs, double n, double e, d
     return result
 
 
-cdef double[:,:] _vcirc_alfabeta_array(double[:] R, int nlen, double d0, double rs, double n, double e, double toll):
+cdef double[:,:] _vcirc_einasto_array(double[:] R, int nlen, double d0, double rs, double n, double e, double toll):
     """
     Calculate Vcirc on a single point on the plane
     :param R: radii array (kpc)
@@ -333,7 +333,7 @@ cpdef vcirc_einasto(R, d0, rs, n, e, toll=1e-4):
 
     else:
 
-        ret=_vcirc_alfabeta_array(R, len(R), d0, rs, n, e, toll)
+        ret=_vcirc_einasto_array(R, len(R), d0, rs, n, e, toll)
         ret[:,1]=np.where(R==0, 0, ret[:,1])
 
     return ret
