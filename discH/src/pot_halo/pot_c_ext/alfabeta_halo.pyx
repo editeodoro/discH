@@ -312,7 +312,7 @@ cdef double _vcirc_alfabeta(double R, double d0, double rc, double alpha, double
     cdef:
         double G=4.302113488372941e-06 #G constant in  kpc km2/(msol s^2)
         double cost=4*PI*G
-        double norm
+        double norm=cost*sqrt(1-e*e)*d0
         double intvcirc
         double result
 
@@ -321,8 +321,7 @@ cdef double _vcirc_alfabeta(double R, double d0, double rc, double alpha, double
     fintegrand=LowLevelCallable.from_cython(mod,'vcirc_integrand_afabeta')
 
     intvcirc=quad(fintegrand,0.,R,args=(R,rc,alpha,beta,e),epsabs=toll,epsrel=toll)[0]
-    norm=cost*sqrt(1-e*e)*d0
-
+	
     result=sqrt(norm*intvcirc)
 
     return result
@@ -340,7 +339,8 @@ cdef double[:,:] _vcirc_alfabeta_array(double[:] R, int nlen, double d0, double 
 
     cdef:
         double G=4.302113488372941e-06 #G constant in  kpc km2/(msol s^2)
-        double cost=4*PI*G*(1-e*e)*d0
+        double cost=4*PI*G
+        double norm=cost*sqrt(1-e*e)*d0
         double intvcirc
         int i
         double[:,:] ret=np.empty((nlen,2), dtype=np.dtype("d"))
@@ -356,7 +356,7 @@ cdef double[:,:] _vcirc_alfabeta_array(double[:] R, int nlen, double d0, double 
 
         ret[i,0]=R[i]
         intvcirc=quad(fintegrand,0.,R[i],args=(R[i],rc,alpha,beta,e),epsabs=toll,epsrel=toll)[0]
-        ret[i,1]=sqrt(cost*intvcirc)
+        ret[i,1]=sqrt(norm*intvcirc)
 
     return ret
 
