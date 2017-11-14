@@ -4,7 +4,7 @@ from .pot_c_ext.nfw_halo import potential_nfw, vcirc_nfw
 from .pot_c_ext.alfabeta_halo import potential_alfabeta, vcirc_alfabeta
 from .pot_c_ext.plummer_halo import potential_plummer, vcirc_plummer
 from .pot_c_ext.einasto_halo import potential_einasto, vcirc_einasto
-from .pot_c_ext.powercut_halo import potential_powercut#, vcirc_powercut
+from .pot_c_ext.powercut_halo import potential_powercut, vcirc_powercut
 
 import multiprocessing as mp
 from ..pardo.Pardo import ParDo
@@ -430,18 +430,17 @@ class NFW_halo(halo):
 
         return htab
 
+
     def _dens(self, R, Z=0):
 
         q2 = 1 - self.e * self.e
-
         m = np.sqrt(R * R + Z * Z / q2)
-
         x = m / self.rs
-
         num = self.d0
         den = (x)*(1 + x)*(1 + x)
 
         return num / den
+
 
     def __str__(self):
 
@@ -457,7 +456,7 @@ class NFW_halo(halo):
 
 class alfabeta_halo(halo):
 
-    def __init__(self,d0,rs,alfa,beta,e=0,mcut=100):
+    def __init__(self,d0,rs,alpha,beta,e=0,mcut=100):
         """
         dens=d0/( (x^alfa) * (1+x)^(beta-alfa))
         :param d0:
@@ -468,11 +467,11 @@ class alfabeta_halo(halo):
         :param mcut:
         """
 
-        if alfa>=2:
+        if alpha>=2:
             raise ValueError('alpha must be <2')
 
         self.rs=rs
-        self.alfa=alfa
+        self.alfa=alpha
         self.beta=beta
         super(alfabeta_halo,self).__init__(d0=d0,rc=rs,e=e,mcut=mcut)
         self.name='AlfaBeta halo'
@@ -487,7 +486,6 @@ class alfabeta_halo(halo):
         :param mcut: elliptical radius where dens(m>mcut)=0
         :return:
         """
-
 
         self.set_toll(toll)
 
@@ -511,11 +509,8 @@ class alfabeta_halo(halo):
         pardo.set_func(potential_alfabeta)
 
         if len(R)!=len(Z) or grid==True:
-
             htab=pardo.run_grid(R,args=(Z,self.d0,self.alfa,self.beta,self.rc,self.e, mcut,self.toll,grid))
-
         else:
-
             htab = pardo.run(R,Z, args=(self.d0, self.alfa, self.beta, self.rc, self.e, mcut, self.toll, grid))
 
 
@@ -551,11 +546,8 @@ class alfabeta_halo(halo):
     def _dens(self, R, Z=0):
 
         q2 = 1 - self.e * self.e
-
         m = np.sqrt(R * R + Z * Z / q2)
-
         x = m / self.rs
-
         num  = self.d0
         denA = x**self.alfa
         denB = (1+x)**(self.beta-self.alfa)
@@ -590,7 +582,7 @@ class hernquist_halo(alfabeta_halo):
 
         alfa=1
         beta=4
-        super(hernquist_halo,self).__init__(d0=d0,rs=rs,alfa=alfa,beta=beta,e=e,mcut=mcut)
+        super(hernquist_halo,self).__init__(d0=d0,rs=rs,alpha=alfa,beta=beta,e=e,mcut=mcut)
         self.name='Hernquist halo'
 
     def __str__(self):
@@ -617,7 +609,7 @@ class deVacouler_like_halo(alfabeta_halo):
         """
         alfa=1.5
         beta=4
-        super(deVacouler_like_halo, self).__init__(d0=d0, rs=rs, alfa=alfa, beta=beta, e=e, mcut=mcut)
+        super(deVacouler_like_halo, self).__init__(d0=d0, rs=rs, alpha=alfa, beta=beta, e=e, mcut=mcut)
         self.name = 'deVacouler like halo'
 
     def __str__(self):
@@ -665,8 +657,6 @@ class plummer_halo(halo):
         :param mcut: elliptical radius where dens(m>mcut)=0
         :return:
         """
-
-
         self.set_toll(toll)
 
         return potential_plummer(R, Z, d0=self.d0, rc=self.rc, e=self.e, mcut=mcut, toll=self.toll, grid=grid)
@@ -795,8 +785,6 @@ class einasto_halo(halo):
 
 
         self.set_toll(toll)
-
-
         return  potential_einasto(R, Z, d0=self.d0, rs=self.rc, n=self.n, e=self.e, mcut=mcut, toll=self.toll, grid=grid)
 
     def _potential_parallel(self, R, Z, grid=False, toll=1e-4, mcut=None, nproc=2):
@@ -817,11 +805,8 @@ class einasto_halo(halo):
         pardo.set_func(potential_einasto)
 
         if len(R)!=len(Z) or grid==True:
-
             htab=pardo.run_grid(R,args=(Z,self.d0,self.rc, self.n, self.e, mcut,self.toll,grid))
-
         else:
-
             htab = pardo.run(R,Z, args=(self.d0, self.rc, self.n, self.e, mcut, self.toll, grid))
         cpdef
 
@@ -874,15 +859,10 @@ class einasto_halo(halo):
     def _dens(self, R, Z=0):
 
         q2 = 1 - self.e * self.e
-
         m = np.sqrt(R * R + Z * Z / q2)
-
         x = m / self.rc
-
         dnn=self.dn(self.n)
-
         A=x**(1/self.n)
-
         ret=self.d0*np.exp(-dnn*A)
 
         return ret
@@ -972,7 +952,7 @@ class powercut_halo(halo):
          
         return htab
 
-    ''' To be implemented 
+
     def _vcirc_serial(self, R, toll=1e-4):
         """Calculate the Vcirc in R using a serial code
         :param R: Cylindrical radius [kpc]
@@ -981,7 +961,8 @@ class powercut_halo(halo):
         """
         self.set_toll(toll)
  
-        return np.array(vcirc_powercut(R,self.d0,self.rs,self.rb,self.alpha,self.e,self.toll))
+        return np.array(vcirc_powercut(R,self.d0,self.rc,self.rb,self.alpha,self.e,self.toll))
+ 
  
     def _vcirc_parallel(self, R, toll=1e-4, nproc=1):
         """Calculate the Vcirc in R using a parallelized code
@@ -994,11 +975,9 @@ class powercut_halo(halo):
         self.set_toll(toll)
         pardo=ParDo(nproc=nproc)
         pardo.set_func(vcirc_powercut)
-        htab=pardo.run_grid(R,args=(self.d0,self.rs,self.rb,self.alpha,self.e,self.toll))
+        htab=pardo.run_grid(R,args=(self.d0,self.rc,self.rb,self.alpha,self.e,self.toll))
  
         return htab
-    '''
-
 
     def __str__(self):
         s=''

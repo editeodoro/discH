@@ -21,6 +21,16 @@ except:
     print('Cython is not present, I will install it for you my lord')
     pip.main(['install','CythonGSL'])
 
+#Check Scipy installation
+print('Checking Scipy')  
+try:
+    import scipy
+    print('OK!')
+except:
+    print('Scipy is not present, I will install it for you my lord')
+    pip.main(['install','scipy'])
+
+
 from setuptools import setup
 import shutil
 import os

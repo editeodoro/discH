@@ -6,6 +6,18 @@ import multiprocessing as mp
 from ..pardo.Pardo import ParDo
 import numpy as np
 
+
+def potential_regrid(pot,zsize,ysize,xsize):
+    """ 
+    Take the potential exiting from potential() function, i.e. a 
+    2D array of size (3,n), where n=xsize*ysize*zsize and 
+    returns a 3D array of size (zsize,ysize, xsize).
+    
+    NB: the order of axis is z, y, x!
+    """
+    return pot[:,3].reshape(zsize,ysize,xsize)
+
+
 class triaxial_halo(object):
     """
     Super class for triaxal halo potentials
@@ -192,8 +204,8 @@ class triaxial_doublepower_halo(triaxial_halo):
         :param mcut:        elliptical radius where dens(m>mcut)=0
         """
 
-        if alpha<0 or beta<alpha:
-            raise ValueError("alpha must be > 0 and beta>=alpha")    
+        #if alpha<0 or beta<alpha:
+        #    raise ValueError("alpha must be > 0 and beta>=alpha")    
         
         self.alpha = alpha
         self.beta = beta
@@ -228,7 +240,7 @@ class triaxial_doublepower_halo(triaxial_halo):
         """Calculate the potential in (x,y,z) using a serial code
 
         :param x,y,z: Cartesian coordinates [kpc]
-        :param grid:  if True calculate the potential in a 2D grid in R and Z
+        :param grid:  if True calculate the potential in a 3D grid in x,y,z:
         :param toll: tollerance for quad integration
         :param mcut: elliptical radius where dens(m>mcut)=0
         """
@@ -236,19 +248,16 @@ class triaxial_doublepower_halo(triaxial_halo):
         return potential_triaxial_doublepower(x,y,z,self.d0,self.rc,self.alpha,self.beta,self.a,self.b,self.c,mcut,self.toll,grid)
 
 ''' To be implemented
-    def _potential_parallel(self, R, Z, grid=False, toll=1e-4, mcut=None, nproc=2):
+    def _potential_parallel(self, x, y, z, grid=False, toll=1e-4, mcut=None, nproc=2):
         """Calculate the potential in R and Z using a parallelized code.
 
-        :param R: Cylindrical radius [kpc]
-        :param Z: Cylindrical height [kpc]
-        :param grid:  if True calculate the potential in a 2D grid in R and Z
+        :param x,y,z: Cartesian coordinates [kpc]
+        :param grid:  if True calculate the potential in a 3D grid in x,y,z:
         :param toll: tollerance for quad integration
         :param mcut: elliptical radius where dens(m>mcut)=0
-        :return:
         """
 
-        self.set_toll(toll)
-
+        self.toll = toll
         pardo=ParDo(nproc=nproc)
         pardo.set_func(potential_triaxial_doublepower)
 
@@ -258,7 +267,6 @@ class triaxial_doublepower_halo(triaxial_halo):
             htab = pardo.run(R,Z, args=(self.d0,self.rc,self.rb,self.alpha,self.e,mcut,self.toll,grid))
         
         return htab
-
 
     def _vcirc_serial(self, R, toll=1e-4):
         """Calculate the Vcirc in R using a serial code
@@ -307,7 +315,7 @@ class triaxial_nfw_halo(triaxial_doublepower_halo):
 
     def __init__(self,d0,rc,a=1.,b=1.,c=1.,mcut=100):
         super(triaxial_nfw_halo,self).__init__(d0=d0,rc=rc,alpha=1,beta=3,a=a,b=b,c=c,mcut=mcut)
-        self.name='Navarro-Frenk_White model'
+        self.name='Navarro-Frenk-White model'
 
 
 class triaxial_exponential_halo(triaxial_halo):

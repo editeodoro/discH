@@ -1,13 +1,13 @@
 from __future__ import division, print_function
-from ..pot_disc.pot_disc import disc
-from ..pot_halo.pot_halo import  halo
+from ..pot_disc.pot_disc import *
+from ..pot_halo.pot_halo import *
+from ..pot_halo.pot_triaxial_halo import *
 import numpy as np
 import time
 import copy
 import sys
 
-class galpotential:
-
+class galpotential(object):
 
     def __init__(self,dynamic_components=()):
 
@@ -25,12 +25,12 @@ class galpotential:
         if isinstance(components,list) or isinstance(components, tuple) or isinstance(components, np.ndarray):
             i=0
             for comp in components:
-                if isinstance(comp, disc) or isinstance(comp, halo):
+                if isinstance(comp, (disc,halo,triaxial_halo)):
                     pass
                 else:
                     raise ValueError('Dynamic components %i is not from class halo or disc'%i)
                 i+=1
-        elif isinstance(components, disc) or isinstance(components, halo):
+        elif isinstance(comp, (disc,halo,triaxial_halo)):
             pass
         else:
             raise ValueError('Dynamic component is not from class halo or disc')
@@ -171,9 +171,6 @@ class galpotential:
 
         np.savetxt(filename,save_arr,fmt='%.5e',header=header,footer=footer)
 
-
-
-
     def dynamic_components_info(self):
 
         i=0
@@ -182,3 +179,4 @@ class galpotential:
             print('Components:',i)
             print(comp)
             i+=1
+

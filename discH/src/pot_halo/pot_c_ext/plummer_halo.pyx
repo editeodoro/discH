@@ -1,6 +1,6 @@
 #cython: language_level=3, boundscheck=False, cdivision=True, wraparound=False
 from libc.math cimport sqrt, log, asin, pow
-from .general_halo cimport m_calc, potential_core, integrand_core, vcirc_core
+from .general_halo cimport *
 from scipy.integrate import quad
 from scipy._lib._ccallback import LowLevelCallable
 import numpy as np
@@ -247,22 +247,15 @@ cdef double _vcirc_plummer(double R, double d0, double rc, double e, double toll
     """
 
     cdef:
-        double G=4.302113488372941e-06 #G constant in  kpc km2/(msol s^2)
-        double cost=4*PI*G
-        double norm
         double intvcirc
-        double result
 
     #Integ
     import discH.src.pot_halo.pot_c_ext.plummer_halo as mod
     fintegrand=LowLevelCallable.from_cython(mod,'vcirc_integrand_plummer')
 
     intvcirc=quad(fintegrand,0.,R,args=(R,rc,e),epsabs=toll,epsrel=toll)[0]
-    norm=cost*sqrt(1-e*e)*d0
 
-    result=sqrt(norm*intvcirc)
-
-    return result
+    return vcirc_norm(intvcirc,d0,e)
 
 
 cdef double[:,:] _vcirc_plummer_array(double[:] R, int nlen, double d0, double rc, double e, double toll):
@@ -276,13 +269,9 @@ cdef double[:,:] _vcirc_plummer_array(double[:] R, int nlen, double d0, double r
     """
 
     cdef:
-        double G=4.302113488372941e-06 #G constant in  kpc km2/(msol s^2)
-        double cost=4*PI*G*(1-e*e)*d0
         double intvcirc
         int i
         double[:,:] ret=np.empty((nlen,2), dtype=np.dtype("d"))
-
-
 
 
     #Integ
@@ -293,7 +282,7 @@ cdef double[:,:] _vcirc_plummer_array(double[:] R, int nlen, double d0, double r
 
         ret[i,0]=R[i]
         intvcirc=quad(fintegrand,0.,R[i],args=(R[i],rc,e),epsabs=toll,epsrel=toll)[0]
-        ret[i,1]=sqrt(cost*intvcirc)
+        ret[i,1]=vcirc_norm(intvcirc,d0,e)
 
     return ret
 

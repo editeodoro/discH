@@ -70,6 +70,7 @@ cdef double potential_core(double e, double intpot, double psi) nogil:
     if (e<=0.0001): return -cost*(psi-intpot)
     else: return -cost*(sqrt(1-e*e)/e)*(psi*asin(e)-e*intpot)
 
+
 cdef double vcirc_core(double m, double R, double e) nogil:
     """
     Core function to calculate the Vcirc of a flattened ellipsoids (Eq. 2.132 BT2)
@@ -86,6 +87,15 @@ cdef double vcirc_core(double m, double R, double e) nogil:
     den=sqrt(R*R - m2*e*e)
 
     return m2/den
+    
+
+cdef double vcirc_norm(double intvcirc, double d0, double e) nogil:
+
+    cdef:
+        double G=4.302113488372941e-06 #G constant in  kpc km2/(msol s^2)
+        double norm = 4*PI*G*sqrt(1-e*e)*d0
+
+    return sqrt(norm*intvcirc)
 
 
 cpdef sph_to_ell(hlaw,d0,rc,e):

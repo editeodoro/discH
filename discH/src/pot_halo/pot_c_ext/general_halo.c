@@ -1190,7 +1190,7 @@ static double __pyx_f_5discH_3src_8pot_halo_9pot_c_ext_12general_halo_potential_
  *     if (e<=0.0001): return -cost*(psi-intpot)
  *     else: return -cost*(sqrt(1-e*e)/e)*(psi*asin(e)-e*intpot)             # <<<<<<<<<<<<<<
  * 
- * cdef double vcirc_core(double m, double R, double e) nogil:
+ * 
  */
   /*else*/ {
     __pyx_r = (((-__pyx_v_cost) * (sqrt((1.0 - (__pyx_v_e * __pyx_v_e))) / __pyx_v_e)) * ((__pyx_v_psi * asin(__pyx_v_e)) - (__pyx_v_e * __pyx_v_intpot)));
@@ -1210,8 +1210,8 @@ static double __pyx_f_5discH_3src_8pot_halo_9pot_c_ext_12general_halo_potential_
   return __pyx_r;
 }
 
-/* "discH/src/pot_halo/pot_c_ext/general_halo.pyx":73
- *     else: return -cost*(sqrt(1-e*e)/e)*(psi*asin(e)-e*intpot)
+/* "discH/src/pot_halo/pot_c_ext/general_halo.pyx":74
+ * 
  * 
  * cdef double vcirc_core(double m, double R, double e) nogil:             # <<<<<<<<<<<<<<
  *     """
@@ -1223,7 +1223,7 @@ static double __pyx_f_5discH_3src_8pot_halo_9pot_c_ext_12general_halo_vcirc_core
   double __pyx_v_den;
   double __pyx_r;
 
-  /* "discH/src/pot_halo/pot_c_ext/general_halo.pyx":83
+  /* "discH/src/pot_halo/pot_c_ext/general_halo.pyx":84
  * 
  *     cdef:
  *         double m2=m*m             # <<<<<<<<<<<<<<
@@ -1232,7 +1232,7 @@ static double __pyx_f_5discH_3src_8pot_halo_9pot_c_ext_12general_halo_vcirc_core
  */
   __pyx_v_m2 = (__pyx_v_m * __pyx_v_m);
 
-  /* "discH/src/pot_halo/pot_c_ext/general_halo.pyx":86
+  /* "discH/src/pot_halo/pot_c_ext/general_halo.pyx":87
  *         double den
  * 
  *     den=sqrt(R*R - m2*e*e)             # <<<<<<<<<<<<<<
@@ -1241,7 +1241,7 @@ static double __pyx_f_5discH_3src_8pot_halo_9pot_c_ext_12general_halo_vcirc_core
  */
   __pyx_v_den = sqrt(((__pyx_v_R * __pyx_v_R) - ((__pyx_v_m2 * __pyx_v_e) * __pyx_v_e)));
 
-  /* "discH/src/pot_halo/pot_c_ext/general_halo.pyx":88
+  /* "discH/src/pot_halo/pot_c_ext/general_halo.pyx":89
  *     den=sqrt(R*R - m2*e*e)
  * 
  *     return m2/den             # <<<<<<<<<<<<<<
@@ -1251,8 +1251,8 @@ static double __pyx_f_5discH_3src_8pot_halo_9pot_c_ext_12general_halo_vcirc_core
   __pyx_r = (__pyx_v_m2 / __pyx_v_den);
   goto __pyx_L0;
 
-  /* "discH/src/pot_halo/pot_c_ext/general_halo.pyx":73
- *     else: return -cost*(sqrt(1-e*e)/e)*(psi*asin(e)-e*intpot)
+  /* "discH/src/pot_halo/pot_c_ext/general_halo.pyx":74
+ * 
  * 
  * cdef double vcirc_core(double m, double R, double e) nogil:             # <<<<<<<<<<<<<<
  *     """
@@ -1264,7 +1264,61 @@ static double __pyx_f_5discH_3src_8pot_halo_9pot_c_ext_12general_halo_vcirc_core
   return __pyx_r;
 }
 
-/* "discH/src/pot_halo/pot_c_ext/general_halo.pyx":91
+/* "discH/src/pot_halo/pot_c_ext/general_halo.pyx":92
+ * 
+ * 
+ * cdef double vcirc_norm(double intvcirc, double d0, double e) nogil:             # <<<<<<<<<<<<<<
+ * 
+ *     cdef:
+ */
+
+static double __pyx_f_5discH_3src_8pot_halo_9pot_c_ext_12general_halo_vcirc_norm(double __pyx_v_intvcirc, double __pyx_v_d0, double __pyx_v_e) {
+  double __pyx_v_G;
+  double __pyx_v_norm;
+  double __pyx_r;
+
+  /* "discH/src/pot_halo/pot_c_ext/general_halo.pyx":95
+ * 
+ *     cdef:
+ *         double G=4.302113488372941e-06 #G constant in  kpc km2/(msol s^2)             # <<<<<<<<<<<<<<
+ *         double norm = 4*PI*G*sqrt(1-e*e)*d0
+ * 
+ */
+  __pyx_v_G = 4.302113488372941e-06;
+
+  /* "discH/src/pot_halo/pot_c_ext/general_halo.pyx":96
+ *     cdef:
+ *         double G=4.302113488372941e-06 #G constant in  kpc km2/(msol s^2)
+ *         double norm = 4*PI*G*sqrt(1-e*e)*d0             # <<<<<<<<<<<<<<
+ * 
+ *     return sqrt(norm*intvcirc)
+ */
+  __pyx_v_norm = ((((4.0 * __pyx_v_5discH_3src_8pot_halo_9pot_c_ext_12general_halo_PI) * __pyx_v_G) * sqrt((1.0 - (__pyx_v_e * __pyx_v_e)))) * __pyx_v_d0);
+
+  /* "discH/src/pot_halo/pot_c_ext/general_halo.pyx":98
+ *         double norm = 4*PI*G*sqrt(1-e*e)*d0
+ * 
+ *     return sqrt(norm*intvcirc)             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  __pyx_r = sqrt((__pyx_v_norm * __pyx_v_intvcirc));
+  goto __pyx_L0;
+
+  /* "discH/src/pot_halo/pot_c_ext/general_halo.pyx":92
+ * 
+ * 
+ * cdef double vcirc_norm(double intvcirc, double d0, double e) nogil:             # <<<<<<<<<<<<<<
+ * 
+ *     cdef:
+ */
+
+  /* function exit code */
+  __pyx_L0:;
+  return __pyx_r;
+}
+
+/* "discH/src/pot_halo/pot_c_ext/general_halo.pyx":101
  * 
  * 
  * cpdef sph_to_ell(hlaw,d0,rc,e):             # <<<<<<<<<<<<<<
@@ -1287,33 +1341,33 @@ static PyObject *__pyx_f_5discH_3src_8pot_halo_9pot_c_ext_12general_halo_sph_to_
   int __pyx_t_4;
   __Pyx_RefNannySetupContext("sph_to_ell", 0);
 
-  /* "discH/src/pot_halo/pot_c_ext/general_halo.pyx":101
+  /* "discH/src/pot_halo/pot_c_ext/general_halo.pyx":111
  *     :return: d0(e), rc(e)
  *     """
  *     q=sqrt(1-e*e)             # <<<<<<<<<<<<<<
  *     if hlaw=='iso':
  *         kappa=0.598+(0.996/(q+1.460))-(0.003*q*q*q)
  */
-  __pyx_t_1 = PyNumber_Multiply(__pyx_v_e, __pyx_v_e); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 101, __pyx_L1_error)
+  __pyx_t_1 = PyNumber_Multiply(__pyx_v_e, __pyx_v_e); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 111, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyInt_SubtractCObj(__pyx_int_1, __pyx_t_1, 1, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 101, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyInt_SubtractCObj(__pyx_int_1, __pyx_t_1, 1, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 111, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_3 = __pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_3 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 101, __pyx_L1_error)
+  __pyx_t_3 = __pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_3 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 111, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_q = sqrt(__pyx_t_3);
 
-  /* "discH/src/pot_halo/pot_c_ext/general_halo.pyx":102
+  /* "discH/src/pot_halo/pot_c_ext/general_halo.pyx":112
  *     """
  *     q=sqrt(1-e*e)
  *     if hlaw=='iso':             # <<<<<<<<<<<<<<
  *         kappa=0.598+(0.996/(q+1.460))-(0.003*q*q*q)
  *         lamb=0.538+(0.380/q)+0.083*q
  */
-  __pyx_t_4 = (__Pyx_PyUnicode_Equals(__pyx_v_hlaw, __pyx_n_u_iso, Py_EQ)); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 102, __pyx_L1_error)
+  __pyx_t_4 = (__Pyx_PyUnicode_Equals(__pyx_v_hlaw, __pyx_n_u_iso, Py_EQ)); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 112, __pyx_L1_error)
   if (__pyx_t_4) {
 
-    /* "discH/src/pot_halo/pot_c_ext/general_halo.pyx":103
+    /* "discH/src/pot_halo/pot_c_ext/general_halo.pyx":113
  *     q=sqrt(1-e*e)
  *     if hlaw=='iso':
  *         kappa=0.598+(0.996/(q+1.460))-(0.003*q*q*q)             # <<<<<<<<<<<<<<
@@ -1322,7 +1376,7 @@ static PyObject *__pyx_f_5discH_3src_8pot_halo_9pot_c_ext_12general_halo_sph_to_
  */
     __pyx_v_kappa = ((0.598 + (0.996 / (__pyx_v_q + 1.460))) - (((0.003 * __pyx_v_q) * __pyx_v_q) * __pyx_v_q));
 
-    /* "discH/src/pot_halo/pot_c_ext/general_halo.pyx":104
+    /* "discH/src/pot_halo/pot_c_ext/general_halo.pyx":114
  *     if hlaw=='iso':
  *         kappa=0.598+(0.996/(q+1.460))-(0.003*q*q*q)
  *         lamb=0.538+(0.380/q)+0.083*q             # <<<<<<<<<<<<<<
@@ -1331,7 +1385,7 @@ static PyObject *__pyx_f_5discH_3src_8pot_halo_9pot_c_ext_12general_halo_sph_to_
  */
     __pyx_v_lamb = ((0.538 + (0.380 / __pyx_v_q)) + (0.083 * __pyx_v_q));
 
-    /* "discH/src/pot_halo/pot_c_ext/general_halo.pyx":102
+    /* "discH/src/pot_halo/pot_c_ext/general_halo.pyx":112
  *     """
  *     q=sqrt(1-e*e)
  *     if hlaw=='iso':             # <<<<<<<<<<<<<<
@@ -1341,17 +1395,17 @@ static PyObject *__pyx_f_5discH_3src_8pot_halo_9pot_c_ext_12general_halo_sph_to_
     goto __pyx_L3;
   }
 
-  /* "discH/src/pot_halo/pot_c_ext/general_halo.pyx":105
+  /* "discH/src/pot_halo/pot_c_ext/general_halo.pyx":115
  *         kappa=0.598+(0.996/(q+1.460))-(0.003*q*q*q)
  *         lamb=0.538+(0.380/q)+0.083*q
  *     elif hlaw=='nfw':             # <<<<<<<<<<<<<<
  *         kappa=0.549+(1.170/(q+1.367))-0.047*q
  *         lamb=0.510+(0.312/q)+0.178*q
  */
-  __pyx_t_4 = (__Pyx_PyUnicode_Equals(__pyx_v_hlaw, __pyx_n_u_nfw, Py_EQ)); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 105, __pyx_L1_error)
+  __pyx_t_4 = (__Pyx_PyUnicode_Equals(__pyx_v_hlaw, __pyx_n_u_nfw, Py_EQ)); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 115, __pyx_L1_error)
   if (__pyx_t_4) {
 
-    /* "discH/src/pot_halo/pot_c_ext/general_halo.pyx":106
+    /* "discH/src/pot_halo/pot_c_ext/general_halo.pyx":116
  *         lamb=0.538+(0.380/q)+0.083*q
  *     elif hlaw=='nfw':
  *         kappa=0.549+(1.170/(q+1.367))-0.047*q             # <<<<<<<<<<<<<<
@@ -1360,7 +1414,7 @@ static PyObject *__pyx_f_5discH_3src_8pot_halo_9pot_c_ext_12general_halo_sph_to_
  */
     __pyx_v_kappa = ((0.549 + (1.170 / (__pyx_v_q + 1.367))) - (0.047 * __pyx_v_q));
 
-    /* "discH/src/pot_halo/pot_c_ext/general_halo.pyx":107
+    /* "discH/src/pot_halo/pot_c_ext/general_halo.pyx":117
  *     elif hlaw=='nfw':
  *         kappa=0.549+(1.170/(q+1.367))-0.047*q
  *         lamb=0.510+(0.312/q)+0.178*q             # <<<<<<<<<<<<<<
@@ -1369,7 +1423,7 @@ static PyObject *__pyx_f_5discH_3src_8pot_halo_9pot_c_ext_12general_halo_sph_to_
  */
     __pyx_v_lamb = ((0.510 + (0.312 / __pyx_v_q)) + (0.178 * __pyx_v_q));
 
-    /* "discH/src/pot_halo/pot_c_ext/general_halo.pyx":105
+    /* "discH/src/pot_halo/pot_c_ext/general_halo.pyx":115
  *         kappa=0.598+(0.996/(q+1.460))-(0.003*q*q*q)
  *         lamb=0.538+(0.380/q)+0.083*q
  *     elif hlaw=='nfw':             # <<<<<<<<<<<<<<
@@ -1379,7 +1433,7 @@ static PyObject *__pyx_f_5discH_3src_8pot_halo_9pot_c_ext_12general_halo_sph_to_
     goto __pyx_L3;
   }
 
-  /* "discH/src/pot_halo/pot_c_ext/general_halo.pyx":108
+  /* "discH/src/pot_halo/pot_c_ext/general_halo.pyx":118
  *         kappa=0.549+(1.170/(q+1.367))-0.047*q
  *         lamb=0.510+(0.312/q)+0.178*q
  *     else: raise IOError('hlaw allowed: iso or nfw')             # <<<<<<<<<<<<<<
@@ -1387,50 +1441,50 @@ static PyObject *__pyx_f_5discH_3src_8pot_halo_9pot_c_ext_12general_halo_sph_to_
  *     rcn=rc*kappa
  */
   /*else*/ {
-    __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_IOError, __pyx_tuple_, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 108, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_IOError, __pyx_tuple_, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 118, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_Raise(__pyx_t_2, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __PYX_ERR(0, 108, __pyx_L1_error)
+    __PYX_ERR(0, 118, __pyx_L1_error)
   }
   __pyx_L3:;
 
-  /* "discH/src/pot_halo/pot_c_ext/general_halo.pyx":109
+  /* "discH/src/pot_halo/pot_c_ext/general_halo.pyx":119
  *         lamb=0.510+(0.312/q)+0.178*q
  *     else: raise IOError('hlaw allowed: iso or nfw')
  *     d0n=d0*lamb             # <<<<<<<<<<<<<<
  *     rcn=rc*kappa
  *     return d0n,rcn
  */
-  __pyx_t_2 = PyFloat_FromDouble(__pyx_v_lamb); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 109, __pyx_L1_error)
+  __pyx_t_2 = PyFloat_FromDouble(__pyx_v_lamb); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 119, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_1 = PyNumber_Multiply(__pyx_v_d0, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 109, __pyx_L1_error)
+  __pyx_t_1 = PyNumber_Multiply(__pyx_v_d0, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 119, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_d0n = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "discH/src/pot_halo/pot_c_ext/general_halo.pyx":110
+  /* "discH/src/pot_halo/pot_c_ext/general_halo.pyx":120
  *     else: raise IOError('hlaw allowed: iso or nfw')
  *     d0n=d0*lamb
  *     rcn=rc*kappa             # <<<<<<<<<<<<<<
  *     return d0n,rcn
  */
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_kappa); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 110, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_kappa); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 120, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = PyNumber_Multiply(__pyx_v_rc, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 110, __pyx_L1_error)
+  __pyx_t_2 = PyNumber_Multiply(__pyx_v_rc, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 120, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_rcn = __pyx_t_2;
   __pyx_t_2 = 0;
 
-  /* "discH/src/pot_halo/pot_c_ext/general_halo.pyx":111
+  /* "discH/src/pot_halo/pot_c_ext/general_halo.pyx":121
  *     d0n=d0*lamb
  *     rcn=rc*kappa
  *     return d0n,rcn             # <<<<<<<<<<<<<<
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 111, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 121, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_INCREF(__pyx_v_d0n);
   __Pyx_GIVEREF(__pyx_v_d0n);
@@ -1442,7 +1496,7 @@ static PyObject *__pyx_f_5discH_3src_8pot_halo_9pot_c_ext_12general_halo_sph_to_
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "discH/src/pot_halo/pot_c_ext/general_halo.pyx":91
+  /* "discH/src/pot_halo/pot_c_ext/general_halo.pyx":101
  * 
  * 
  * cpdef sph_to_ell(hlaw,d0,rc,e):             # <<<<<<<<<<<<<<
@@ -1502,23 +1556,23 @@ static PyObject *__pyx_pw_5discH_3src_8pot_halo_9pot_c_ext_12general_halo_1sph_t
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_d0)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("sph_to_ell", 1, 4, 4, 1); __PYX_ERR(0, 91, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("sph_to_ell", 1, 4, 4, 1); __PYX_ERR(0, 101, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_rc)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("sph_to_ell", 1, 4, 4, 2); __PYX_ERR(0, 91, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("sph_to_ell", 1, 4, 4, 2); __PYX_ERR(0, 101, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
         if (likely((values[3] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_e)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("sph_to_ell", 1, 4, 4, 3); __PYX_ERR(0, 91, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("sph_to_ell", 1, 4, 4, 3); __PYX_ERR(0, 101, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "sph_to_ell") < 0)) __PYX_ERR(0, 91, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "sph_to_ell") < 0)) __PYX_ERR(0, 101, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 4) {
       goto __pyx_L5_argtuple_error;
@@ -1535,7 +1589,7 @@ static PyObject *__pyx_pw_5discH_3src_8pot_halo_9pot_c_ext_12general_halo_1sph_t
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("sph_to_ell", 1, 4, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 91, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("sph_to_ell", 1, 4, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 101, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("discH.src.pot_halo.pot_c_ext.general_halo.sph_to_ell", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -1554,7 +1608,7 @@ static PyObject *__pyx_pf_5discH_3src_8pot_halo_9pot_c_ext_12general_halo_sph_to
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("sph_to_ell", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_5discH_3src_8pot_halo_9pot_c_ext_12general_halo_sph_to_ell(__pyx_v_hlaw, __pyx_v_d0, __pyx_v_rc, __pyx_v_e, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 91, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_5discH_3src_8pot_halo_9pot_c_ext_12general_halo_sph_to_ell(__pyx_v_hlaw, __pyx_v_d0, __pyx_v_rc, __pyx_v_e, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 101, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -1623,7 +1677,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {0, 0, 0, 0, 0, 0, 0}
 };
 static int __Pyx_InitCachedBuiltins(void) {
-  __pyx_builtin_IOError = __Pyx_GetBuiltinName(__pyx_n_s_IOError); if (!__pyx_builtin_IOError) __PYX_ERR(0, 108, __pyx_L1_error)
+  __pyx_builtin_IOError = __Pyx_GetBuiltinName(__pyx_n_s_IOError); if (!__pyx_builtin_IOError) __PYX_ERR(0, 118, __pyx_L1_error)
   return 0;
   __pyx_L1_error:;
   return -1;
@@ -1633,14 +1687,14 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
 
-  /* "discH/src/pot_halo/pot_c_ext/general_halo.pyx":108
+  /* "discH/src/pot_halo/pot_c_ext/general_halo.pyx":118
  *         kappa=0.549+(1.170/(q+1.367))-0.047*q
  *         lamb=0.510+(0.312/q)+0.178*q
  *     else: raise IOError('hlaw allowed: iso or nfw')             # <<<<<<<<<<<<<<
  *     d0n=d0*lamb
  *     rcn=rc*kappa
  */
-  __pyx_tuple_ = PyTuple_Pack(1, __pyx_kp_u_hlaw_allowed_iso_or_nfw); if (unlikely(!__pyx_tuple_)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __pyx_tuple_ = PyTuple_Pack(1, __pyx_kp_u_hlaw_allowed_iso_or_nfw); if (unlikely(!__pyx_tuple_)) __PYX_ERR(0, 118, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple_);
   __Pyx_GIVEREF(__pyx_tuple_);
   __Pyx_RefNannyFinishContext();
@@ -1799,6 +1853,7 @@ static int __pyx_pymod_exec_general_halo(PyObject *__pyx_pyinit_module)
   if (__Pyx_ExportFunction("integrand_core", (void (*)(void))__pyx_f_5discH_3src_8pot_halo_9pot_c_ext_12general_halo_integrand_core, "double (double, double, double, double, double)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   if (__Pyx_ExportFunction("potential_core", (void (*)(void))__pyx_f_5discH_3src_8pot_halo_9pot_c_ext_12general_halo_potential_core, "double (double, double, double)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   if (__Pyx_ExportFunction("vcirc_core", (void (*)(void))__pyx_f_5discH_3src_8pot_halo_9pot_c_ext_12general_halo_vcirc_core, "double (double, double, double)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ExportFunction("vcirc_norm", (void (*)(void))__pyx_f_5discH_3src_8pot_halo_9pot_c_ext_12general_halo_vcirc_norm, "double (double, double, double)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   /*--- Type init code ---*/
   /*--- Type import code ---*/
   /*--- Variable import code ---*/

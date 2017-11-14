@@ -170,7 +170,7 @@ def _fit_utility_fratlaw(rfit_array,nproc=1):
 
 class disc(object):
     """
-    Super class for halo potentials
+    Super class for disk potentials
     """
     def __init__(self,sigma0,rparam,fparam,zlaw,rlaw,flaw,Rcut=50,zcut=30):
         """Init

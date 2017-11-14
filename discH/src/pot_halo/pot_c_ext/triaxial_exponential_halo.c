@@ -4347,7 +4347,7 @@ static PyObject *__pyx_f_5discH_3src_8pot_halo_9pot_c_ext_25triaxial_exponential
  *         else:
  *             raise ValueError('x, y and z have different dimension')             # <<<<<<<<<<<<<<
  * 
- * ''' To be implemented
+ * 
  */
     /*else*/ {
       __pyx_t_19 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__10, NULL); if (unlikely(!__pyx_t_19)) __PYX_ERR(0, 132, __pyx_L1_error)
@@ -20928,7 +20928,7 @@ static int __Pyx_InitCachedConstants(void) {
  *         else:
  *             raise ValueError('x, y and z have different dimension')             # <<<<<<<<<<<<<<
  * 
- * ''' To be implemented
+ * 
  */
   __pyx_tuple__10 = PyTuple_Pack(1, __pyx_kp_u_x_y_and_z_have_different_dimensi); if (unlikely(!__pyx_tuple__10)) __PYX_ERR(0, 132, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__10);
