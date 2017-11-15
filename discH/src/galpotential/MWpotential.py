@@ -237,7 +237,7 @@ class MWpotential(galpotential):
             pt_d2 = pot_d2.reshape(len(R),len(Z)).T
             
             # Interpolating the axysimmetric (R,z) values on a (x,y,z) grid
-            print('Regridding axisymmetric components...',end='',flush=True)
+            print('Regridding axisymmetric components...',end='')
             tini = time.time()
             
             pt_b_xyz  = interp_2D_to_3D(grid2D=(R,Z),pot2D=pt_b,grid3D=(X,Y,Z))
@@ -245,18 +245,17 @@ class MWpotential(galpotential):
             pt_d1_xyz = interp_2D_to_3D(grid2D=(R,Z),pot2D=pt_d1,grid3D=(X,Y,Z))
             pt_d2_xyz = interp_2D_to_3D(grid2D=(R,Z),pot2D=pt_d2,grid3D=(X,Y,Z))
             
-            print('Done (%.2f s)'%(time.time()-tfin))
+            print('Done (%.2f s)'%(time.time()-tini))
             
             
             """ Now integrating the bar """
             
             bar = self.dynamic_components[-1]
-            print('Calculating Potential of the 5th component (%s)...'%(bar.name),end='',flush=True)            
+            print('Calculating Potential of the 5th component (%s)...'%(bar.name),end='')            
             tini = time.time()
             pot_bar = bar.potential(X,Y,Z,grid=grid,mcut=mcut,toll=toll,nproc=nproc)
             pt_bar  = pot_bar[:,3].reshape(len(Z),len(Y),len(X))
-            tfin = time.time()
-            print('Done (%.2f s)'%(tfin-tini))
+            print('Done (%.2f s)'%(time.time()-tini))
             
             
             # Now putting all togheter            
