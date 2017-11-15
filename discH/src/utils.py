@@ -2,14 +2,51 @@
 Utility function for dealing with potentials.
 Functions:
 
-1) calculate_acceleration
-2) writeFITS
-3) writeHDF5
-4) plot_potentials
-5) plot_vcirc
+ - interp_2D_to_3D
+ - calculate_acceleration
+ - writeFITS
+ - writeHDF5
+ - plot_potentials
+ - plot_vcirc
 """
-import numpy as np  
-     
+
+try:
+    from scipy.interpolate import griddata
+    import numpy as np
+except:
+    raise ImportError('Scipy and Numpy modules are needed. Install them!')
+    
+
+def interp_2D_to_3D (grid2D,pot2D,grid3D,kind='cubic'):
+    
+    """ 
+    Interpolating the potential from a 2D cylindrical grid to a 
+    3D cartesian grid.
+    
+    :param grid2D:  The 2D (R,z) grid where the pot2D is defined
+    :param pot2D:   The 2D potential indexed pot2D[z,R]
+    :param grid3D:  The 3D (x,y,z) for interpolating
+    :return pot3D:  The 3D potential indexed pot3D[z,y,x]
+    """
+    
+    # Cylindrical 2D coordinates
+    R, Z = grid2D
+    # Cartesian 3D coordinates
+    x, y, z = grid3D
+    
+    # Checking that pot2D has the expected indexing
+    if (pot2D.shape!=(len(Z),len(R))):
+        raise ValueError ("Potential must be indexed phi(z,R)")
+    
+    RR,ZZ = np.meshgrid(R,Z)
+    X,Y,Z = np.meshgrid(x,y,z)
+    newR = np.sqrt(X**2+Y**2)
+
+    pot3D = griddata((RR.ravel(), ZZ.ravel()), pot2D.ravel(), (newR, Z), method=kind)
+    
+    # This is indexed in (y,x,z), so move it back to (z,y,x)
+    return np.moveaxis(pot3D,2,0)
+    
      
 def calculate_acceleration(potgrid,pot):
     """ 
@@ -246,7 +283,7 @@ def plot_potentials(R,Z,potentials,npots,names=None,contours=None,fname="potenti
         ax[i].set_xlabel("Radius (kpc)",fontsize=fsize)
         ax[i].set_ylabel("z (kpc)",fontsize=fsize)
         if name is not None: ax[i].text(0.97,0.9,name,transform=ax[i].transAxes,ha='right',fontsize=fsize)
-        ax[i].imshow(potentials[i],extent=[R[0],R[-1],Z[0],Z[-1]],aspect='auto',cmap=cmap)
+        ax[i].imshow(potentials[i],origin='lower',extent=[R[0],R[-1],Z[0],Z[-1]],aspect='auto',cmap=cmap)
         if contours is not None: ax[i].contour(R,Z,pot,contours,colors='k')
         else: ax[i].contour(R,Z,pot,colors='k')
         

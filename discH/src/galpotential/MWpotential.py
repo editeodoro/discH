@@ -7,7 +7,7 @@ from ..pot_halo.pot_triaxial_halo import *
 from ..utils import *
 
 try:
-    from scipy.interpolate import interp1d, interp2d
+    from scipy.interpolate import interp1d
     import numpy as np
 except:
     raise ImportError('Scipy and Numpy modules are needed. Install them!')
@@ -210,7 +210,7 @@ class MWpotential(galpotential):
             """ First we integrate the axisymmetric part of the potential (disk+bulge+halo) """
             
             # Considering only x and y to get the R-grid.
-            xpos, ypos = X[X>0], Y[Y>0]
+            xpos, ypos = X[X>=0], Y[Y>=0]
             # If x and y have different sizes, interpolate one
             if len(xpos)>len(ypos):
                 f1 = interp1d(np.linspace(0,1,len(ypos)),ypos,kind='linear')
@@ -236,41 +236,30 @@ class MWpotential(galpotential):
             pt_d1 = pot_d1.reshape(len(R),len(Z)).T
             pt_d2 = pot_d2.reshape(len(R),len(Z)).T
             
+            # Interpolating the axysimmetric (R,z) values on a (x,y,z) grid
+            print('Regridding axisymmetric components...',end='',flush=True)
+            tini = time.time()
+            
+            pt_b_xyz  = interp_2D_to_3D(grid2D=(R,Z),pot2D=pt_b,grid3D=(X,Y,Z))
+            pt_h_xyz  = interp_2D_to_3D(grid2D=(R,Z),pot2D=pt_h,grid3D=(X,Y,Z))
+            pt_d1_xyz = interp_2D_to_3D(grid2D=(R,Z),pot2D=pt_d1,grid3D=(X,Y,Z))
+            pt_d2_xyz = interp_2D_to_3D(grid2D=(R,Z),pot2D=pt_d2,grid3D=(X,Y,Z))
+            
+            print('Done (%.2f s)'%(time.time()-tfin))
+            
+            
             """ Now integrating the bar """
             
             bar = self.dynamic_components[-1]
             print('Calculating Potential of the 5th component (%s)...'%(bar.name),end='',flush=True)            
             tini = time.time()
-            pot_bar = bar.potential(X,Y,Z,grid=grid,mcut=mcut,toll=toll,nproc=1)
+            pot_bar = bar.potential(X,Y,Z,grid=grid,mcut=mcut,toll=toll,nproc=nproc)
             pt_bar  = pot_bar[:,3].reshape(len(Z),len(Y),len(X))
             tfin = time.time()
             print('Done (%.2f s)'%(tfin-tini))
             
             
-            # Interpolating the axysimmetric (R,z) values on a (x,y,z) grid
-            print('Regridding axisymmetric components...',end='',flush=True)
-            tini = time.time()
-            f_b  = interp2d(R,Z,pt_b,kind='cubic')
-            f_h  = interp2d(R,Z,pt_h,kind='cubic')
-            f_d1 = interp2d(R,Z,pt_d1,kind='cubic')
-            f_d2 = interp2d(R,Z,pt_d2,kind='cubic')
-            
-            pt_b_xyz  = np.zeros(shape=(len(Z),len(Y),len(X)))
-            pt_h_xyz  = np.zeros(shape=(len(Z),len(Y),len(X)))
-            pt_d1_xyz = np.zeros(shape=(len(Z),len(Y),len(X)))
-            pt_d2_xyz = np.zeros(shape=(len(Z),len(Y),len(X)))
-            
-            for i in range (len(X)):
-                for j in range (len(Y)):
-                    RR = np.sqrt(X[i]**2+Y[j]**2)
-                    for k in range (len(Z)):
-                        pt_b_xyz[k,j,i]  = f_b(RR,Z[k])
-                        pt_h_xyz[k,j,i]  = f_h(RR,Z[k])
-                        pt_d1_xyz[k,j,i] = f_d1(RR,Z[k])
-                        pt_d2_xyz[k,j,i] = f_d2(RR,Z[k])
-            
-            print('Done (%.2f s)'%(time.time()-tfin))
-                        
+            # Now putting all togheter            
             self.potgrid = np.array([X,Y,Z])
             self.totalpot = pt_b_xyz + pt_h_xyz + pt_d1_xyz + pt_d2_xyz + pt_bar
             self.pots = np.array([pt_b_xyz,pt_h_xyz,pt_d1_xyz,pt_d2_xyz,pt_bar])
