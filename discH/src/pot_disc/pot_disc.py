@@ -15,7 +15,6 @@ import sys
 
 def _fit_utility(f,rfit_array,p0):
 
-
     if rfit_array.shape[1] == 2:
         R = rfit_array[:, 0]
         Sigma = rfit_array[:, 1]
@@ -28,11 +27,10 @@ def _fit_utility(f,rfit_array,p0):
         raise ValueError('Wrong rfit dimension')
 
     popt, pcov = curve_fit(f=f, xdata=R, ydata=Sigma, sigma=Sigma_err, absolute_sigma=True, p0=p0)
-
     return popt, pcov
 
-def _fit_utility_poly(degree,rfit_array):
 
+def _fit_utility_poly(degree,rfit_array):
 
     if rfit_array.shape[1] == 2:
         R = rfit_array[:, 0]
@@ -46,9 +44,8 @@ def _fit_utility_poly(degree,rfit_array):
         raise ValueError('Wrong rfit dimension')
 
     popt = np.polyfit(R,Sigma,deg=degree,w=Sigma_err)
-
-
     return popt[::-1], 0
+
 
 #########PolyExp
 def _funco(x,R):
@@ -57,20 +54,16 @@ def _funco(x,R):
     rcoeff = x[1:]
     p = np.poly1d(rcoeff[::-1])
     yobs = np.exp(-R / Rd) * p(R)
-
     return yobs
+
 
 def _lnprob_halo(x, R, yteo, yerr):
 
-    if x[0]<0:
-        return -np.inf
-
+    if x[0]<0: return -np.inf
     yobs=_funco(x,R)
-
-    if yerr is None:
-        yerr=1
-
+    if yerr is None: yerr=1
     return -np.sum(((yobs - yteo) * (yobs - yteo))/(yerr*yerr) )
+
 
 def _fit_utility_rpoly(degree,rfit_array,nproc=1):
 
@@ -100,9 +93,6 @@ def _fit_utility_rpoly(degree,rfit_array,nproc=1):
     maxlik_idx = np.argmax(postprob)
     best_pars = samples[maxlik_idx, :]
     best_like = postprob[maxlik_idx]
-
-
-
     return best_pars, best_like, samples
 ###########
 
@@ -111,9 +101,7 @@ def _funco_fratlaw(x,R):
 
     s0, Rd, Rd2, alpha = x
     yobs = s0*np.exp(-R/Rd)*(1+(R/Rd2))**(alpha)
-
     return yobs
-
 	
 	
 def _lnprob_halo_fratlaw(x, R, yteo, yerr):
@@ -129,7 +117,6 @@ def _lnprob_halo_fratlaw(x, R, yteo, yerr):
     
     chi2=-np.sum(((yobs - yteo) * (yobs - yteo))/(yerr*yerr) )
     if np.isfinite(chi2):
-
         return -np.sum(((yobs - yteo) * (yobs - yteo))/(yerr*yerr) )
     else:
         return -np.inf
@@ -147,8 +134,6 @@ def _fit_utility_fratlaw(rfit_array,nproc=1):
         Sigma_err = rfit_array[:, 2]
     else:
         raise ValueError('Wrong rfit dimension')
-
-
 
     x0 = [rfit_array[0,1], np.mean(rfit_array[:,0]), np.mean(rfit_array[:,0]), 1]
     ndim, nwalkers = 4, 300
@@ -170,15 +155,48 @@ def _fit_utility_fratlaw(rfit_array,nproc=1):
 
 class disc(object):
     """
-    Super class for disk potentials
-    """
-    def __init__(self,sigma0,rparam,fparam,zlaw,rlaw,flaw,Rcut=50,zcut=30):
-        """Init
+    Super class for disk potentials. 
+    Disk are defined by a radial law (rlaw) and a vertical law (zlaw):
+    
+        Sigma = sigma0 * rlaw * zlaw
+    
+    Moreover, a flare law (flaw) can be added.
+    
+    Specialized class for different rlaw are implemented below:
+    
+    1) PolyExponential disk with central hole (useful for gas)
+        
+        rlaw = exp(-R/Rd - Rm/R)*polyn(R)
 
-        :param d0:  Central density in Msun/kpc^3
-        :param rc:  Scale radius in kpc
-        :param e:  eccentricity (sqrt(1-b^2/a^2))
-        :param mcut: elliptical radius where dens(m>mcut)=0
+    where Rd=disk scale length, Rm = scale of the hole, polyn = polynomial.
+    For a normal exponential disk, Rm=0, polyn=1.
+    
+    2) Gaussian disk:
+    
+        rlaw = exp(-0.5*((R-R0)/sigmad)^2)
+    
+    3) Fraternali disk:
+    
+        rlaw = exp(-R/Rd)*(1+R/Rd^2)^alfa
+    
+    Available zlaw are:
+    
+    1) 'exp' -> exponential -> zlaw = exp(-z/zd)/(2*zd)
+    2) 'gau' -> gaussian    -> zlaw = exp(-0.5*z^2/zd^2) / (sqrt(2*pi) *zd)
+    3) 'sech2'-> zlaw = sech(z/zd))^2 / (2*zd)
+    """
+    
+    def __init__(self,sigma0,rparam,fparam,zlaw,rlaw,flaw,Rcut=50,zcut=30):
+        """ Init
+
+        :param d0:      Central density in Msun/kpc^2
+        :param rparam:  Parameters of the radial law (depends on radial law)
+        :param fparam:  Parameters of the flare law (depends on flare law)
+        :param zlaw:    Vertical law. Can be 'dirac', 'gau', 'exp' or 'sech2'
+        :param rlaw:    Radial law. Can be 'epoly', 'gau' or 'fratlaw'
+        :param flaw:    Flare law. Can be 'constant', 'asinh', 'tanh'
+        :param Rcut:    Radius where sigma(R>Rcut)=0
+        :param zcut:    Z where sigma(Z>zcut)=0
         """
 
         self.sigma0=sigma0
@@ -235,26 +253,17 @@ class disc(object):
             2-Potential
         """
 
-        if Rcut is None:
-            Rcut=self.Rcut
-        else:
-            self.Rcut=Rcut
+        if Rcut is None: Rcut=self.Rcut
+        else: self.Rcut=Rcut
 
-        if zcut is None:
-            zcut=self.zcut
-        else:
-            self.zcut=zcut
-
+        if zcut is None: zcut=self.zcut
+        else: self.zcut=zcut
 
         if nproc==1:
             return self._pot_serial(R=R,Z=Z,grid=grid,toll=toll,Rcut=Rcut,zcut=zcut)
         else:
-            if len(R)!=len(Z) or grid==True:
-                ndim=len(R)*len(Z)
-            else:
-                ndim=len(R)
-
             return self._pot_parallel(R=R, Z=Z, grid=grid, toll=toll, Rcut=Rcut, zcut=zcut, nproc=nproc)
+
 
     def _potential_serial(self,R,Z,grid=False,toll=1e-4,Rcut=None, zcut=None, **kwargs):
         """Calculate the potential in R and Z using a serial code
@@ -290,11 +299,9 @@ class disc(object):
         :return:
         """
 
-
         if Rcut is not None: Rcut=Rcut
         elif (isinstance(R,float) or isinstance(R, int)): Rcut=3*R
         else: Rcut=3*np.max(R)
-
 
         return potential_disc_thin(R,Z,sigma0=self.sigma0, rcoeff=self.rparam, rlaw=self.rlaw, rcut=Rcut, toll=toll, grid=grid)
 
@@ -318,20 +325,16 @@ class disc(object):
             zcut = 10 * np.max(Z)
         '''
 
-
         pardo=ParDo(nproc=nproc)
         pardo.set_func(potential_disc)
 
         if len(R)!=len(Z) or grid==True:
-
             htab = pardo.run_grid(R,args=(Z,self.sigma0,self.rparam,self.fparam,self.zlaw,self.rlaw,self.flaw, Rcut, zcut, toll,grid))
-
         else:
-
             htab = pardo.run(R, Z, args=(self.sigma0, self.rparam, self.fparam, self.zlaw, self.rlaw, self.flaw, Rcut, zcut, toll, grid))
 
-
         return htab
+
 
     def _potential_parallel_thin(self, R, Z, grid=False, toll=1e-4, Rcut=None,  nproc=2, **kwargs):
 
@@ -344,18 +347,13 @@ class disc(object):
             Rcut = 3 * np.max(R)
         '''
 
-
         pardo=ParDo(nproc=nproc)
         pardo.set_func(potential_disc_thin)
 
         if len(R)!=len(Z) or grid==True:
-
             htab = pardo.run_grid(R,args=(Z,self.sigma0,self.rparam,self.rlaw, Rcut, toll, grid))
-
         else:
-
             htab = pardo.run(R, Z, args=(self.sigma0,self.rparam,self.rlaw, Rcut, toll, grid))
-
 
         return htab
 
@@ -370,15 +368,11 @@ class disc(object):
         :param nproc:
         :return:
         """
-        if Rcut is None:
-            Rcut=self.Rcut
-        else:
-            self.Rcut=Rcut
+        if Rcut is None: Rcut=self.Rcut
+        else: self.Rcut=Rcut
 
-        if zcut is None:
-            zcut=self.zcut
-        else:
-            self.zcut=zcut
+        if zcut is None: zcut=self.zcut
+        else: self.zcut=zcut
 
         if nproc==1:
             return self._vc_serial(R=R,toll=toll,Rcut=Rcut,zcut=zcut)
@@ -396,7 +390,6 @@ class disc(object):
         elif (isinstance(R,float) or isinstance(R, int)): zcut=10*R
         else: zcut=10*np.max(R)
 
-
         return vcirc_disc(R=R, sigma0=self.sigma0, rcoeff=self.rparam, fcoeff=self.fparam, zlaw=self.zlaw, rlaw=self.rlaw, flaw=self.flaw, rcut=Rcut, zcut=zcut, toll=toll)
 
 
@@ -406,33 +399,29 @@ class disc(object):
         elif (isinstance(R,float) or isinstance(R, int)): Rcut=3*R
         else: Rcut=3*np.max(R)
 
-
         return vcirc_disc_thin(R=R, sigma0=self.sigma0, rcoeff=self.rparam, rlaw=self.rlaw,  rcut=Rcut, toll=toll)
+
 
     def _vcirc_parallel(self, R, toll=1e-4, Rcut=None, zcut=None, nproc=2, **kwargs):
 
-
         pardo=ParDo(nproc=nproc)
         pardo.set_func(vcirc_disc)
-
         htab = pardo.run_grid(R, args=(self.sigma0, self.rparam, self.fparam, self.zlaw, self.rlaw, self.flaw, Rcut, zcut, toll))
-
         return htab
+
 
     def _vcirc_parallel_thin(self, R, toll=1e-4, Rcut=None,  nproc=2, **kwargs):
 
 
         pardo=ParDo(nproc=nproc)
         pardo.set_func(vcirc_disc_thin)
-
         htab = pardo.run_grid(R, args=(self.sigma0, self.rparam, self.rlaw, Rcut, toll))
-
         return htab
+
 
     def _flare(self, R, HWHM=False):
 
         checkfli=checkfl_dict[self.flaw]
-
         ret = flare_func(R, checkfli, *self.fparam)
 
         if HWHM:
@@ -442,7 +431,6 @@ class disc(object):
         return ret
 
     def _flare_thin(self, R, **kwargs):
-
 
         if isinstance(R, int) or isinstance(R, float):
             return np.array([[R,0]])
@@ -454,7 +442,6 @@ class disc(object):
     def Sdens(self, R):
 
         checkrdi=checkrd_dict[self.rlaw]
-
         return self.sigma0*rdens_func(R, checkrdi, *self.rparam)
 
     def diskmass(self,up,low=0):
@@ -483,17 +470,19 @@ class disc(object):
 
 class Exponential_disc(disc):
 
-    def __init__(self,sigma0,Rd,fparam,zlaw='gau',flaw='poly',Rcut=50, zcut=30):
-
-        rparam=np.array([Rd,1])
+    def __init__(self,sigma0,Rd,fparam,Rm=0,zlaw='gau',flaw='poly',Rcut=50, zcut=30):
+        " Exponential disk: sigma = sigma0*exp(-R/Rd - Rm/R)"
+        
+        rparam=np.array([Rd,Rm,1])
         self.Rd=Rd
-
+        self.Rm=Rm
+        
         super(Exponential_disc,self).__init__(sigma0=sigma0,rparam=rparam,fparam=fparam,zlaw=zlaw,rlaw='epoly',flaw=flaw,Rcut=Rcut, zcut=zcut)
         self.name='Exponential disc'
 
 
     @classmethod
-    def thin(cls,sigma0=None,Rd=None,rfit_array=None, Rcut=50, zcut=30,**kwargs):
+    def thin(cls,sigma0=None,Rd=None,Rm=0,rfit_array=None, Rcut=50, zcut=30,**kwargs):
 
         #Sigma(R)
         if rfit_array is not None:
@@ -510,10 +499,10 @@ class Exponential_disc(disc):
         fparam=np.array([0.0,0])
 
 
-        return cls(sigma0=sigma0,Rd=Rd,fparam=fparam,zlaw='dirac',flaw='constant', Rcut=Rcut, zcut=zcut)
+        return cls(sigma0=sigma0,Rd=Rd,Rm=Rm,fparam=fparam,zlaw='dirac',flaw='constant', Rcut=Rcut, zcut=zcut)
 
     @classmethod
-    def thick(cls,sigma0=None, Rd=None, zd=None, rfit_array=None, ffit_array=None, zlaw='gau', Rcut=50, zcut=30,**kwargs):
+    def thick(cls,sigma0=None, Rd=None, Rm=0,zd=None, rfit_array=None, ffit_array=None, zlaw='gau', Rcut=50, zcut=30,**kwargs):
 
 
         #Sigma(R)
@@ -522,7 +511,7 @@ class Exponential_disc(disc):
             p0=(rfit_array[0,1],np.mean(rfit_array[:,0]))
             popt,pcov=_fit_utility(func_fit,rfit_array,p0)
             sigma0,Rd=popt
-        elif (sigma0 is not None) and (Rd is not None):
+        elif (sigma0 is not None) and (Rd is not None) and (zd is not None):
             pass
         else:
             raise ValueError()
@@ -538,7 +527,6 @@ class Exponential_disc(disc):
         else:
             raise ValueError()
 
-
         if zd<0.01:
             print('Warning Zd lower than 0.01, switching to thin disc')
             fparam=np.array([0,0])
@@ -546,8 +534,8 @@ class Exponential_disc(disc):
         else:
             fparam=np.array([zd,0])
 
+        return cls(sigma0=sigma0, Rd=Rd, Rm=Rm, fparam=fparam, zlaw=zlaw, flaw='constant', Rcut=Rcut, zcut=zcut)
 
-        return cls(sigma0=sigma0, Rd=Rd, fparam=fparam, zlaw=zlaw, flaw='constant', Rcut=Rcut, zcut=zcut)
 
     @classmethod
     def polyflare(cls,sigma0=None,Rd=None, polycoeff=None, rfit_array=None, ffit_array=None, fitdegree=4, zlaw='gau', Rlimit=None, Rcut=50, zcut=30,**kwargs):
@@ -598,6 +586,7 @@ class Exponential_disc(disc):
         cls_ret.Rlimit=Rlimit
 
         return cls_ret
+    
     @classmethod
     def asinhflare(cls,sigma0=None,Rd=None, h0=None, Rf=None, c=None, rfit_array=None, ffit_array=None, zlaw='gau', Rlimit=None, Rcut=50, zcut=30,**kwargs):
 
@@ -735,7 +724,6 @@ class Exponential_disc(disc):
             raise ValueError('Flaw %s does not exist: chose between thin, thick, poly, asinh, tanh'%flaw)
 
 
-
     def take_radial_from(self, cls):
 
         if isinstance(cls, Exponential_disc)==False:
@@ -745,6 +733,7 @@ class Exponential_disc(disc):
         self.rparam=cls.rparam
         self.rlaw=cls.rlaw
         self.Rd=cls.Rd
+        self.Rm=cls.Rm
         self.Rcut=cls.Rcut
 
 
@@ -769,7 +758,7 @@ class Exponential_disc(disc):
 
 class PolyExponential_disc(disc):
 
-    def __init__(self,sigma0,Rd,coeff,fparam,zlaw='gau',flaw='poly',Rcut=50, zcut=30):
+    def __init__(self,sigma0,Rd,coeff,fparam,Rm=0,zlaw='gau',flaw='poly',Rcut=50, zcut=30):
 
         if isinstance(coeff,float) or isinstance(coeff,int):
             self.coeff=[1,]
@@ -777,24 +766,22 @@ class PolyExponential_disc(disc):
             coeff=np.array(coeff)
             self.coeff=coeff/coeff[0]
         else:
-            print('Warning, the Surface density is 0 at R=0, Sigma0 is not the value of the centrla surface density')
+            print('Warning, the Surface density is 0 at R=0, Sigma0 is not the value of the central surface density')
             self.coeff=coeff
 
         if len(coeff)>8:
-            raise NotImplementedError('Maximum polynomial degree is 8')
+            raise NotImplementedError('Maximum polynomial degree is 7')
 
 
-
-
-        rparam=np.array([Rd,]+list(self.coeff))
+        rparam=np.array([Rd,Rm,]+list(self.coeff))
         self.Rd=Rd
-
+        self.Rm=Rm
         super(PolyExponential_disc,self).__init__(sigma0=sigma0,rparam=rparam,fparam=fparam,zlaw=zlaw,rlaw='epoly',flaw=flaw, Rcut=Rcut, zcut=zcut)
         self.name='PolyExponential disc'
 
 
     @classmethod
-    def thin(cls,sigma0=None,Rd=None,coeff=None,rfit_array=None, rfit_degree=3,Rcut=50, zcut=30,**kwargs):
+    def thin(cls,sigma0=None,Rd=None, Rm=0, coeff=None,rfit_array=None, rfit_degree=3,Rcut=50, zcut=30,**kwargs):
 
         #Sigma(R)
         if rfit_array is not None:
@@ -815,10 +802,10 @@ class PolyExponential_disc(disc):
         fparam=np.array([0.0,0])
 
 
-        return cls(sigma0=sigma0,Rd=Rd,coeff=coeff,fparam=fparam,zlaw='dirac',flaw='constant', Rcut=Rcut, zcut=zcut)
+        return cls(sigma0=sigma0,Rd=Rd,Rm=Rm, coeff=coeff,fparam=fparam,zlaw='dirac',flaw='constant', Rcut=Rcut, zcut=zcut)
 
     @classmethod
-    def thick(cls,sigma0=None, Rd=None, coeff=None, zd=None, rfit_array=None, rfit_degree=3, ffit_array=None, zlaw='gau',Rcut=50, zcut=30,**kwargs):
+    def thick(cls,sigma0=None, Rd=None, Rm=0,coeff=None, zd=None, rfit_array=None, rfit_degree=3, ffit_array=None, zlaw='gau',Rcut=50, zcut=30,**kwargs):
 
         #Sigma(R)
         if rfit_array is not None:
@@ -855,11 +842,10 @@ class PolyExponential_disc(disc):
         else:
             fparam=np.array([zd,0])
 
-        return cls(sigma0=sigma0, Rd=Rd, coeff=coeff, fparam=fparam, zlaw=zlaw, flaw='constant', Rcut=Rcut, zcut=zcut)
+        return cls(sigma0=sigma0, Rd=Rd, Rm=Rm, coeff=coeff, fparam=fparam, zlaw=zlaw, flaw='constant', Rcut=Rcut, zcut=zcut)
 
     @classmethod
     def polyflare(cls,sigma0=None, Rd=None, coeff=None, polycoeff=None, rfit_array=None, rfit_degree=3, ffit_array=None, fitdegree=4, zlaw='gau', Rlimit=None,Rcut=50, zcut=30,**kwargs):
-
 
         #Sigma(R)
         if rfit_array is not None:
@@ -1066,6 +1052,7 @@ class PolyExponential_disc(disc):
         self.rparam = cls.rparam
         self.rlaw = cls.rlaw
         self.Rd = cls.Rd
+        self.Rm = cls.Rm
         self.Rcut = cls.Rcut
 
     def __str__(self):
@@ -1684,3 +1671,4 @@ class Frat_disc(disc):
         else:
             s+='Rlimit: %.3f kpc \n'%self.Rlimit
         return s
+        

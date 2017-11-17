@@ -56,8 +56,10 @@ class MWpotential(galpotential):
             1) BULGE (oblate ellipsoid):
                 rho_b = rho0_b / (m/rc)**alpha * exp(-(m/rb)**beta) 
                 where m = sqrt(x**2+y**2+z**2/q**2)
-            2) DISK (stellar+gas):
+            2) DISK (stellar):
                 rho_d = sig1/(2z1)*exp(-z/z1-R/R1) + sig2/(2z2)*exp(-z/z2-R/R2)
+            2) DISK (gas) with central hole:
+                rho_d = sig1/(2z1)*exp(-z/z1-R/R1-Rm/R)
             3) HALO (double power):
                 rho_h = rho0_h / ((m/rh)**(alpha)*(1+m/rh)**(beta-alpha))
             """
@@ -92,16 +94,32 @@ class MWpotential(galpotential):
             halo = alfabeta_halo(d0=rho0_h,rs=rscl_h,alpha=alph_h,beta=beta_h,e=e_h)
             #-----------------------------------------------
             
-            # DISK (thin+thick) ----------------------------
+            # DISK (thin+thick stellar + gas) --------------
             zd_thin  = 0.3  # kpc
             zd_thick = 1.   # kpc
-            rho0_d = 1.905E09 if m==1 else 0.536E09 # Msun/kpc2
-            rscl_d = 2. if m==1 else 3.2            # kpc
-            disk_thin  = Exponential_disc.thick(sigma0=0.95*rho0_d, Rd=rscl_d, zd=zd_thin, zlaw='exp')
-            disk_thick = Exponential_disc.thick(sigma0=0.05*rho0_d, Rd=rscl_d, zd=zd_thick, zlaw='exp')
+            rscl_d = 2. if m==1 else 3.2 # kpc
+            rs_gas = 2*rscl_d
+            rm_gas = 4
+            zd_gas = 0.08
+            # BT08 do not give the sigma0 for the various components, but gives sigma0_star + sigma0_gas
+            # and says that at Rsun = 8 kpc we have sigma_gas = 0.25*sigma_tot, 
+            # sigma_star_thin = 0.75*0.95*sigma_tot and sigma_star_thin = 0.75*0.05*sigma_tot and 
+            # Solving this nice riddle...
+            sigma0_tot = 1.905E09 if m==1 else 0.536E09 # Msun/kpc2
+            R0 = 8.
+            alpha = np.exp(-R0/rs_gas-rm_gas/R0)
+            beta = np.exp(-R0/rscl_d)
+            sig0_star = sigma0_tot / (1+beta/(3*alpha))
+            sig0_gas  = sigma0_tot - sig0_star
+            sig0_star_thick = sig0_star/21.
+            sig0_star_thin  = sig0_star - sig0_star_thick
+
+            disk_thin  = Exponential_disc.thick(sigma0=sig0_star_thin, Rd=rscl_d, zd=zd_thin, zlaw='exp')
+            disk_thick = Exponential_disc.thick(sigma0=sig0_star_thick, Rd=rscl_d, zd=zd_thick, zlaw='exp')
+            disk_gas   = Exponential_disc.thick(sigma0=sig0_gas, Rd=rs_gas, Rm=rm_gas, zd=zd_gas, zlaw='exp')
             #-----------------------------------------------
             
-            dc = [bulge,halo,disk_thin,disk_thick]
+            dc = [bulge,halo,disk_thin,disk_thick,disk_gas]
         
         elif 'S+17' in self.mod:
             """ Sormani et al (2017) potential
@@ -187,17 +205,18 @@ class MWpotential(galpotential):
                                               zcut=zcut,mcut=mcut,external_potential=None)
 
             pc = self.potential_grid_complete
-            pot_b, pot_h, pot_d1, pot_d2 = pc[:,2], pc[:,3], pc[:,4], pc[:,5]
+            pot_b, pot_h, pot_d1, pot_d2, pot_d3 = pc[:,2], pc[:,3], pc[:,4], pc[:,5], pc[:,6]
 
             # Put potentials on (R,z) grid. Axis order is [z,R]!!!
             pt_b  = pot_b.reshape(len(R),len(Z)).T
             pt_h  = pot_h.reshape(len(R),len(Z)).T
             pt_d1 = pot_d1.reshape(len(R),len(Z)).T
             pt_d2 = pot_d2.reshape(len(R),len(Z)).T
+            pt_d3 = pot_d3.reshape(len(R),len(Z)).T
             
             self.potgrid = np.array([R,Z])
             self.totalpot = pc[:,-1].reshape(len(R),len(Z)).T 
-            self.pots = np.array([pt_b,pt_h,pt_d1,pt_d2])
+            self.pots = np.array([pt_b,pt_h,pt_d1,pt_d2,pt_d3])
                         
         elif 'S+17' in self.mod:
             
@@ -279,10 +298,11 @@ class MWpotential(galpotential):
             # Disk
             vc_thin  = dc[2].vcirc(R, nproc=nproc)[:,1]
             vc_thick = dc[3].vcirc(R, nproc=nproc)[:,1]
-            vc_d = np.sqrt(vc_thin**2+vc_thick**2)
+            vc_gas   = dc[4].vcirc(R, nproc=nproc)[:,1]
+            vc_d = np.sqrt(vc_thin**2+vc_thick**2+vc_gas**2)
             # Total
             self.vcirctot = np.sqrt((vc_b**2+vc_h**2+vc_d**2))
-            self.vcircs = [vc_b,vc_h,vc_thin,vc_thick]
+            self.vcircs = [vc_b,vc_h,vc_thin,vc_thick,vc_gas]
              
         elif 'S+17' in self.mod:
             # Bulge
@@ -310,7 +330,7 @@ class MWpotential(galpotential):
             raise RuntimeError("You must run calculate_potential() before calling writeFITS().")
         
         if "BT08" in self.mod:
-            pt_d = self.pots[2]+self.pots[3]
+            pt_d = self.pots[2]+self.pots[3]+self.pots[4]
             pots = [self.totalpot,self.pots[0],self.pots[1],pt_d]
             text = ["TOTAL","BULGE","HALO","DISK"]
             if fname: outname = fname
@@ -332,7 +352,7 @@ class MWpotential(galpotential):
             raise RuntimeError("You must run calculate_potential() before calling plot_potentials().")
         
         if "BT08" in self.mod:
-            pt_d = self.pots[2]+self.pots[3]
+            pt_d = self.pots[2]+self.pots[3]+self.pots[4]
             pots = [self.totalpot,self.pots[0],self.pots[1],pt_d]
             if fname!='': outname = fname
             else: outname = 'BTpot_mod%s.pdf'%('1' if '1' in self.mod else '2')
@@ -361,7 +381,7 @@ class MWpotential(galpotential):
             raise RuntimeError("You must run calculate_vcirc() before calling plot_vcirc().")
         
         if "BT08" in self.mod:        
-            v_d = np.sqrt(self.vcircs[2]**2+self.vcircs[3]**2)
+            v_d = np.sqrt(self.vcircs[2]**2+self.vcircs[3]**2++self.vcircs[4]**2)
             vcs = [self.vcirctot,self.vcircs[0],self.vcircs[1],v_d]
             if fname!='': outname = fname
             else: outname = 'BTvcirc_mod%s.pdf'%('1' if '1' in self.mod else '2')

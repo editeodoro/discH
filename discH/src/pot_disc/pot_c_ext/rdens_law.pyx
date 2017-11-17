@@ -9,33 +9,29 @@ ctypedef double (*f_type)(double, double[:], int) nogil
 cdef double poly_exponential(double R, double a0, double a1, double a2, double a3, double a4, double a5, double a6, double a7, double a8, double a9) nogil:
 
     """
-
     :param R: variable
     :param a0: Radial scale length in Kpc
-    :param a1: coeff-0 polynomial
-    :param a2: coeff-1 polynomial
-    :param a3: coeff-2 polynomial
-    :param a4: coeff-3 polynomial
-    :param a5: coeff-4 polynomial
-    :param a6: coeff-5 polynomial
-    :param a7: coeff-6 polynomial
-    :param a8: coeff-7 polynomial
-    :param a9: coeff-8 polynomial
+    :param a1: Radius of hole
+    :param a2: coeff-0 polynomial
+    :param a3: coeff-1 polynomial
+    :param a4: coeff-2 polynomial
+    :param a5: coeff-3 polynomial
+    :param a6: coeff-4 polynomial
+    :param a7: coeff-5 polynomial
+    :param a8: coeff-6 polynomial
+    :param a9: coeff-7 polynomial
     :return:
     """
 
 
     cdef:
-        double res, recursiveR, Rd
+        double res, recursiveR, Rd, Rm
 
     Rd=a0
-
-
-    res=a1
+    Rm=a1
+    res=a2
 
     recursiveR=R
-    res+=a2*recursiveR
-    recursiveR=recursiveR*R
     res+=a3*recursiveR
     recursiveR=recursiveR*R
     res+=a4*recursiveR
@@ -51,20 +47,18 @@ cdef double poly_exponential(double R, double a0, double a1, double a2, double a
     res+=a9*recursiveR
     res=res #Normalised over sigma0
 
-    return res*exp(-R/Rd)
+    return res*exp(-R/Rd-Rm/R)
 
 cdef double poly_exponential_der(double R, double a0, double a1, double a2, double a3, double a4, double a5, double a6, double a7, double a8, double a9) nogil:
     #NB a0=Rd
-    #if exp=Exp(-R/Rd) and poly=Poly(a1...a9), the derivative of poly*exp is polyder*exp + poly*expder
-    #The derivative is
+    #if exp=Exp(-R/Rd-Rm/R) and poly=Poly(a1...a9), the derivative of poly*exp is polyder*exp + poly*expder
     cdef:
-        double  polyder_exp, poly_expder
-        double exp, exp_der
-        double Rd=a0
+        double polyder_exp, poly_expder
+        double Rd=a0, Rm=a1
 
-    polyder_exp= poly_exponential(R, Rd, a2, 2.*a3, 3.*a4, 4.*a5, 5.*a6, 6.*a7, 7.*a8, 8.*a9, 0.)
-    poly_expder= -poly_exponential(R, Rd, a1, a2, a3, a4, a5, a6, a7 , a8 , a9)/Rd
-
+    polyder_exp = poly_exponential(R, Rd, Rm, a3, 2.*a4, 3.*a5, 4.*a6, 5.*a7, 6.*a8, 7.*a9, 0.)
+    poly_expder = poly_exponential(R, Rd, Rm, a2, a3, a4, a5, a6, a7 , a8 , a9)*(Rm/R/R-1./Rd)
+    
     return  polyder_exp + poly_expder
 
 

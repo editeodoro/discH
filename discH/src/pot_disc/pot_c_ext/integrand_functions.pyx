@@ -14,8 +14,6 @@ from .model_option import checkrd_dict, checkfl_dict
 #checkrd: 1-poly_exponential
 #checkfl: 0-constat, 1-poly
 
-
-
 ######
 #ZEXP
 cdef double zexp(double u, double l, double checkrd, double checkfl, double d0, double d1, double d2, double d3, double d4, double d5, double d6, double d7, double d8, double d9, double f0, double f1, double f2, double f3, double f4, double f5, double f6, double f7, double f8, double f9) nogil:
@@ -35,16 +33,15 @@ cdef double zexp(double u, double l, double checkrd, double checkfl, double d0, 
         int checkrdi=<int> checkrd, checkfli=<int> checkfl
 
     #Dens law
-    if checkrdi==1: densr= poly_exponential(u, d0, d1, d2, d3, d4, d5, d6, d7, d8, d9)
+    if   checkrdi==1: densr= poly_exponential(u, d0, d1, d2, d3, d4, d5, d6, d7, d8, d9)
     elif checkrdi==2: densr= fratlaw(u, d0, d1, d2, d3, d4, d5, d6, d7, d8, d9)
     elif checkrdi==3: densr= gaussian(u, d0, d1, d2, d3, d4, d5, d6, d7, d8, d9)
 
     #Flare law
-    if checkfli==0 : zd=constant(u, f0, f1, f2,f3,f4,f5, f6, f7, f8, f9)
+    if   checkfli==0: zd=constant(u, f0, f1, f2,f3,f4,f5, f6, f7, f8, f9)
     elif checkfli==1: zd=poly_flare(u, f0, f1, f2,f3,f4,f5, f6, f7, f8, f9)
     elif checkfli==2: zd=asinh_flare(u, f0, f1, f2,f3,f4,f5, f6, f7, f8, f9)
     elif checkfli==3: zd=tanh_flare(u, f0, f1, f2,f3,f4,f5, f6, f7, f8, f9)
-
 
     #3D dens
     norm=(1/(2*zd))
@@ -105,7 +102,7 @@ cdef double integrand_zexp(int n, double *data) nogil:
         double f7 = data[23]
         double f8 = data[24]
         double f9 = data[25]
-        double x, y,
+        double x, y
 
 
     x=(R*R + u*u + (l-Z)*(l-Z))/(2*R*u)
@@ -146,12 +143,10 @@ cdef double zgau(double u, double l, double checkrd, double checkfl, double d0, 
     elif checkfli==2: zd=asinh_flare(u, f0, f1, f2,f3,f4,f5, f6, f7, f8, f9)
     elif checkfli==3: zd=tanh_flare(u, f0, f1, f2,f3,f4,f5, f6, f7, f8, f9)
 
-
     #3D dens
     norm=(1/(sqrt(2*PI)*zd))
     densz=exp(-0.5*(l/zd)*(l/zd))
 
-    #return 3.
     return densr*densz*norm
 
 
@@ -206,7 +201,7 @@ cdef double integrand_zgau(int n, double *data) nogil:
         double f7 = data[23]
         double f8 = data[24]
         double f9 = data[25]
-        double x, y,
+        double x, y
 
 
     x=(R*R + u*u + (l-Z)*(l-Z))/(2*R*u)
@@ -248,13 +243,10 @@ cdef double zsech2(double u, double l, double checkrd, double checkfl, double d0
     elif checkfli==2: zd=asinh_flare(u, f0, f1, f2,f3,f4,f5, f6, f7, f8, f9)
     elif checkfli==3: zd=tanh_flare(u, f0, f1, f2,f3,f4,f5, f6, f7, f8, f9)
 
-
-
     #3D dens
     norm=(1/(2*zd))
     densz=(1/(cosh(l/zd)) ) *  (1/(cosh(l/zd)) )
 
-    #return 3.
     return densr*densz*norm
 
 
@@ -342,7 +334,6 @@ cdef double zdirac(double u,  double checkrd, double d0, double d1, double d2, d
     elif checkrdi==2: densr= fratlaw(u, d0, d1, d2, d3, d4, d5, d6, d7, d8, d9)
     elif checkrdi==3: densr= gaussian(u, d0, d1, d2, d3, d4, d5, d6, d7, d8, d9)
 
-    #return 3.
     return densr
 
 cdef double integrand_zdirac(int n, double *data) nogil:
@@ -413,20 +404,6 @@ cdef double _potential_disc(double R, double Z, int zlaw, double sigma0, double 
         double G=4.498658966346282e-12 #kpc^2/(msol myr^2)
         double cost=-(2*G*sigma0)/(sqrt(R))
         double intpot
-
-
-
-    #Integ
-    import discH.src.pot_disc.pot_c_ext.integrand_functions as mod
-    if zlaw==0:
-        fintegrand=LowLevelCallable.from_cython(mod,'integrand_zexp')
-    elif zlaw==1:
-        fintegrand=LowLevelCallable.from_cython(mod,'integrand_zsech2')
-    elif zlaw==2:
-        fintegrand=LowLevelCallable.from_cython(mod,'integrand_zgau')
-
-
-    cdef:
         double d0=rparam[0]
         double d1=rparam[1]
         double d2=rparam[2]
@@ -447,9 +424,13 @@ cdef double _potential_disc(double R, double Z, int zlaw, double sigma0, double 
         double f7=fparam[7]
         double f8=fparam[8]
         double f9=fparam[9]
+        
+    #Integ
+    import discH.src.pot_disc.pot_c_ext.integrand_functions as mod
+    if zlaw==0: fintegrand=LowLevelCallable.from_cython(mod,'integrand_zexp')
+    elif zlaw==1: fintegrand=LowLevelCallable.from_cython(mod,'integrand_zsech2')
+    elif zlaw==2: fintegrand=LowLevelCallable.from_cython(mod,'integrand_zgau')
 
-    #print('d',d0,d1,d2,d3,d4,d5,d6,d7,d8,d9)
-    #print('f',f0,f1,f2,f3,f4,f5,f6,f7,f8,f9)
     intpot=nquad(fintegrand,[[0.,rcut],[-zcut,zcut]],args=(R,Z,checkrd,checkfl,d0,d1,d2,d3,d4,d5,d6,d7,d8,d9,f0,f1,f2,f3,f4,f5,f6,f7,f8,f9),opts=[({'points':[0,R],'epsabs':toll,'epsrel':toll}),({'points':[Z],'epsabs':toll,'epsrel':toll})])[0]
 
     return cost*intpot
@@ -473,56 +454,13 @@ cdef double[:,:] _potential_disc_array(double[:] R, double[:] Z, int nlen , int 
     """
 
     cdef:
-        double G=4.498658966346282e-12 #kpc^2/(msol myr^2)
-        double cost=-(2*G*sigma0)
-        double intpot
         double[:,:] ret=np.empty((nlen,3), dtype=np.dtype("d"))
         int i
 
-
-
-    #Integ
-    import discH.src.pot_disc.pot_c_ext.integrand_functions as mod
-    if zlaw==0:
-        fintegrand=LowLevelCallable.from_cython(mod,'integrand_zexp')
-    elif zlaw==1:
-        fintegrand=LowLevelCallable.from_cython(mod,'integrand_zsech2')
-    elif zlaw==2:
-        fintegrand=LowLevelCallable.from_cython(mod,'integrand_zgau')
-
-    cdef:
-        double d0=rparam[0]
-        double d1=rparam[1]
-        double d2=rparam[2]
-        double d3=rparam[3]
-        double d4=rparam[4]
-        double d5=rparam[5]
-        double d6=rparam[6]
-        double d7=rparam[7]
-        double d8=rparam[8]
-        double d9=rparam[9]
-        double f0=fparam[0]
-        double f1=fparam[1]
-        double f2=fparam[2]
-        double f3=fparam[3]
-        double f4=fparam[4]
-        double f5=fparam[5]
-        double f6=fparam[6]
-        double f7=fparam[7]
-        double f8=fparam[8]
-        double f9=fparam[9]
-
-    for  i in range(nlen):
-
-
+    for i in range(nlen):
         ret[i,0]=R[i]
         ret[i,1]=Z[i]
-
-
-        intpot=nquad(fintegrand,[[0.,rcut],[-zcut,zcut]],args=(R[i],Z[i],checkrd,checkfl,d0,d1,d2,d3,d4,d5,d6,d7,d8,d9,f0,f1,f2,f3,f4,f5,f6,f7,f8,f9),opts=[({'points':(0,R[i]),'epsabs':toll,'epsrel':toll}),({'points':(Z[i],),'epsabs':toll,'epsrel':toll})])[0]
-
-
-        ret[i,2]=(cost/(sqrt(R[i])))*intpot
+        ret[i,2]=_potential_disc(R[i],Z[i],zlaw,sigma0,checkrd,checkfl,rparam,fparam,toll,rcut,zcut)
 
     return ret
 
@@ -547,61 +485,19 @@ cdef double[:,:] _potential_disc_grid(double[:] R, double[:] Z, int nlenR, int n
     """
 
     cdef:
-        double G=4.498658966346282e-12 #kpc^2/(msol myr^2)
-        double cost=-(2*G*sigma0)
         double[:,:] ret=np.empty((nlenR*nlenZ,3), dtype=np.dtype("d"))
-        double intpot
         int i, j, c
-
-
-
-    #Integ
-    import discH.src.pot_disc.pot_c_ext.integrand_functions as mod
-    if zlaw==0:
-        fintegrand=LowLevelCallable.from_cython(mod,'integrand_zexp')
-    elif zlaw==1:
-        fintegrand=LowLevelCallable.from_cython(mod,'integrand_zsech2')
-    elif zlaw==2:
-        fintegrand=LowLevelCallable.from_cython(mod,'integrand_zgau')
-
-    cdef:
-        double d0=rparam[0]
-        double d1=rparam[1]
-        double d2=rparam[2]
-        double d3=rparam[3]
-        double d4=rparam[4]
-        double d5=rparam[5]
-        double d6=rparam[6]
-        double d7=rparam[7]
-        double d8=rparam[8]
-        double d9=rparam[9]
-        double f0=fparam[0]
-        double f1=fparam[1]
-        double f2=fparam[2]
-        double f3=fparam[3]
-        double f4=fparam[4]
-        double f5=fparam[5]
-        double f6=fparam[6]
-        double f7=fparam[7]
-        double f8=fparam[8]
-        double f9=fparam[9]
 
     c=0
     for  i in range(nlenR):
         for j in range(nlenZ):
-
             ret[c,0]=R[i]
             ret[c,1]=Z[j]
-
-
-            intpot=nquad(fintegrand,[[0.,rcut],[-zcut,zcut]],args=(R[i],Z[j],checkrd,checkfl,d0,d1,d2,d3,d4,d5,d6,d7,d8,d9,f0,f1,f2,f3,f4,f5,f6,f7,f8,f9),opts=[({'points':(0,R[i]),'epsabs':toll,'epsrel':toll}),({'points':(Z[j],),'epsabs':toll,'epsrel':toll})])[0]
-
-            ret[c,2]=(cost/(sqrt(R[i])))*intpot
-
+            ret[c,2]=_potential_disc(R[i],Z[j],zlaw,sigma0,checkrd,checkfl,rparam,fparam,toll,rcut,zcut)
             c+=1
 
     return ret
-####
+
 
 
 cpdef potential_disc(R, Z, sigma0, rcoeff, fcoeff, zlaw='gau', rlaw='epoly', flaw='poly', rcut=None, zcut=None, toll=1e-4, grid=False):
@@ -622,7 +518,6 @@ cpdef potential_disc(R, Z, sigma0, rcoeff, fcoeff, zlaw='gau', rlaw='epoly', fla
     :return:  Potential at R and Z in kpc/Myr
     """
 
-
     if zlaw=='exp': izdens=0
     elif zlaw=='sech2': izdens=1
     elif zlaw=='gau': izdens=2
@@ -636,33 +531,20 @@ cpdef potential_disc(R, Z, sigma0, rcoeff, fcoeff, zlaw='gau', rlaw='epoly', fla
     if rlaw in checkrd_dict: checkrd=checkrd_dict[rlaw]
     else: raise NotImplementedError('Dens law %s not implmented'%rlaw)
 
-
     rparam=np.array(rcoeff,dtype=np.dtype("d"))
     fparam=np.array(fcoeff,dtype=np.dtype("d"))
 
+    if isinstance(R, (float,int)) and isinstance(Z, (float,int)):
+        R, Z = float(R), float(Z)
+        if rcut is None: rcut=2*R
+        if zcut is None: zcut=2*Z
 
-
-
-    if isinstance(R, float) or isinstance(R, int):
-        if isinstance(Z, float) or isinstance(Z, int):
-            R=float(R)
-            Z=float(Z)
-            if rcut is None:
-                rcut=2*R
-            if zcut is None:
-                zcut=2*Z
-
-            ret=[R,Z,0]
-            ret[2]=_potential_disc(R=R,Z=Z,zlaw=izdens,sigma0=sigma0, checkrd=checkrd, checkfl=checkfl,rparam=rparam,fparam=fparam, toll=toll,rcut=rcut,zcut=zcut)
-
-            return np.array(ret)
-        else:
-            raise ValueError('R and Z have different dimension')
+        ret=[R,Z,0]
+        ret[2]=_potential_disc(R=R,Z=Z,zlaw=izdens,sigma0=sigma0, checkrd=checkrd, checkfl=checkfl,rparam=rparam,fparam=fparam, toll=toll,rcut=rcut,zcut=zcut)
+        return np.array(ret)
     else:
-        if rcut is None:
-            rcut=2*np.max(R)
-        if zcut is None:
-            zcut=2*np.max(np.abs(Z))
+        if rcut is None: rcut=2*np.max(R)
+        if zcut is None: zcut=2*np.max(np.abs(Z))
 
         if grid:
             R=np.array(R,dtype=np.dtype("d"))
@@ -697,14 +579,6 @@ cdef double _potential_disc_thin(double R, double Z, double sigma0, double check
         double G=4.498658966346282e-12 #kpc^2/(msol myr^2)
         double cost=-(2*G*sigma0)/(sqrt(R))
         double intpot
-
-
-
-    #Integ
-    import discH.src.pot_disc.pot_c_ext.integrand_functions as mod
-    fintegrand=LowLevelCallable.from_cython(mod,'integrand_zdirac')
-
-    cdef:
         double d0=rparam[0]
         double d1=rparam[1]
         double d2=rparam[2]
@@ -715,10 +589,13 @@ cdef double _potential_disc_thin(double R, double Z, double sigma0, double check
         double d7=rparam[7]
         double d8=rparam[8]
         double d9=rparam[9]
+        
 
-
+    #Integ
+    import discH.src.pot_disc.pot_c_ext.integrand_functions as mod
+    fintegrand=LowLevelCallable.from_cython(mod,'integrand_zdirac')
+        
     intpot=quad(fintegrand, 0., rcut, args=(R,Z,checkrd,d0,d1,d2,d3,d4,d5,d6,d7,d8,d9), epsabs=toll, epsrel=toll)[0]
-
 
     return cost*intpot
 
@@ -737,42 +614,14 @@ cdef double[:,:] _potential_disc_thin_array(double[:] R, double[:] Z, int nlen, 
     """
 
     cdef:
-        double G=4.498658966346282e-12 #kpc^2/(msol myr^2)
-        double cost=-(2*G*sigma0)
-        double intpot
         double[:,:] ret=np.empty((nlen,3), dtype=np.dtype("d"))
         int i
 
-
-
-    #Integ
-    import discH.src.pot_disc.pot_c_ext.integrand_functions as mod
-    fintegrand=LowLevelCallable.from_cython(mod,'integrand_zdirac')
-
-    cdef:
-        double d0=rparam[0]
-        double d1=rparam[1]
-        double d2=rparam[2]
-        double d3=rparam[3]
-        double d4=rparam[4]
-        double d5=rparam[5]
-        double d6=rparam[6]
-        double d7=rparam[7]
-        double d8=rparam[8]
-        double d9=rparam[9]
-
-    for  i in range(nlen):
-
-
+    for i in range(nlen):
         ret[i,0]=R[i]
         ret[i,1]=Z[i]
-
-
-        intpot=quad(fintegrand, 0., rcut, args=(R[i],Z[i],checkrd,d0,d1,d2,d3,d4,d5,d6,d7,d8,d9), epsabs=toll, epsrel=toll)[0]
-
-
-        ret[i,2]=(cost/(sqrt(R[i])))*intpot
-
+        ret[i,2]=_potential_disc_thin(R[i],Z[i],sigma0,checkrd,rparam,toll,rcut)
+        
     return ret
 
 #grid
@@ -791,42 +640,15 @@ cdef double[:,:] _potential_disc_thin_grid(double[:] R, double[:] Z, int nlenR, 
     """
 
     cdef:
-        double G=4.498658966346282e-12 #kpc^2/(msol myr^2)
-        double cost=-(2*G*sigma0)
         double[:,:] ret=np.empty((nlenR*nlenZ,3), dtype=np.dtype("d"))
-        double intpot
         int i, j, c
-
-
-
-    #Integ
-    import discH.src.pot_disc.pot_c_ext.integrand_functions as mod
-    fintegrand=LowLevelCallable.from_cython(mod,'integrand_zdirac')
-
-    cdef:
-        double d0=rparam[0]
-        double d1=rparam[1]
-        double d2=rparam[2]
-        double d3=rparam[3]
-        double d4=rparam[4]
-        double d5=rparam[5]
-        double d6=rparam[6]
-        double d7=rparam[7]
-        double d8=rparam[8]
-        double d9=rparam[9]
 
     c=0
     for  i in range(nlenR):
         for j in range(nlenZ):
-
             ret[c,0]=R[i]
             ret[c,1]=Z[j]
-
-
-            intpot=quad(fintegrand, 0., rcut, args=(R[i],Z[j],checkrd,d0,d1,d2,d3,d4,d5,d6,d7,d8,d9), epsabs=toll, epsrel=toll)[0]
-
-            ret[c,2]=(cost/(sqrt(R[i])))*intpot
-
+            ret[c,2]=_potential_disc_thin(R[i],Z[j],sigma0,checkrd,rparam,toll,rcut)
             c+=1
 
     return ret
@@ -850,18 +672,15 @@ cpdef potential_disc_thin(R, Z, sigma0, rcoeff, rlaw='epoly', rcut=None, toll=1e
 
     rparam=np.array(rcoeff,dtype=np.dtype("d"))
 
-    if isinstance(R, float) or isinstance(R, int):
-        if isinstance(Z, float) or isinstance(Z, int):
-            R=float(R)
-            Z=float(Z)
-            if rcut is None: rcut=2*R
+    if isinstance(R, (float,int)) and isinstance(Z, (float,int)):
+        R=float(R)
+        Z=float(Z)
+        if rcut is None: rcut=2*R
 
-            ret=[R,Z,0]
-            ret[2]=_potential_disc_thin(R=R,Z=Z, sigma0=sigma0, checkrd=checkrd, rparam=rparam, toll=toll,rcut=rcut)
+        ret=[R,Z,0]
+        ret[2]=_potential_disc_thin(R=R,Z=Z, sigma0=sigma0, checkrd=checkrd, rparam=rparam, toll=toll,rcut=rcut)
 
-            return np.array(ret)
-        else:
-            raise ValueError('R and Z have different dimension')
+        return np.array(ret)
     else:
         if rcut is None: rcut=2*np.max(R)
 
