@@ -1,0 +1,15 @@
+# Fitted height scale for various distributions. In the case of the Sechn, it is printed also the value of the factor n.
+# File made with FitzProfile 1.0 on: 2017-09-21 04:12:46 
+# Length units: R - kpc, Hs - kpc
+#          | Function Scale Height (Hs)
+#     R         gau     
+    0.0100     0.5737
+    2.2311     1.3740
+    4.4522     2.5028
+    6.6733     3.6250
+    8.8944     4.7639
+   11.1156     5.9634
+   13.3367     7.2586
+   15.5578     8.6686
+   17.7789    10.1685
+   20.0000    11.6988

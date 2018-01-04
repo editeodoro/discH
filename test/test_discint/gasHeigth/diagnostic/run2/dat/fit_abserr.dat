@@ -1,0 +1,15 @@
+# Cumulative absolute error for the various distributions.
+# File made with FitzProfile 1.0 on: 2017-08-22 16:32:20 
+# Length units: R - kpc
+#          | Cumulative absolute error
+#        R              gau       
+     1.0000e-02      5.2589e-01
+     1.6756e+00      6.7653e-01
+     3.3411e+00      7.8937e-01
+     5.0067e+00      8.6765e-01
+     6.6722e+00      9.5072e-01
+     8.3378e+00      1.0369e+00
+     1.0003e+01      1.1298e+00
+     1.1669e+01      1.2293e+00
+     1.3334e+01      1.3340e+00
+     1.5000e+01      1.4423e+00

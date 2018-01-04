@@ -1,0 +1,16 @@
+# HWHM for the various distributions.
+# File made with FitzProfile 1.0 on: 2017-09-21 04:14:09 
+# File made with FitFlare 1.0 on: 2017-09-21 04:14:09 
+# Length units: R - kpc, HWHM - kpc
+#          |    HWHM   
+#     R         gau     
+    0.0100     0.6754
+    2.2311     1.6149
+    4.4522     2.9319
+    6.6733     4.2332
+    8.8944     5.5503
+   11.1156     6.9385
+   13.3367     8.4422
+   15.5578    10.0857
+   17.7789    11.8420
+   20.0000    13.6397
