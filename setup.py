@@ -65,6 +65,12 @@ elif sys.version_info[0]==3:
 else:
     raise ValueError('You are not using neither Python2 nor Python3, probably you are a time traveller from the Future or from the Past')
 
+cy_gsl_lib=cython_gsl.get_libraries()
+cy_gsl_lib_dic=cython_gsl.get_library_dir()
+cy_gsl_inc=cython_gsl.get_cython_include_dir()
+np_inc=numpy.get_include()
+
+print(cy_gsl_lib,cy_gsl_lib_dic,cy_gsl_inc,np_inc)
 
 gh=['discH/src/pot_halo/pot_c_ext/general_halo.pyx']
 gh_ext=Extension('discH/src/pot_halo/pot_c_ext/general_halo',sources=gh)
@@ -76,16 +82,17 @@ infw=['discH/src/pot_halo/pot_c_ext/nfw_halo.pyx']
 infw_ext=Extension('discH/src/pot_halo/pot_c_ext/nfw_halo',sources=infw)
 
 iab=['discH/src/pot_halo/pot_c_ext/alfabeta_halo.pyx']
-iab_ext=Extension('discH/src/pot_halo/pot_c_ext/alfabeta_halo',sources=iab,libraries=cython_gsl.get_libraries(),library_dirs=[cython_gsl.get_library_dir()],include_dirs=[cython_gsl.get_cython_include_dir()])
+iab_ext=Extension('discH/src/pot_halo/pot_c_ext/alfabeta_halo',sources=iab,libraries=cy_gsl_lib,library_dirs=[cy_gsl_lib_dic],include_dirs=[cy_gsl_inc])
 
 ph=['discH/src/pot_halo/pot_c_ext/plummer_halo.pyx']
 ph_ext=Extension('discH/src/pot_halo/pot_c_ext/plummer_halo',sources=ph)
 
 eh=['discH/src/pot_halo/pot_c_ext/einasto_halo.pyx']
-eh_ext=Extension('discH/src/pot_halo/pot_c_ext/einasto_halo',sources=eh,libraries=cython_gsl.get_libraries(),library_dirs=[cython_gsl.get_library_dir()],include_dirs=[cython_gsl.get_cython_include_dir()])
+eh_ext=Extension('discH/src/pot_halo/pot_c_ext/einasto_halo',sources=eh,libraries=cy_gsl_lib,library_dirs=[cy_gsl_lib_dic],include_dirs=[cy_gsl_inc])
+
 
 gd=['discH/src/pot_disc/pot_c_ext/integrand_functions.pyx']
-gd_ext=Extension('discH/src/pot_disc/pot_c_ext/integrand_functions',libraries=cython_gsl.get_libraries(),library_dirs=[cython_gsl.get_library_dir()],include_dirs=[cython_gsl.get_cython_include_dir(), numpy.get_include()],sources=gd)
+gd_ext=Extension('discH/src/pot_disc/pot_c_ext/integrand_functions',libraries=cy_gsl_lib,library_dirs=[cy_gsl_lib_dic],include_dirs=[cy_gsl_inc, np_inc],sources=gd)
 
 rd=['discH/src/pot_disc/pot_c_ext/rdens_law.pyx']
 rd_ext=Extension('discH/src/pot_disc/pot_c_ext/rdens_law',sources=rd)
