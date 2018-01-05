@@ -65,9 +65,13 @@ elif sys.version_info[0]==3:
 else:
     raise ValueError('You are not using neither Python2 nor Python3, probably you are a time traveller from the Future or from the Past')
 
+#cython gsl
 cy_gsl_lib=cython_gsl.get_libraries()
+cy_gsl_inc=cython_gsl.get_include()
 cy_gsl_lib_dic=cython_gsl.get_library_dir()
-cy_gsl_inc=cython_gsl.get_cython_include_dir()
+#cython
+cy_gsl_inc_cy=cython_gsl.get_cython_include_dir()
+#numpy
 np_inc=numpy.get_include()
 
 print(cy_gsl_lib,cy_gsl_lib_dic,cy_gsl_inc,np_inc)
@@ -82,17 +86,17 @@ infw=['discH/src/pot_halo/pot_c_ext/nfw_halo.pyx']
 infw_ext=Extension('discH/src/pot_halo/pot_c_ext/nfw_halo',sources=infw)
 
 iab=['discH/src/pot_halo/pot_c_ext/alfabeta_halo.pyx']
-iab_ext=Extension('discH/src/pot_halo/pot_c_ext/alfabeta_halo',sources=iab,libraries=cy_gsl_lib,library_dirs=[cy_gsl_lib_dic],include_dirs=[cy_gsl_inc])
+iab_ext=Extension('discH/src/pot_halo/pot_c_ext/alfabeta_halo',sources=iab,libraries=cy_gsl_lib,library_dirs=[cy_gsl_lib_dic],include_dirs=[cy_gsl_inc_cy])
 
 ph=['discH/src/pot_halo/pot_c_ext/plummer_halo.pyx']
 ph_ext=Extension('discH/src/pot_halo/pot_c_ext/plummer_halo',sources=ph)
 
 eh=['discH/src/pot_halo/pot_c_ext/einasto_halo.pyx']
-eh_ext=Extension('discH/src/pot_halo/pot_c_ext/einasto_halo',sources=eh,libraries=cy_gsl_lib,library_dirs=[cy_gsl_lib_dic],include_dirs=[cy_gsl_inc])
+eh_ext=Extension('discH/src/pot_halo/pot_c_ext/einasto_halo',sources=eh,libraries=cy_gsl_lib,library_dirs=[cy_gsl_lib_dic],include_dirs=[cy_gsl_inc_cy])
 
 
 gd=['discH/src/pot_disc/pot_c_ext/integrand_functions.pyx']
-gd_ext=Extension('discH/src/pot_disc/pot_c_ext/integrand_functions',libraries=cy_gsl_lib,library_dirs=[cy_gsl_lib_dic],include_dirs=[cy_gsl_inc, np_inc],sources=gd)
+gd_ext=Extension('discH/src/pot_disc/pot_c_ext/integrand_functions',libraries=cy_gsl_lib,library_dirs=[cy_gsl_lib_dic],include_dirs=[cy_gsl_inc, np_inc_cy],sources=gd)
 
 rd=['discH/src/pot_disc/pot_c_ext/rdens_law.pyx']
 rd_ext=Extension('discH/src/pot_disc/pot_c_ext/rdens_law',sources=rd)
@@ -127,7 +131,7 @@ setup(
         cmdclass=cmdclass_option,
 		packages=['discH','discH/src','discH/src/pot_halo','discH/src/pot_halo/pot_c_ext','discH/src/pardo','discH/src/pot_disc', 'discH/src/pot_disc/pot_c_ext', 'discH/src/galpotential', 'discH/src/discHeight', 'discH/src/discHeight/c_ext' , 'discH/src/fitlib' ],
         ext_modules=ext_modules,
-        include_dirs=[numpy.get_include(),cython_gsl.get_include()],
+        include_dirs=[np_inc,cython_gsl.get_include()],
         install_requires=['numpy>=1.9', 'scipy>=0.19', 'matplotlib','emcee']
 )
 
