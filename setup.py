@@ -94,9 +94,11 @@ ph_ext=Extension('discH/src/pot_halo/pot_c_ext/plummer_halo',sources=ph)
 eh=['discH/src/pot_halo/pot_c_ext/einasto_halo.pyx']
 eh_ext=Extension('discH/src/pot_halo/pot_c_ext/einasto_halo',sources=eh,libraries=cy_gsl_lib,library_dirs=[cy_gsl_lib_dic],include_dirs=[cy_gsl_inc_cy])
 
+vh=['discH/src/pot_halo/pot_c_ext/valy_halo.pyx']
+vh_ext=Extension('discH/src/pot_halo/pot_c_ext/valy_halo',sources=vh)
 
 gd=['discH/src/pot_disc/pot_c_ext/integrand_functions.pyx']
-gd_ext=Extension('discH/src/pot_disc/pot_c_ext/integrand_functions',libraries=cy_gsl_lib,library_dirs=[cy_gsl_lib_dic],include_dirs=[cy_gsl_inc, np_inc_cy],sources=gd)
+gd_ext=Extension('discH/src/pot_disc/pot_c_ext/integrand_functions',libraries=cy_gsl_lib,library_dirs=[cy_gsl_lib_dic],include_dirs=[cy_gsl_inc_cy, np_inc],sources=gd)
 
 rd=['discH/src/pot_disc/pot_c_ext/rdens_law.pyx']
 rd_ext=Extension('discH/src/pot_disc/pot_c_ext/rdens_law',sources=rd)
@@ -120,11 +122,11 @@ vcirc_ext=Extension('discH/src/pot_disc/pot_c_ext/integrand_vcirc', sources=vcir
                      #)
 
 
-ext_modules=cythonize([gh_ext,ih_ext,infw_ext,gd_ext,rd_ext,fd_ext,iab_ext,ph_ext,eh_ext,zd_ext,vcirc_ext])
+ext_modules=cythonize([gh_ext,ih_ext,infw_ext,gd_ext,rd_ext,fd_ext,iab_ext,ph_ext,eh_ext,vh_ext,zd_ext,vcirc_ext])
 
 setup(
 		name='discH',
-		version='3.2.0.dev0',
+		version='3.3.0.dev0',
 		author='Giuliano Iorio',
 		author_email='',
 		url='',

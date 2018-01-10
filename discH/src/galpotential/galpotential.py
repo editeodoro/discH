@@ -132,6 +132,7 @@ class galpotential:
 
         return grid_final
 
+
     def save(self,filename,complete=True):
 
 
@@ -170,6 +171,34 @@ class galpotential:
         footer += '*****************'
 
         np.savetxt(filename,save_arr,fmt='%.5e',header=header,footer=footer)
+
+
+    def vcirc(self,R,nproc=2,toll=1e-4,show_comp=True):
+
+        ncomp=len(self.dynamic_components)
+
+        if show_comp:
+            ret_array=np.zeros((len(R),ncomp+2))
+        else:
+            ret_array=np.zeros((len(R),2))
+
+        ret_array[:,0]=R
+
+        i=1
+        v_tot2=0
+        for comp in self.dynamic_components:
+           v_tmp=comp.vcirc(R,nproc=nproc,toll=toll)[:,-1]
+           v_tot2+=v_tmp*np.abs(v_tmp)
+
+
+           if show_comp:
+               ret_array[:,i]=v_tmp
+
+           i+=1
+
+        ret_array[:, -1] = np.sqrt(v_tot2)
+
+        return ret_array
 
 
 

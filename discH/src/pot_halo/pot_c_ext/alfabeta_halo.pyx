@@ -13,7 +13,7 @@ cdef double PI=3.14159265358979323846
 
 cdef double psi_alfabeta(double d0, double alpha, double beta, double rc, double m) nogil:
     """Auxiliary functions linked to density law alfabeta:
-    d=d0*(m/rs)**(-alfa)*(m/rs)**(-(alfa-beta))
+    d=d0*(m/rs)**(-alfa)*(1+m/rs)**(-(alfa-beta))
 
     :param d0: Scale density  [Msol/kpc^3], if alpha=0, d0 is the density ad R=0 and Z=0
     :param alpha: Alpha exponent
