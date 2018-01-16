@@ -6,6 +6,7 @@ import time
 import copy
 import sys
 
+#TODO: change name in galmodel
 class galpotential:
 
 
@@ -14,8 +15,10 @@ class galpotential:
         self._check_components(dynamic_components)
         if isinstance(dynamic_components,list) or isinstance(dynamic_components,tuple) or isinstance(dynamic_components,np.ndarray):
             self.dynamic_components=list(dynamic_components)
+            self.ncomp=len(self.dynamic_components)
         else:
             self.dynamic_components=(dynamic_components,)
+            self.ncomp=1
         self.potential_grid=None
         self.external_potential=None
         self.potential_grid_exist=False
@@ -43,6 +46,8 @@ class galpotential:
 
         self.dynamic_components=self.dynamic_components+list(components)
 
+        self.ncomp=len(self.dynamic_components)
+
         return 0
 
     def remove_components(self,idx=()):
@@ -59,6 +64,8 @@ class galpotential:
                     pass
 
         self.dynamic_components=dynamic_components
+
+        self.ncomp = len(self.dynamic_components)
 
         return 0
 
@@ -184,6 +191,7 @@ class galpotential:
 
         ret_array[:,0]=R
 
+
         i=1
         v_tot2=0
         for comp in self.dynamic_components:
@@ -202,10 +210,10 @@ class galpotential:
 
 
 
-
     def dynamic_components_info(self):
 
         i=0
+        print('Number of dynamical components: ',self.ncomp)
         for comp in self.dynamic_components:
 
             print('Components:',i)
