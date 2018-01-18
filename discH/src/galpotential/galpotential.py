@@ -6,7 +6,7 @@ import time
 import copy
 import sys
 
-#TODO: change name in galmodel
+#TODO: change name in galmodel and reogarnize
 class galpotential:
 
 
@@ -71,8 +71,13 @@ class galpotential:
 
     def _make_finalgrid(self,R,Z,ncolumn=3,grid=False):
 
+        if isinstance(R,float) or isinstance(R, int): R=np.array((R,))
+        if isinstance(Z,float) or isinstance(Z, int): Z=np.array((Z,))
+
+
         lenR=len(R)
         lenZ=len(Z)
+
 
         if lenR!=lenZ or grid==True:
             nrow=lenR*lenZ
@@ -83,7 +88,13 @@ class galpotential:
 
         return arr
 
-    def potential(self,R,Z,grid=False,nproc=2, toll=1e-4, Rcut=None, zcut=None, mcut=None,external_potential=None):
+    def potential(self,R,Z,grid=False,nproc=2, toll=1e-4, Rcut=None, zcut=None, mcut=None,external_potential=None, output='1D',show_comp=True):
+
+
+        if output=='1D': Dgrid=False
+        elif output=='2D': Dgrid=True
+        else: raise NotImplementedError('output type \'%s\' not implemented for disc.potential'%str(output))
+
 
         grid_final=self._make_finalgrid(R,Z,ncolumn=3,grid=grid)
         grid_complete=self._make_finalgrid(R,Z,ncolumn=len(self.dynamic_components)+4,grid=grid)
@@ -98,10 +109,8 @@ class galpotential:
             else:
                 grid_complete[:,-2]=external_potential[:,-1]
                 grid_final[:,-1]=external_potential[:,-1]
-                print('Yes')
                 sys.stdout.flush()
         else:
-            print('No')
             sys.stdout.flush()
 
         #Calc potential
@@ -111,11 +120,11 @@ class galpotential:
             sys.stdout.flush()
             if isinstance(comp, halo):
                 tini=time.time()
-                grid_tmp = comp.potential(R, Z, grid=grid, toll=toll, mcut=mcut, nproc=nproc)
+                grid_tmp = comp.potential(R, Z, grid=grid, toll=toll, mcut=mcut, nproc=nproc,output='1D')
                 tfin=time.time()
             elif isinstance(comp,disc):
                 tini=time.time()
-                grid_tmp = comp.potential(R,Z,grid=grid,toll=toll,Rcut=Rcut, zcut=zcut, nproc=nproc)
+                grid_tmp = comp.potential(R,Z,grid=grid,toll=toll,Rcut=Rcut, zcut=zcut, nproc=nproc,output='1D')
                 tfin=time.time()
             tottime=tfin-tini
             print('Done (%.2f s)'%tottime)
@@ -137,7 +146,26 @@ class galpotential:
         self.potential_grid_exist=True
         self.dynamic_components_last=copy.copy(self.dynamic_components)
 
-        return grid_final
+
+        if show_comp==False:
+            if Dgrid==False:
+                grid_output=grid_final
+            else:
+                nrow,ncol=grid_final.shape
+                grid_output=np.zeros(shape=(ncol,len(R),len(Z)))
+                for i in range(ncol):
+                    grid_output[i,:,:]=grid_final[:,i].reshape(len(R),len(Z))
+        else:
+            if Dgrid==False:
+                grid_output=grid_complete
+            else:
+                nrow,ncol=grid_complete.shape
+                grid_output = np.zeros(shape=(ncol, len(R), len(Z)))
+                for i in range(ncol):
+                    grid_output[i,:,:]=grid_complete[:,i].reshape(len(R),len(Z))
+
+
+        return grid_output
 
 
     def save(self,filename,complete=True):
@@ -205,6 +233,68 @@ class galpotential:
            i+=1
 
         ret_array[:, -1] = np.sqrt(v_tot2)
+
+        return ret_array
+
+
+    def dens(self,R,Z=0,grid=False,show_comp=True, output='1D'):
+
+
+        if output=='1D': Dgrid=False
+        elif output=='2D': Dgrid=True
+        else: raise NotImplementedError('output type \'%s\' not implemented for disc.potential'%str(output))
+
+        ncomp=len(self.dynamic_components)
+
+        comp0=self.dynamic_components[0]
+
+        ret0=comp0.dens(R=R,Z=Z, grid=grid,output=output)
+
+        if ncomp==1:
+
+            ret_array=ret0
+
+        else:
+
+
+            if Dgrid:
+                if show_comp:
+                    ret_array=np.zeros(shape=(ncomp+3,len(R),len(Z)))
+                    ret_array[2,:,:]=ret0[2,:,:]
+                else:
+                    ret_array=np.zeros(shape=(3,len(R),len(Z)))
+
+                ret_array[0,:,:]=ret0[0,:,:]
+                ret_array[1,:,:]=ret0[1,:,:]
+                ret_array[-1,:,:]=ret0[2,:,:]
+
+                i=3
+                for comp in self.dynamic_components[1:]:
+                    dens_tmp=comp.dens(R=R,Z=Z,grid=grid, output=output)[2,:,:]
+                    if show_comp: ret_array[i,:,:]=dens_tmp
+                    ret_array[-1,:,:]=ret_array[-1,:,:]+dens_tmp
+                    i+=1
+
+
+            else:
+                if show_comp:
+                    ret_array=np.zeros((len(ret0),ncomp+3))
+                    ret_array[:, 2] = ret0[:, 2]
+                else:
+                    ret_array=np.zeros((len(ret0),3))
+
+                ret_array[:,0]=ret0[:,0]
+                ret_array[:,1]=ret0[:,1]
+                ret_array[:,-1]=ret0[:,2]
+
+
+                i=3
+                for comp in self.dynamic_components[1:]:
+
+                    dens_tmp=comp.dens(R=R,Z=Z,grid=grid, output=output)[:,-1]
+                    if show_comp: ret_array[:,i]=dens_tmp
+                    ret_array[:,-1]=ret_array[:,-1]+dens_tmp
+                    i+=1
 
         return ret_array
 

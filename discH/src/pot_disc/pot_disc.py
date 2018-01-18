@@ -3,7 +3,7 @@ from .pot_c_ext.integrand_functions import potential_disc, potential_disc_thin
 from .pot_c_ext.integrand_vcirc import vcirc_disc, vcirc_disc_thin
 from .pot_c_ext.rflare_law import flare as flare_func
 from .pot_c_ext.rdens_law import rdens as rdens_func
-from .pot_c_ext.zdens_law import hwhm_fact
+from .pot_c_ext.zdens_law import hwhm_fact, zfunc_dict
 import multiprocessing as mp
 from ..pardo.Pardo import ParDo
 import  numpy as np
@@ -12,6 +12,11 @@ import emcee
 from .pot_c_ext.model_option import checkfl_dict, checkrd_dict
 from scipy.integrate import quad, nquad
 import sys
+from ..utility import cartesian
+
+
+
+
 
 def _fit_utility(f,rfit_array,p0):
 
@@ -185,6 +190,7 @@ class disc(object):
         self.rparam=np.zeros(10)
         self.fparam=np.zeros(10)
         self.zlaw=zlaw
+        self.zfunc=zfunc_dict[zlaw]
         self.rlaw=rlaw
         self.flaw=flaw
         self.lenparam = 10
@@ -219,7 +225,7 @@ class disc(object):
             self.flare          =   self._flare
 
 
-    def potential(self,R,Z,grid=False,toll=1e-4,Rcut=None, zcut=None, nproc=1):
+    def potential(self,R,Z,grid=False,toll=1e-4,Rcut=None, zcut=None, nproc=1, output='1D'):
         """Calculate potential at coordinate (R,Z). If R and Z are arrays with unequal lengths or
             if grid is True, the potential will be calculated in a 2D grid in R and Z.
 
@@ -246,15 +252,51 @@ class disc(object):
             self.zcut=zcut
 
 
-        if nproc==1:
-            return self._pot_serial(R=R,Z=Z,grid=grid,toll=toll,Rcut=Rcut,zcut=zcut)
-        else:
-            if len(R)!=len(Z) or grid==True:
-                ndim=len(R)*len(Z)
-            else:
-                ndim=len(R)
+        if output=='1D': Dgrid=False
+        elif output=='2D': Dgrid=True
+        else: raise NotImplementedError('output type \'%s\' not implemented for disc.potential'%str(output))
 
-            return self._pot_parallel(R=R, Z=Z, grid=grid, toll=toll, Rcut=Rcut, zcut=zcut, nproc=nproc)
+        if isinstance(R,float) or isinstance(R, int): R=np.array((R,))
+        if isinstance(Z,float) or isinstance(Z, int): Z=np.array((Z,))
+
+
+
+        if len(R) != len(Z) or grid == True:
+
+            if len(R) != len(Z) and grid == False:
+                print('\n*WARNING*: estimate potential on model %s. \n'
+                      'R and Z have different dimensions, but grid=False. R and Z will be sorted and grid set to True.\n'%self.name)
+                sys.stdout.flush()
+
+            R=np.sort(R)
+            Z=np.sort(Z)
+            grid=True
+
+        else:
+
+            pass
+
+
+        if nproc==1:
+            ret_array= self._pot_serial(R=R,Z=Z,grid=grid,toll=toll,Rcut=Rcut,zcut=zcut)
+        else:
+            ret_array = self._pot_parallel(R=R, Z=Z, grid=grid, toll=toll, Rcut=Rcut, zcut=zcut, nproc=nproc)
+
+        if grid and Dgrid:
+
+            ret_Darray=np.zeros((3,len(R),len(Z)))
+            ret_Darray[0,:,:]=ret_array[:,0].reshape(len(R),len(Z))
+            ret_Darray[1,:,:]=ret_array[:,1].reshape(len(R),len(Z))
+            ret_Darray[2,:,:]=ret_array[:,2].reshape(len(R),len(Z))
+
+            return ret_Darray
+
+        else:
+
+            return ret_array
+
+
+
 
     def _potential_serial(self,R,Z,grid=False,toll=1e-4,Rcut=None, zcut=None, **kwargs):
         """Calculate the potential in R and Z using a serial code
@@ -275,6 +317,7 @@ class disc(object):
         if zcut is not None: zcut=zcut
         elif (isinstance(Z,float) or isinstance(Z, int)): zcut=10*Z
         else: zcut=10*np.max(Z)
+
 
         return potential_disc(R,Z,sigma0=self.sigma0, rcoeff=self.rparam, fcoeff=self.fparam,zlaw=self.zlaw, rlaw=self.rlaw, flaw=self.flaw,rcut=Rcut,zcut=zcut, toll=toll, grid=grid)
 
@@ -321,6 +364,9 @@ class disc(object):
 
         pardo=ParDo(nproc=nproc)
         pardo.set_func(potential_disc)
+
+        R=np.sort(R)
+        Z=np.sort(Z)
 
         if len(R)!=len(Z) or grid==True:
 
@@ -452,10 +498,85 @@ class disc(object):
             return ret
 
     def Sdens(self, R):
+        """
+        Disc surface density
+        :param R: cylindrical radius
+        :return:
+        """
 
         checkrdi=checkrd_dict[self.rlaw]
+        sdens=rdens_func(R, checkrdi, *self.rparam)
+        sdens[:,1]=self.sigma0*sdens[:,1]
 
-        return self.sigma0*rdens_func(R, checkrdi, *self.rparam)
+        return sdens
+
+
+    def dens(self, R, Z=0, grid=False, output='1D'):
+        """
+        Evaulate the density at the point (R,Z)
+        :param R: float int or iterable
+        :param z: float int or iterable, if Z is None R=m elliptical radius (m=sqrt(R*R+Z*Z/(1-e^2)) if e=0 spherical radius)
+        :param grid:  if True calculate the potential in a 2D grid in R and Z, if len(R)!=len(Z) grid is True by default
+        :return:  2D array with: col-0 R, col-1 dens(m) if Z is None or col-0 R, col-1 Z, col-2 dens(R,Z)
+        """
+
+        if output=='1D': Dgrid=False
+        elif output=='2D': Dgrid=True
+        else: raise NotImplementedError('output type \'%s\' not implemented for disc.dens'%str(output))
+
+        if isinstance(R, int) or isinstance(R, float):  R = np.array([R, ])
+        if isinstance(Z, int) or isinstance(Z, float):  Z = np.array([Z, ])
+
+
+
+        if grid==True or len(R)!=len(Z):
+
+
+            if grid==True or len(R)!=len(Z):
+
+                if len(R) != len(Z) and grid == False:
+                    print('\n*WARNING*: estimate potential on model %s. \n'
+                          'R and Z have different dimensions, but grid=False. R and Z will be sorted and grid set to True.\n' % self.name)
+                    sys.stdout.flush()
+                    R=np.sort(R)
+                    Z=np.sort(Z)
+                    grid=True
+
+            ret=np.zeros(shape=(len(R)*len(Z),3))
+
+            coord=cartesian(R,Z)
+
+            ret[:,:2]=coord
+
+
+            Sdens = self.Sdens(coord[:,0])[:, 1]
+            zd = self.flare(coord[:,0])[:, 1]
+            gzd = self.zfunc(coord[:,1], zd)
+
+
+
+        else:
+
+            ret=np.zeros(shape=(len(R),3))
+            ret[:,0]=R
+            ret[:,1]=Z
+
+            Sdens = self.Sdens(R)[:, 1]
+            zd = self.flare(R)[:, 1]
+            gzd = self.zfunc(Z, zd)
+
+        ret[:, 2] = Sdens * gzd
+
+        if grid and Dgrid:
+            ret_Darray = np.zeros((3, len(R), len(Z)))
+            ret_Darray[0, :, :] = ret[:, 0].reshape(len(R), len(Z))
+            ret_Darray[1, :, :] = ret[:, 1].reshape(len(R), len(Z))
+            ret_Darray[2, :, :] = ret[:, 2].reshape(len(R), len(Z))
+
+            ret = ret_Darray
+
+        return ret
+
 
     def diskmass(self,up,low=0):
         int_func=lambda r: (self.Sdens(r)[:,1])*(2*np.pi*r)

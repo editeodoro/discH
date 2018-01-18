@@ -82,9 +82,11 @@ class ParDo:
             p.join()
         ##Order
         if _sorted:
-            original_order=np.argsort(array, kind='mergesort')
-            final_order = np.argsort(results[:, 0], kind='mergesort')
-            results[original_order]=results[final_order]
+            #original_order=np.argsort(array, kind='mergesort')
+            #final_order = np.argsort(results[:, 0], kind='mergesort')
+            #results[original_order]=results[final_order]
+            idx_sort=np.argsort(results[:,0], kind='mergesort')
+            results=results[idx_sort]
         else:
             pass
 
@@ -132,7 +134,7 @@ class ParDo:
             p.join()
         ##Order
         if _sorted:
-            original_order=np.argsort(array, kind='mergesort')
+            original_order=np.argsort(array1, kind='mergesort')
             final_order = np.argsort(results[:, 0], kind='mergesort')
             results[original_order]=results[final_order]
         else:

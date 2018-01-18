@@ -8,23 +8,11 @@ from .pot_c_ext.valy_halo import potential_valy, vcirc_valy
 from .pot_c_ext.exponential_halo import potential_exponential, vcirc_exponential
 import multiprocessing as mp
 from ..pardo.Pardo import ParDo
+from ..utility import cartesian
 import numpy as np
+import sys
 
-def cartesian(*arrays):
-    """
-    Make a cartesian combined arrays from different arrays e.g.
-    al=np.linspace(0.2,5,50)
-    ql=np.linspace(0.1,2,50)
-    par=cartesian(al,ql)
-    :param arrays:
-    :return:
-    """
-    mesh = np.meshgrid(*arrays)  # standard numpy meshgrid
-    dim = len(mesh)  # number of dimensions
-    elements = mesh[0].size  # number of elements, any index will do
-    flat = np.concatenate(mesh).ravel()  # flatten the whole meshgrid
-    reshape = np.reshape(flat, (dim, elements)).T  # reshape and transpose
-    return reshape
+
 
 class halo(object):
     """
@@ -64,7 +52,7 @@ class halo(object):
 
         self.mcut=mcut
 
-    def potential(self,R,Z,grid=False,toll=1e-4,mcut=None, nproc=1):
+    def potential(self,R,Z=0,grid=False,toll=1e-4,mcut=None, nproc=1,output='1D'):
         """Calculate potential at coordinate (R,Z). If R and Z are arrays with unequal lengths or
             if grid is True, the potential will be calculated in a 2D grid in R and Z.
 
@@ -80,10 +68,30 @@ class halo(object):
             2-Potential
         """
 
+        if output=='1D': Dgrid=False
+        elif output=='2D': Dgrid=True
+        else: raise NotImplementedError('output type \'%s\' not implemented for halo.potential'%str(output))
+
+        if isinstance(R,float) or isinstance(R, int): R=np.array((R,))
+        if isinstance(Z,float) or isinstance(Z, int): Z=np.array((Z,))
+
+
+
+
         if len(R) != len(Z) or grid == True:
+
+            if len(R) != len(Z) and grid == False:
+                print('\n*WARNING*: estimate potential on model %s. \n'
+                      'R and Z have different dimensions, but grid=False. R and Z will be sorted and grid set to True.\n'%self.name)
+                sys.stdout.flush()
+
             ndim = len(R) * len(Z)
+            R=np.sort(R)
+            Z=np.sort(Z)
+            grid=True
         else:
             ndim = len(R)
+
 
         if mcut is None:
             mcut=self.mcut
@@ -91,9 +99,23 @@ class halo(object):
             self.mcut=mcut
 
         if nproc==1 or ndim<100000:
-            return self._potential_serial(R=R,Z=Z,grid=grid,toll=toll,mcut=mcut)
+            ret_array = self._potential_serial(R=R,Z=Z,grid=grid,toll=toll,mcut=mcut)
         else:
-            return self._potential_parallel(R=R, Z=Z, grid=grid, toll=toll, mcut=mcut,nproc=nproc)
+            ret_array = self._potential_parallel(R=R, Z=Z, grid=grid, toll=toll, mcut=mcut,nproc=nproc)
+
+        if grid and Dgrid:
+
+            ret_Darray=np.zeros((3,len(R),len(Z)))
+            ret_Darray[0,:,:]=ret_array[:,0].reshape(len(R),len(Z))
+            ret_Darray[1,:,:]=ret_array[:,1].reshape(len(R),len(Z))
+            ret_Darray[2,:,:]=ret_array[:,2].reshape(len(R),len(Z))
+
+            return ret_Darray
+
+        else:
+
+            return ret_array
+
 
     def _potential_serial(self,R,Z,grid=False,toll=1e-4,mcut=None):
         """Calculate the potential in R and Z using a serial code
@@ -156,7 +178,7 @@ class halo(object):
         raise NotImplementedError('Potential parallel not implemented for this class')
 
 
-    def dens(self, R, Z=None, grid=False):
+    def dens(self, R, Z=None, grid=False,output='1D'):
         """
         Evaulate the density at the point (R,Z)
         :param R: float int or iterable
@@ -164,6 +186,10 @@ class halo(object):
         :param grid:  if True calculate the potential in a 2D grid in R and Z, if len(R)!=len(Z) grid is True by default
         :return:  2D array with: col-0 R, col-1 dens(m) if Z is None or col-0 R, col-1 Z, col-2 dens(R,Z)
         """
+
+        if output=='1D': Dgrid=False
+        elif output=='2D': Dgrid=True
+        else: raise NotImplementedError('output type \'%s\' not implemented for halo.dens'%str(output))
 
         if isinstance(R, int) or isinstance(R, float):  R = np.array([R, ])
 
@@ -174,11 +200,29 @@ class halo(object):
 
             if grid==True or len(R)!=len(Z):
 
+                if len(R) != len(Z) and grid == False:
+                    print('\n*WARNING*: estimate potential on model %s. \n'
+                          'R and Z have different dimensions, but grid=False. R and Z will be sorted and grid set to True.\n' % self.name)
+                    sys.stdout.flush()
+                    R=np.sort(R)
+                    Z=np.sort(Z)
+                    grid=True
+
                 ret=np.zeros(shape=(len(R)*len(Z),3))
 
                 coord=cartesian(R,Z)
-                ret[:,:1]=coord
+                ret[:,:2]=coord
                 ret[:,2]=self._dens(coord[:,0],coord[:,1])
+
+                if Dgrid:
+
+                    ret_Darray = np.zeros((3, len(R), len(Z)))
+                    ret_Darray[0, :, :] = ret[:, 0].reshape(len(R), len(Z))
+                    ret_Darray[1, :, :] = ret[:, 1].reshape(len(R), len(Z))
+                    ret_Darray[2, :, :] = ret[:, 2].reshape(len(R), len(Z))
+
+                    ret=ret_Darray
+
 
             else:
 
