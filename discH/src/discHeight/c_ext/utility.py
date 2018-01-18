@@ -33,6 +33,6 @@ def cdens(table,disp):
     r=newtable[i,0]
     pot0=newtable[i,2]
     newtable[i:,3]=np.exp(-(newtable[i:,2]-pot0)/(disp(r)*disp(r)*conv*conv))
-
+    newtable[:,3]=np.where(newtable[:,3]/newtable[0,3]>1,np.nan,newtable[:,3])
 
     return newtable
