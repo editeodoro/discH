@@ -113,7 +113,7 @@ zd=['discH/src/pot_disc/pot_c_ext/zdens_law.pyx']
 zd_ext=Extension('discH/src/pot_disc/pot_c_ext/zdens_law',sources=zd)
 
 vcirc=['discH/src/pot_disc/pot_c_ext/integrand_vcirc.pyx']
-vcirc_ext=Extension('discH/src/pot_disc/pot_c_ext/integrand_vcirc', sources=vcirc)
+vcirc_ext=Extension('discH/src/pot_disc/pot_c_ext/integrand_vcirc', sources=vcirc,libraries=cy_gsl_lib,library_dirs=[cy_gsl_lib_dic],include_dirs=[cy_gsl_inc_cy, np_inc])
 
 #ext_modules=cythonize([cy_ext,gh_ext,ih_ext,infw_ext,gd_ext,rd_ext,fd_ext])
 
@@ -129,7 +129,7 @@ ext_modules=cythonize([gh_ext,ih_ext,infw_ext,gd_ext,rd_ext,fd_ext,iab_ext,ph_ex
 
 setup(
 		name='discH',
-		version='3.7.2.dev0',
+		version='3.8.0.dev0',
 		author='Giuliano Iorio',
 		author_email='',
 		url='',
