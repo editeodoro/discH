@@ -140,11 +140,11 @@ setup(
         install_requires=['numpy>=1.9', 'scipy>=0.19', 'matplotlib','emcee']
 )
 
-'''
+
 try:
     shutil.rmtree('build')
     shutil.rmtree('dist')
     shutil.rmtree('discH.egg-info')
 except:
     pass
-'''
+
