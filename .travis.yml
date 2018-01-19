@@ -8,11 +8,11 @@ python:
   - 3.6
 before_install:
   - sudo apt-get -qq update
-  - sudo apt-get install libgsl-dev 
+  - sudo apt-get install libgsl0-dev
 install:
   - gcc --version
   - python setup.py install
   - pip list
 script:
   - python setup.py test -q
-sudo: false
+sudo: true
