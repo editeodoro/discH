@@ -10,6 +10,7 @@ before_install:
   - sudo apt-get -qq update
   - sudo apt-get install libgsl0-dev
   - gsl-config --cflags
+  - pip install scipy
 install:
   - gcc --version
   - python setup.py install
