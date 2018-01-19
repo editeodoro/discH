@@ -2,13 +2,14 @@ warnings_are_errors: false
 language: python
 python:
   - 2.7
-  - 3.3
   - 3.4
   - 3.5
   - 3.6
+addons:
+  apt:
+    packages:
+     - libgsl0-dev
 before_install:
-  - sudo apt-get -qq update
-  - sudo apt-get install libgsl0-dev
   - gsl-config --cflags
   - pip install scipy
 install:
