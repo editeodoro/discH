@@ -3,6 +3,7 @@
 *.swp
 *.pyc
 *_backup.py
+*.so
 .project
 .pydevproject
 /gh-pages
