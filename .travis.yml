@@ -9,13 +9,8 @@ addons:
   apt:
     packages:
      - libgsl0-dev
-before_install:
-  - gsl-config --cflags
-  - pip install scipy
 install:
-  - gcc --version
   - python setup.py install
-  - pip list
 script:
   - python setup.py test -q
 sudo: true
