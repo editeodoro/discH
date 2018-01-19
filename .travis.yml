@@ -9,6 +9,7 @@ python:
 before_install:
   - sudo apt-get -qq update
   - sudo apt-get install libgsl0-dev
+  - gsl-config
 install:
   - gcc --version
   - python setup.py install
