@@ -11,6 +11,4 @@ addons:
      - libgsl0-dev
 install:
   - python setup.py install
-script:
-  - python discH/test/test.py
 sudo: true
