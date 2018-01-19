@@ -91,6 +91,7 @@ class halo(object):
             grid=True
         else:
             ndim = len(R)
+            if Dgrid==True: raise ValueError('Cannot use output 2D with non-grid input')
 
 
         if mcut is None:
@@ -225,7 +226,8 @@ class halo(object):
 
 
             else:
-
+                if Dgrid == True:
+                    raise ValueError('Cannot use output 2D with non-grid input')
                 ret=np.zeros(shape=(len(R),3))
                 ret[:,0]=R
                 ret[:,1]=Z

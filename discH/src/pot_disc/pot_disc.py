@@ -274,7 +274,8 @@ class disc(object):
 
         else:
 
-            pass
+            if Dgrid==True: raise ValueError('Cannot use output 2D with non-grid input')
+
 
 
         if nproc==1:
@@ -556,6 +557,8 @@ class disc(object):
 
 
         else:
+            if Dgrid==True:
+                raise ValueError('Cannot use output 2D with non-grid input')
 
             ret=np.zeros(shape=(len(R),3))
             ret[:,0]=R
