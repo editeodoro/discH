@@ -12,5 +12,5 @@ addons:
 install:
   - python setup.py install
 script:
-  - python setup.py test -q
+  - python discH/test/test.py
 sudo: true
