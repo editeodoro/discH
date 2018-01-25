@@ -637,7 +637,7 @@ class Exponential_disc(disc):
         return cls(sigma0=sigma0,Rd=Rd,fparam=fparam,zlaw='dirac',flaw='constant', Rcut=Rcut, zcut=zcut)
 
     @classmethod
-    def thick(cls,sigma0=None, Rd=None, zd=None, rfit_array=None, ffit_array=None, zlaw='gau', Rcut=50, zcut=30,**kwargs):
+    def thick(cls,sigma0=None, Rd=None, zd=None, rfit_array=None, ffit_array=None, zlaw='gau', Rcut=50, zcut=30,check_thin=True,**kwargs):
 
 
         #Sigma(R)
@@ -663,12 +663,19 @@ class Exponential_disc(disc):
             raise ValueError()
 
 
-        if zd<0.01:
-            print('Warning Zd lower than 0.01, switching to thin disc')
-            fparam=np.array([0,0])
-            zlaw='dirac'
+        if check_thin:
+
+            if zd<0.01:
+                print('Warning Zd lower than 0.01, switching to thin disc')
+                fparam=np.array([0,0])
+                zlaw='dirac'
+            else:
+                fparam=np.array([zd,0])
+
         else:
-            fparam=np.array([zd,0])
+
+            fparam = np.array([zd, 0])
+
 
 
         return cls(sigma0=sigma0, Rd=Rd, fparam=fparam, zlaw=zlaw, flaw='constant', Rcut=Rcut, zcut=zcut)
@@ -942,7 +949,7 @@ class PolyExponential_disc(disc):
         return cls(sigma0=sigma0,Rd=Rd,coeff=coeff,fparam=fparam,zlaw='dirac',flaw='constant', Rcut=Rcut, zcut=zcut)
 
     @classmethod
-    def thick(cls,sigma0=None, Rd=None, coeff=None, zd=None, rfit_array=None, rfit_degree=3, ffit_array=None, zlaw='gau',Rcut=50, zcut=30,**kwargs):
+    def thick(cls,sigma0=None, Rd=None, coeff=None, zd=None, rfit_array=None, rfit_degree=3, ffit_array=None, zlaw='gau',Rcut=50, zcut=30, check_thin=True,**kwargs):
 
         #Sigma(R)
         if rfit_array is not None:
@@ -971,13 +978,15 @@ class PolyExponential_disc(disc):
         else:
             raise ValueError()
 
-
-        if zd<0.01:
-            print('Warning Zd lower than 0.01, switching to thin disc')
-            fparam=np.array([0,0])
-            zlaw='dirac'
+        if check_thin:
+            if zd<0.01:
+                print('Warning Zd lower than 0.01, switching to thin disc')
+                fparam=np.array([0,0])
+                zlaw='dirac'
+            else:
+                fparam=np.array([zd,0])
         else:
-            fparam=np.array([zd,0])
+            fparam = np.array([zd, 0])
 
         return cls(sigma0=sigma0, Rd=Rd, coeff=coeff, fparam=fparam, zlaw=zlaw, flaw='constant', Rcut=Rcut, zcut=zcut)
 
@@ -1246,7 +1255,7 @@ class Gaussian_disc(disc):
         return cls(sigma0=sigma0,sigmad=sigmad,R0=R0,fparam=fparam,zlaw='dirac',flaw='constant', Rcut=Rcut, zcut=zcut)
 
     @classmethod
-    def thick(cls,sigma0=None, sigmad=None, R0=None, zd=None, rfit_array=None, ffit_array=None, zlaw='gau', Rcut=50, zcut=30,**kwargs):
+    def thick(cls,sigma0=None, sigmad=None, R0=None, zd=None, rfit_array=None, ffit_array=None, zlaw='gau', Rcut=50, zcut=30, check_thin=True,**kwargs):
 
         #Sigma(R)
         if rfit_array is not None:
@@ -1271,13 +1280,15 @@ class Gaussian_disc(disc):
         else:
             raise ValueError()
 
-
-        if zd<0.01:
-            print('Warning Zd lower than 0.01, switching to thin disc')
-            fparam=np.array([0,0])
-            zlaw='dirac'
+        if check_thin:
+            if zd<0.01:
+                print('Warning Zd lower than 0.01, switching to thin disc')
+                fparam=np.array([0,0])
+                zlaw='dirac'
+            else:
+                fparam=np.array([zd,0])
         else:
-            fparam=np.array([zd,0])
+            fparam = np.array([zd, 0])
 
         return cls(sigma0=sigma0, sigmad=sigmad, R0=R0, fparam=fparam, zlaw=zlaw, flaw='constant', Rcut=Rcut, zcut=zcut)
 
@@ -1548,7 +1559,7 @@ class Frat_disc(disc):
 
 
     @classmethod
-    def thick(cls,sigma0=None, Rd=None, Rd2=None, alpha=None, zd=None, rfit_array=None, ffit_array=None, zlaw='gau',Rcut=50, zcut=30,**kwargs):
+    def thick(cls,sigma0=None, Rd=None, Rd2=None, alpha=None, zd=None, rfit_array=None, ffit_array=None, zlaw='gau',Rcut=50, zcut=30,check_thin=True,**kwargs):
 
         #Sigma(R)
         if rfit_array is not None:
@@ -1574,12 +1585,15 @@ class Frat_disc(disc):
         else:
             raise ValueError()
 
-        if zd<0.01:
-            print('Warning Zd lower than 0.01, switching to thin disc')
-            fparam=np.array([0,0])
-            zlaw='dirac'
+        if check_thin:
+            if zd<0.01:
+                print('Warning Zd lower than 0.01, switching to thin disc')
+                fparam=np.array([0,0])
+                zlaw='dirac'
+            else:
+                fparam=np.array([zd,0])
         else:
-            fparam=np.array([zd,0])
+            fparam = np.array([zd, 0])
 
         return cls(sigma0=sigma0, Rd=Rd, alpha=alpha, Rd2=Rd2, fparam=fparam, zlaw=zlaw, flaw='constant', Rcut=Rcut, zcut=zcut)
 
