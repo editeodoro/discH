@@ -2,8 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1c15f409-53bc-40b2-a677-97d1411f89aa" name="Default" comment="">
+      <change type="DELETED" beforePath="$PROJECT_DIR$/doc/Tutorial.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/doc/Tutorial.ipynb" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/doc/Tutorial.pdf" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/discH/src/pot_disc/pot_disc.py" afterPath="$PROJECT_DIR$/discH/src/pot_disc/pot_disc.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/setup.py" afterPath="$PROJECT_DIR$/setup.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -62,14 +65,14 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="pot_disc.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="pot_disc.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/discH/src/pot_disc/pot_disc.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="112">
-              <caret line="639" column="13" lean-forward="false" selection-start-line="639" selection-start-column="4" selection-end-line="639" selection-end-column="13" />
+              <caret line="202" column="9" lean-forward="false" selection-start-line="202" selection-start-column="9" selection-end-line="202" selection-end-column="9" />
               <folding>
                 <element signature="e#0#47#0" expanded="true" />
-                <element signature="e#14467#14565#1" expanded="true" />
+                <element signature="e#14532#14630#1" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -93,10 +96,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="setup.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="setup.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/setup.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="156">
+            <state relative-caret-position="2664">
               <caret line="150" column="20" lean-forward="false" selection-start-line="150" selection-start-column="20" selection-end-line="150" selection-end-column="20" />
               <folding>
                 <element signature="e#0#37#0" expanded="true" />
@@ -109,7 +112,7 @@
       <file leaf-file-name="test.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/test/test.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="18">
+            <state relative-caret-position="1026">
               <caret line="61" column="56" lean-forward="false" selection-start-line="61" selection-start-column="56" selection-end-line="61" selection-end-column="56" />
               <folding>
                 <element signature="e#0#37#0" expanded="true" />
@@ -252,8 +255,8 @@
         <option value="$PROJECT_DIR$/discH/src/discHeight/c_ext/fitlib.py" />
         <option value="$PROJECT_DIR$/discH/src/pot_halo/pot_halo.py" />
         <option value="$PROJECT_DIR$/.gitignore" />
-        <option value="$PROJECT_DIR$/discH/src/pot_disc/pot_disc.py" />
         <option value="$PROJECT_DIR$/setup.py" />
+        <option value="$PROJECT_DIR$/discH/src/pot_disc/pot_disc.py" />
       </list>
     </option>
   </component>
@@ -264,8 +267,8 @@
     <sorting>DEFINITION_ORDER</sorting>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="51" />
-    <option name="y" value="27" />
+    <option name="x" value="642" />
+    <option name="y" value="58" />
     <option name="width" value="1280" />
     <option name="height" value="773" />
   </component>
@@ -284,6 +287,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scratches" />
       <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
@@ -393,7 +397,6 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -808,10 +811,10 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="51" y="27" width="1280" height="773" extended-state="0" />
-    <editor active="true" />
+    <frame x="642" y="58" width="1280" height="773" extended-state="0" />
+    <editor active="false" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3110749" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.31758958" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32967034" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.16798732" sideWeight="0.50269026" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -1080,7 +1083,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="54">
           <caret line="3" column="17" lean-forward="false" selection-start-line="3" selection-start-column="17" selection-end-line="3" selection-end-column="17" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1215,7 +1217,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/test/test.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="18">
+        <state relative-caret-position="1026">
           <caret line="61" column="56" lean-forward="false" selection-start-line="61" selection-start-column="56" selection-end-line="61" selection-end-column="56" />
           <folding>
             <element signature="e#0#37#0" expanded="true" />
@@ -1223,24 +1225,24 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/discH/src/pot_disc/pot_disc.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="112">
-          <caret line="639" column="13" lean-forward="false" selection-start-line="639" selection-start-column="4" selection-end-line="639" selection-end-column="13" />
-          <folding>
-            <element signature="e#0#47#0" expanded="true" />
-            <element signature="e#14467#14565#1" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/setup.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="156">
+        <state relative-caret-position="2664">
           <caret line="150" column="20" lean-forward="false" selection-start-line="150" selection-start-column="20" selection-end-line="150" selection-end-column="20" />
           <folding>
             <element signature="e#0#37#0" expanded="true" />
             <element signature="e#5880#5998#1" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/discH/src/pot_disc/pot_disc.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="112">
+          <caret line="202" column="9" lean-forward="false" selection-start-line="202" selection-start-column="9" selection-end-line="202" selection-end-column="9" />
+          <folding>
+            <element signature="e#0#47#0" expanded="true" />
+            <element signature="e#14532#14630#1" expanded="true" />
           </folding>
         </state>
       </provider>

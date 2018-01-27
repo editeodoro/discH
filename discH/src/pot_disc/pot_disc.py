@@ -199,6 +199,9 @@ class disc(object):
         self.Rlimit = None
         self.name ='General disc'
 
+
+        #print('LPARAM',rparam)
+        #print(type(rparam[0]))
         #Make rparam
         lrparam=len(rparam)
         if lrparam>self.lenparam: raise ValueError('rparam length cannot exced %i'%self.lenparam)
