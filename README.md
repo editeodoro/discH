@@ -1,2 +1,2 @@
 
-The projecet have been migrated to the repository galpynamics
+The project has been migrated to the repository galpynamics: https://github.com/iogiul/galpynamics
