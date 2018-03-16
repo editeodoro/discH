@@ -1,5 +1,5 @@
 from __future__ import print_function
-import discH
+import galpynamics
 from timeit import default_timer as timer
 import numpy as np
 import sys
@@ -20,7 +20,7 @@ def test_isothermal_halo():
 
     e=0.
     try:
-        a=discH.isothermal_halo(d0,rc,e,mcut)
+        a=galpynamics.isothermal_halo(d0,rc,e,mcut)
         t1=timer()
         a.potential(R,Z,grid=False, toll=1e-4,nproc=1)
         t2=timer()
@@ -30,7 +30,7 @@ def test_isothermal_halo():
         checks='Fail'
 
     try:
-        a=discH.isothermal_halo(d0,rc,e,mcut)
+        a=galpynamics.isothermal_halo(d0,rc,e,mcut)
         t1=timer()
         a.potential(R,Z,grid=False, toll=1e-4,nproc=2)
         t2=timer()
@@ -47,7 +47,7 @@ def test_isothermal_halo():
 
     e = 0.5
     try:
-        a = discH.isothermal_halo(d0, rc, e, mcut)
+        a = galpynamics.isothermal_halo(d0, rc, e, mcut)
         t1 = timer()
         a.potential(R, Z, grid=False, toll=1e-4, nproc=1)
         t2 = timer()
@@ -57,7 +57,7 @@ def test_isothermal_halo():
         checks = 'Fail'
 
     try:
-        a = discH.isothermal_halo(d0, rc, e, mcut)
+        a = galpynamics.isothermal_halo(d0, rc, e, mcut)
         t1 = timer()
         a.potential(R, Z, grid=False, toll=1e-4, nproc=2)
         t2 = timer()

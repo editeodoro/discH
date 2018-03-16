@@ -79,15 +79,15 @@ cy_gsl_inc_cy=cython_gsl.get_cython_include_dir()
 #numpy
 np_inc=numpy.get_include()
 
-cfiles = ['discH/src/pot_halo/pot_c_ext/general_triaxial_halo.pyx', 'discH/src/pot_halo/pot_c_ext/triaxial_doublepower_halo.pyx',\
-          'discH/src/pot_halo/pot_c_ext/triaxial_exponential_halo.pyx', 'discH/src/pot_halo/pot_c_ext/general_halo.pyx',\
-          'discH/src/pot_halo/pot_c_ext/isothermal_halo.pyx','discH/src/pot_halo/pot_c_ext/nfw_halo.pyx',\
-          'discH/src/pot_halo/pot_c_ext/alfabeta_halo.pyx', 'discH/src/pot_halo/pot_c_ext/plummer_halo.pyx',\
-          'discH/src/pot_halo/pot_c_ext/einasto_halo.pyx', 'discH/src/pot_halo/pot_c_ext/powercut_halo.pyx',\
-          'discH/src/pot_halo/pot_c_ext/exponential_halo.pyx','discH/src/pot_halo/pot_c_ext/valy_halo.pyx',\
-          'discH/src/pot_disc/pot_c_ext/integrand_functions.pyx','discH/src/pot_disc/pot_c_ext/rdens_law.pyx',\
-          'discH/src/pot_disc/pot_c_ext/rflare_law.pyx','discH/src/pot_disc/pot_c_ext/zdens_law.pyx',\
-          'discH/src/pot_disc/pot_c_ext/integrand_vcirc.pyx']
+cfiles = ['galpynamics/src/pot_halo/pot_c_ext/general_triaxial_halo.pyx', 'galpynamics/src/pot_halo/pot_c_ext/triaxial_doublepower_halo.pyx',\
+          'galpynamics/src/pot_halo/pot_c_ext/triaxial_exponential_halo.pyx', 'galpynamics/src/pot_halo/pot_c_ext/general_halo.pyx',\
+          'galpynamics/src/pot_halo/pot_c_ext/isothermal_halo.pyx','galpynamics/src/pot_halo/pot_c_ext/nfw_halo.pyx',\
+          'galpynamics/src/pot_halo/pot_c_ext/alfabeta_halo.pyx', 'galpynamics/src/pot_halo/pot_c_ext/plummer_halo.pyx',\
+          'galpynamics/src/pot_halo/pot_c_ext/einasto_halo.pyx', 'galpynamics/src/pot_halo/pot_c_ext/powercut_halo.pyx',\
+          'galpynamics/src/pot_halo/pot_c_ext/exponential_halo.pyx','galpynamics/src/pot_halo/pot_c_ext/valy_halo.pyx',\
+          'galpynamics/src/pot_disc/pot_c_ext/integrand_functions.pyx','galpynamics/src/pot_disc/pot_c_ext/rdens_law.pyx',\
+          'galpynamics/src/pot_disc/pot_c_ext/rflare_law.pyx','galpynamics/src/pot_disc/pot_c_ext/zdens_law.pyx',\
+          'galpynamics/src/pot_disc/pot_c_ext/integrand_vcirc.pyx']
 
 incs = [numpy.get_include(),cython_gsl.get_include(),cython_gsl.get_cython_include_dir()]
 libs = cython_gsl.get_libraries()
@@ -101,13 +101,13 @@ for c in cfiles:
 ext_modules=cythonize(mods)
 
 setup(
-        name='discH',
-        version='3.1.0.dev0',
+        name='galpynamics',
+        version='0.1.dev0',
         author='Giuliano Iorio',
         author_email='',
         url='',
         cmdclass=cmdclass_option,
-        packages=['discH','discH/src','discH/src/pot_halo','discH/src/pot_halo/pot_c_ext','discH/src/pardo','discH/src/pot_disc', 'discH/src/pot_disc/pot_c_ext', 'discH/src/galpotential', 'discH/src/discHeight', 'discH/src/discHeight/c_ext' , 'discH/src/fitlib' ],
+        packages=['galpynamics','galpynamics/src','galpynamics/src/pot_halo','galpynamics/src/pot_halo/pot_c_ext','galpynamics/src/pardo','galpynamics/src/pot_disc', 'galpynamics/src/pot_disc/pot_c_ext', 'galpynamics/src/galpotential', 'galpynamics/src/discHeight', 'galpynamics/src/discHeight/c_ext' , 'galpynamics/src/fitlib' ],
         ext_modules=ext_modules,
         include_dirs=[np_inc,cython_gsl.get_include()],
         install_requires=['numpy>=1.9', 'scipy>=0.19', 'matplotlib','emcee']
@@ -118,7 +118,7 @@ setup(
 try:
     shutil.rmtree('build')
     shutil.rmtree('dist')
-    shutil.rmtree('discH.egg-info')
+    shutil.rmtree('galpynamics.egg-info')
 except:
     pass
 '''
