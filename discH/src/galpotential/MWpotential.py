@@ -20,16 +20,17 @@ class MWpotential(galpotential):
     1) Binney&Tremaine08, Model 1 (Tab 2.3)
     2) Binney&Tremaine08, Model 2 (Tab 2.3)
     3) Sormani et al. 2017
+    4) McMillan 2017
     """
     
     def __init__(self,model='BT08_Model1'):
         
-        # Knowns models: Binney&Tremaine08 models 1 and 2, Sormani+17
-        self.models = ['BT08_Model1', 'BT08_Model2', 'S+17']
+        # Knowns models: Binney&Tremaine08 models 1 and 2, Sormani+17, McMillan17
+        self.models = ['BT08_Model1', 'BT08_Model2', 'S+17', 'McM17']
         if model in '\t'.join(self.models):
             self.mod = model
         else:
-            raise ValueError("model must be either 'BT08_Model1', 'BT08_Model2' or S+17'")
+            raise ValueError("model must be either 'BT08_Model1', 'BT08_Model2', S+17 or McM17'")
         
         # Grid where the potential is defined. Can be a 2D or a 3D array
         self.potgrid = None
@@ -43,6 +44,9 @@ class MWpotential(galpotential):
         self.vcircs = None
         
         dc = self._getComponents()
+        
+        # Number of dynamical components
+        self.ncomps = len(dc)
         
         super(MWpotential,self).__init__(dynamic_components=dc)
         
@@ -113,7 +117,7 @@ class MWpotential(galpotential):
             sig0_gas  = sigma0_tot - sig0_star
             sig0_star_thick = sig0_star/21.
             sig0_star_thin  = sig0_star - sig0_star_thick
-
+            
             disk_thin  = Exponential_disc.thick(sigma0=sig0_star_thin, Rd=rscl_d, zd=zd_thin, zlaw='exp')
             disk_thick = Exponential_disc.thick(sigma0=sig0_star_thick, Rd=rscl_d, zd=zd_thick, zlaw='exp')
             disk_gas   = Exponential_disc.thick(sigma0=sig0_gas, Rd=rs_gas, Rm=rm_gas, zd=zd_gas, zlaw='exp')
@@ -169,11 +173,68 @@ class MWpotential(galpotential):
             rho0_bar = 5E09  # Msun/kpc3
             rscl_bar = 0.75  # kpc
             q_bar    = 0.5
-            bar = triaxial_exponential_halo(d0=rho0_bar,rc=rscl_bar,alpha=1,a=1,b=q_bar,c=q_bar)
- 
+            bar = triaxial_exponential_halo(d0=rho0_bar,rc=rscl_bar,alpha=1,a=1,b=q_bar,c=q_bar) 
             #-----------------------------------------------
             
             dc = [bulge,halo,disk_thin,disk_thick,bar]
+            
+        elif 'McM17' in self.mod:            
+            """ McMillan 2017 potential
+            
+            The potential is made by the following components:
+            1) BULGE (oblate ellipsoid):
+                rho_b = rho0_b / (1+m/rc)**alpha * exp(-(m/rb)**2) 
+                where m = sqrt(x**2+y**2+z**2/q**2)
+            2) DISK (stellar thick and thin + HI + H2):
+                rho_d_star = sig1/(2z1)*exp(-z/z1-R/R1) 
+            2) DISK (gas) with central hole:
+                rho_d = sig1/(4z1)*exp(-R/R1-Rm/R)*sech(z/2z1)
+            3) HALO (nfw):
+                rho_h = rho0_h / ((m/rh)*(1+m/rh)**2)
+            """
+            
+            # BULGE ----------------------------------------
+            q_b    = 0.5
+            e_b    = np.sqrt(1-q_b**2)
+            rho0_b = 98.4E09    # Msun/kpc3
+            rscl_b = 0.075 # kpc
+            rcut_b = 2.1   # kpc
+            alph_b = 1.8    
+            
+            # THIS IS NOT CORRECT
+            bulge = powercut_halo(d0=rho0_b,rc=rscl_b,rb=rcut_b,alpha=alph_b,e=e_b)
+            #-----------------------------------------------
+            
+            # DISK (thin+thick stellar + HI+H2 gas) --------------
+            sig0_thin  = 896E06  # Mpc/kpc2
+            zd_thin    = 0.3     # kpc
+            rs_thin    = 2.5     # kpc 
+            sig0_thick = 183E06  # Mpc/kpc2
+            zd_thick   = 0.9     # kpc
+            rs_thick   = 3.02    # kpc      
+            sig0_HI    = 53.1E06 # Mpc/kpc2
+            rs_HI      = 7.      # kpc 
+            rm_HI      = 4.      # kpc 
+            zd_HI      = 0.17    # kpc
+            sig0_H2    = 2180E06 # Mpc/kpc2
+            rs_H2      = 1.5     # kpc 
+            rm_H2      = 12.     # kpc 
+            zd_H2      = 0.09    # kpc
+
+            disk_thin  = Exponential_disc.thick(sigma0=sig0_thin, Rd=rs_thin, zd=zd_thin, zlaw='exp')
+            disk_thick = Exponential_disc.thick(sigma0=sig0_thick, Rd=rs_thick, zd=zd_thick, zlaw='exp')
+            disk_HI    = Exponential_disc.thick(sigma0=sig0_HI, Rd=rs_HI, Rm=rm_HI, zd=zd_HI, zlaw='sech2')
+            disk_H2    = Exponential_disc.thick(sigma0=sig0_H2, Rd=rs_H2, Rm=rm_H2, zd=zd_H2, zlaw='sech2')
+            #-----------------------------------------------
+            
+            # HALO ----------------------------------------
+            rho0_h = 8.54E06  # Msun/kpc3
+            rscl_h = 19.6     # kpc  
+            
+            halo = alfabeta_halo(d0=rho0_h,rs=rscl_h,alpha=1,beta=3,e=0)
+            #-----------------------------------------------
+            
+            dc = [bulge,halo,disk_thin,disk_thick,disk_HI,disk_H2]
             
         return dc
         
@@ -281,7 +342,35 @@ class MWpotential(galpotential):
             self.potgrid = np.array([X,Y,Z])
             self.totalpot = pt_b_xyz + pt_h_xyz + pt_d1_xyz + pt_d2_xyz + pt_bar
             self.pots = np.array([pt_b_xyz,pt_h_xyz,pt_d1_xyz,pt_d2_xyz,pt_bar])
+        
+        elif "McM17" in self.mod:        
+            """ If the potential is axisymmetric, we can use the implemention of the 
+                parent class """
+            
+            coordgrid = np.array(coordgrid)
+            if coordgrid.shape[0]!=2:
+                raise ValueError("For BT08 models, coordgrid must be a 2D array (R,z)")
+                
+            R, Z = coordgrid
                         
+            super(MWpotential,self).potential(R=R,Z=Z,grid=grid,nproc=nproc,toll=toll,Rcut=Rcut,\
+                                              zcut=zcut,mcut=mcut,external_potential=None)
+
+            pc = self.potential_grid_complete
+            pot_b, pot_h, pot_d1, pot_d2, pot_d3, pot_d4 = pc[:,2], pc[:,3], pc[:,4], pc[:,5], pc[:,6], pc[:,7]
+
+            # Put potentials on (R,z) grid. Axis order is [z,R]!!!
+            pt_b  = pot_b.reshape(len(R),len(Z)).T
+            pt_h  = pot_h.reshape(len(R),len(Z)).T
+            pt_d1 = pot_d1.reshape(len(R),len(Z)).T
+            pt_d2 = pot_d2.reshape(len(R),len(Z)).T
+            pt_d3 = pot_d3.reshape(len(R),len(Z)).T
+            pt_d4 = pot_d4.reshape(len(R),len(Z)).T
+            
+            self.potgrid = np.array([R,Z])
+            self.totalpot = pc[:,-1].reshape(len(R),len(Z)).T 
+            self.pots = np.array([pt_b,pt_h,pt_d1,pt_d2,pt_d3,pt_d4])
+        
         return self.totalpot, self.pots
 
 
@@ -321,6 +410,21 @@ class MWpotential(galpotential):
             self.vcirctot = np.sqrt(vc_b**2+vc_h**2+vc_d**2+vc_bar**2)
             self.vcircs = [vc_b,vc_h,vc_thin,vc_thick,vc_bar]
          
+        elif "McM17" in self.mod:
+            # Bulge
+            vc_b = dc[0].vcirc(R,nproc=nproc,toll=toll)[:,1]
+            # Halo
+            vc_h = dc[1].vcirc(R,nproc=nproc,toll=toll)[:,1]
+            # Disk
+            vc_thin  = dc[2].vcirc(R, nproc=nproc)[:,1]
+            vc_thick = dc[3].vcirc(R, nproc=nproc)[:,1]
+            vc_HI   = dc[4].vcirc(R, nproc=nproc)[:,1]
+            vc_H2   = dc[5].vcirc(R, nproc=nproc)[:,1]
+            vc_d = np.sqrt(vc_thin**2+vc_thick**2+vc_HI**2+vc_H2**2)
+            # Total
+            self.vcirctot = np.sqrt((vc_b**2+vc_h**2+vc_d**2))
+            self.vcircs = [vc_b,vc_h,vc_thin,vc_thick,vc_HI,vc_H2]
+         
         return self.vcirctot, self.vcircs
     
     
@@ -333,15 +437,19 @@ class MWpotential(galpotential):
             pt_d = self.pots[2]+self.pots[3]+self.pots[4]
             pots = [self.totalpot,self.pots[0],self.pots[1],pt_d]
             text = ["TOTAL","BULGE","HALO","DISK"]
-            if fname: outname = fname
-            else: outname = 'BTpot_mod%s.fits'%('1' if '1' in self.mod else '2') 
+            outname = 'BTpot_mod%s.fits'%('1' if '1' in self.mod else '2') 
         elif 'S+17' in self.mod:
             pt_d = self.pots[2]+self.pots[3]
             pots = [self.totalpot,self.pots[0],self.pots[1],pt_d,self.pots[-1]]
             text = ["TOTAL","BULGE","HALO","DISK","BAR"]
-            if fname: outname = fname
-            else: outname = "Sormani+17_pot.fits"
-        
+            outname = "Sormani+17_pot.fits"
+        elif "McM17" in self.mod:
+            pt_d = self.pots[2]+self.pots[3]+self.pots[4]+self.pots[5]
+            pots = [self.totalpot,self.pots[0],self.pots[1],pt_d]
+            text = ["TOTAL","BULGE","HALO","DISK"]
+            outname = 'McM17pot_mod.fits'
+
+        if fname: outname = fname
         
         return writeFITS(coordgrid=self.potgrid,potentials=pots,npots=len(pots),names=text,fname=outname)
 
@@ -354,10 +462,8 @@ class MWpotential(galpotential):
         if "BT08" in self.mod:
             pt_d = self.pots[2]+self.pots[3]+self.pots[4]
             pots = [self.totalpot,self.pots[0],self.pots[1],pt_d]
-            if fname!='': outname = fname
-            else: outname = 'BTpot_mod%s.pdf'%('1' if '1' in self.mod else '2')
+            outname = 'BTpot_mod%s.pdf'%('1' if '1' in self.mod else '2')
             text = ["TOTAL","BULGE","HALO","DISK"]
-            v = np.linspace(-50,-0.05,100)/100.
             R, Z = self.potgrid
         elif 'S+17' in self.mod:
             # Plotting x-z in the plane y=0
@@ -367,10 +473,18 @@ class MWpotential(galpotential):
             pots = [self.totalpot[:,idx,:],self.pots[0][:,idx,:],\
                     self.pots[1][:,idx,:],pt_d[:,idx,:],self.pots[-1][:,idx,:]]
             text = ["TOTAL","BULGE","HALO","DISK","BAR"]
-            if fname!='': outname = fname
-            else: outname = "Sormani+17_pot.pdf"
-            v = np.linspace(-50,-0.05,100)/100.
+            outname = "Sormani+17_pot.pdf"
             R, Z = self.potgrid[0], self.potgrid[2]
+        elif "McM17" in self.mod:
+            pt_d = self.pots[2]+self.pots[3]+self.pots[4]+self.pots[5]
+            pots = [self.totalpot,self.pots[0],self.pots[1],pt_d]
+            outname = 'McM17pot_mod.pdf'
+            text = ["TOTAL","BULGE","HALO","DISK"]
+            R, Z = self.potgrid
+        
+
+        if fname!='': outname = fname
+        v = np.linspace(-50,-0.05,100)/100.            
         
         return plot_potentials(R=R,Z=Z,potentials=pots,npots=len(pots),names=text,contours=v,fname=outname)
         
@@ -381,21 +495,28 @@ class MWpotential(galpotential):
             raise RuntimeError("You must run calculate_vcirc() before calling plot_vcirc().")
         
         if "BT08" in self.mod:        
-            v_d = np.sqrt(self.vcircs[2]**2+self.vcircs[3]**2++self.vcircs[4]**2)
+            v_d = np.sqrt(self.vcircs[2]**2+self.vcircs[3]**2+self.vcircs[4]**2)
             vcs = [self.vcirctot,self.vcircs[0],self.vcircs[1],v_d]
-            if fname!='': outname = fname
-            else: outname = 'BTvcirc_mod%s.pdf'%('1' if '1' in self.mod else '2')
+            outname = 'BTvcirc_mod%s.pdf'%('1' if '1' in self.mod else '2')
             ltype = ['-','--',':','-.']
             text = ["TOTAL","BULGE","HALO","DISK"]
             R = self.potgrid[0]
         elif 'S+17' in self.mod:
             v_d = np.sqrt(self.vcircs[2]**2+self.vcircs[3]**2)
             vcs = [self.vcirctot,self.vcircs[0],self.vcircs[1],v_d,self.vcircs[-1]]
-            if fname!='': outname = fname
-            else: outname = 'Sormani_vcirc.pdf'
+            outname = 'Sormani_vcirc.pdf'
             ltype = ['-','--',':','-.', '.']
             text = ["TOTAL","BULGE","HALO","DISK","BAR"]
             R = self.potgrid[0]
-            
+        elif "McM17" in self.mod:        
+            v_d = np.sqrt(self.vcircs[2]**2+self.vcircs[3]**2+self.vcircs[4]**2+self.vcircs[5]**2)
+            vcs = [self.vcirctot,self.vcircs[0],self.vcircs[1],v_d]
+            outname = 'McM17vcirc_mod.pdf'
+            ltype = ['-','--',':','-.']
+            text = ["TOTAL","BULGE","HALO","DISK"]
+            R = self.potgrid[0]
+        
+        if fname!='': outname = fname
+        
         return plot_vcirc(R=R,vcircs=vcs,nvcirc=len(vcs),names=text,ltype=ltype,fname=outname)
                 

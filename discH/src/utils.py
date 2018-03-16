@@ -168,7 +168,7 @@ def writeFITS (coordgrid,potentials,npots,names=None,fname="potentials.fits"):
     
     
     
-def writeHDF5 (coordgrid,potentials,npots,names=None,fname="potentials.h5", flatten=False):
+def writeHDF5 (coordgrid,potentials,npots,names=None,fname="potentials.h5", flatten=False, attributes=None):
     """ 
     Write a HDF5 file with n potentials in n extensions. Potentials are flattened in a 1D array
     
@@ -218,6 +218,10 @@ def writeHDF5 (coordgrid,potentials,npots,names=None,fname="potentials.h5", flat
     grouph.attrs.create("BoxSizes", sizes, (N,), h5py.h5t.STD_I32LE)
     datasets = []
     
+    if isinstance (attributes,dict):
+        for key, value in attributes.items():
+            group.attrs[key] = value
+    
     if flatten:
         # 2 or 3 vectors of size DIM
         datasets.append(f.create_dataset(gname+"/Coordinates", (DIM,N),dtype=h5py.h5t.IEEE_F64LE))
@@ -228,7 +232,7 @@ def writeHDF5 (coordgrid,potentials,npots,names=None,fname="potentials.h5", flat
             if ntabs==1: pot = potentials
             else: pot = potentials[i]
             datasets[-1][...] = np.ravel(pot)
-     
+
     else:
         nn = ["/Coord_R", "/Coord_Z"] if N==2 else ["/Coord_X", "/Coord_Y", "/Coord_Z"]
         for i in range (N):
