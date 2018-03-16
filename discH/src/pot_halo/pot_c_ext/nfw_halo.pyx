@@ -249,8 +249,6 @@ cpdef potential_nfw(R, Z, d0, rs, e, mcut, toll=1e-4, grid=False):
 
 
 
-
-
 #####################################################################
 #Vcirc
 cdef double vcirc_integrand_nfw(int n, double *data) nogil:
@@ -324,9 +322,7 @@ cdef double _vcirc_nfw(double R, double d0, double rs, double e, double toll):
     #Integ
     import discH.src.pot_halo.pot_c_ext.nfw_halo as mod
     fintegrand=LowLevelCallable.from_cython(mod,'vcirc_integrand_nfw')
-
     intvcirc=quad(fintegrand,0.,R,args=(R,rs,e),epsabs=toll,epsrel=toll)[0]
-
     return vcirc_norm(intvcirc,d0,e)
 
 
@@ -350,7 +346,6 @@ cdef double[:,:] _vcirc_nfw_array(double[:] R, int nlen, double d0, double rs, d
     fintegrand=LowLevelCallable.from_cython(mod,'vcirc_integrand_nfw')
 
     for  i in range(nlen):
-
         ret[i,0]=R[i]
         intvcirc=quad(fintegrand,0.,R[i],args=(R[i],rs,e),epsabs=toll,epsrel=toll)[0]
         ret[i,1]=vcirc_norm(intvcirc,d0,e)

@@ -3,7 +3,7 @@ from .pot_c_ext.integrand_functions import potential_disc, potential_disc_thin
 from .pot_c_ext.integrand_vcirc import vcirc_disc, vcirc_disc_thin
 from .pot_c_ext.rflare_law import flare as flare_func
 from .pot_c_ext.rdens_law import rdens as rdens_func
-from .pot_c_ext.zdens_law import hwhm_fact
+from .pot_c_ext.zdens_law import hwhm_fact, zfunc_dict
 import multiprocessing as mp
 from ..pardo.Pardo import ParDo
 import  numpy as np
@@ -12,6 +12,8 @@ import emcee
 from .pot_c_ext.model_option import checkfl_dict, checkrd_dict
 from scipy.integrate import quad, nquad
 import sys
+from ..utility import cartesian
+
 
 def _fit_utility(f,rfit_array,p0):
 
@@ -203,6 +205,7 @@ class disc(object):
         self.rparam=np.zeros(10)
         self.fparam=np.zeros(10)
         self.zlaw=zlaw
+        self.zfunc=zfunc_dict[zlaw]
         self.rlaw=rlaw
         self.flaw=flaw
         self.lenparam = 10
@@ -211,6 +214,9 @@ class disc(object):
         self.Rlimit = None
         self.name ='General disc'
 
+
+        #print('LPARAM',rparam)
+        #print(type(rparam[0]))
         #Make rparam
         lrparam=len(rparam)
         if lrparam>self.lenparam: raise ValueError('rparam length cannot exced %i'%self.lenparam)
@@ -237,7 +243,7 @@ class disc(object):
             self.flare          =   self._flare
 
 
-    def potential(self,R,Z,grid=False,toll=1e-4,Rcut=None, zcut=None, nproc=1):
+    def potential(self,R,Z,grid=False,toll=1e-4,Rcut=None, zcut=None, nproc=1, output='1D'):
         """Calculate potential at coordinate (R,Z). If R and Z are arrays with unequal lengths or
             if grid is True, the potential will be calculated in a 2D grid in R and Z.
 
@@ -259,10 +265,38 @@ class disc(object):
         if zcut is None: zcut=self.zcut
         else: self.zcut=zcut
 
-        if nproc==1:
-            return self._pot_serial(R=R,Z=Z,grid=grid,toll=toll,Rcut=Rcut,zcut=zcut)
+        if output=='1D': Dgrid=False
+        elif output=='2D': Dgrid=True
+        else: raise NotImplementedError('output type \'%s\' not implemented for disc.potential'%str(output))
+
+        if isinstance(R,float) or isinstance(R, int): R=np.array((R,))
+        if isinstance(Z,float) or isinstance(Z, int): Z=np.array((Z,))
+
+        if len(R) != len(Z) or grid == True:
+            if len(R) != len(Z) and grid == False:
+                print('\n*WARNING*: estimate potential on model %s. \n'
+                      'R and Z have different dimensions, but grid=False. R and Z will be sorted and grid set to True.\n'%self.name)
+                sys.stdout.flush()
+            R=np.sort(R)
+            Z=np.sort(Z)
+            grid=True
+
         else:
-            return self._pot_parallel(R=R, Z=Z, grid=grid, toll=toll, Rcut=Rcut, zcut=zcut, nproc=nproc)
+            if Dgrid==True: raise ValueError('Cannot use output 2D with non-grid input')
+
+        if nproc==1:
+            ret_array = self._pot_serial(R=R,Z=Z,grid=grid,toll=toll,Rcut=Rcut,zcut=zcut)
+        else:
+            ret_array = self._pot_parallel(R=R, Z=Z, grid=grid, toll=toll, Rcut=Rcut, zcut=zcut, nproc=nproc)
+
+        if grid and Dgrid:
+            ret_Darray=np.zeros((3,len(R),len(Z)))
+            ret_Darray[0,:,:]=ret_array[:,0].reshape(len(R),len(Z))
+            ret_Darray[1,:,:]=ret_array[:,1].reshape(len(R),len(Z))
+            ret_Darray[2,:,:]=ret_array[:,2].reshape(len(R),len(Z))
+            return ret_Darray
+        else:
+            return ret_array
 
 
     def _potential_serial(self,R,Z,grid=False,toll=1e-4,Rcut=None, zcut=None, **kwargs):
@@ -327,6 +361,9 @@ class disc(object):
 
         pardo=ParDo(nproc=nproc)
         pardo.set_func(potential_disc)
+
+        R=np.sort(R)
+        Z=np.sort(Z)
 
         if len(R)!=len(Z) or grid==True:
             htab = pardo.run_grid(R,args=(Z,self.sigma0,self.rparam,self.fparam,self.zlaw,self.rlaw,self.flaw, Rcut, zcut, toll,grid))
@@ -430,6 +467,7 @@ class disc(object):
 
         return ret
 
+
     def _flare_thin(self, R, **kwargs):
 
         if isinstance(R, int) or isinstance(R, float):
@@ -439,18 +477,81 @@ class disc(object):
             ret[:,0]=R
             return ret
 
-    def Sdens(self, R):
 
+    def Sdens(self, R):
+        """
+        Disc surface density
+        :param R: cylindrical radius
+        :return:
+        """
         checkrdi=checkrd_dict[self.rlaw]
-        return self.sigma0*rdens_func(R, checkrdi, *self.rparam)
+        sdens=rdens_func(R, checkrdi, *self.rparam)
+        sdens[:,1]=self.sigma0*sdens[:,1]
+        return sdens
+
+
+    def dens(self, R, Z=0, grid=False, output='1D'):
+        """
+        Evaulate the density at the point (R,Z)
+        :param R: float int or iterable
+        :param z: float int or iterable, if Z is None R=m elliptical radius (m=sqrt(R*R+Z*Z/(1-e^2)) if e=0 spherical radius)
+        :param grid:  if True calculate the potential in a 2D grid in R and Z, if len(R)!=len(Z) grid is True by default
+        :return:  2D array with: col-0 R, col-1 dens(m) if Z is None or col-0 R, col-1 Z, col-2 dens(R,Z)
+        """
+
+        if output=='1D': Dgrid=False
+        elif output=='2D': Dgrid=True
+        else: raise NotImplementedError('output type \'%s\' not implemented for disc.dens'%str(output))
+
+        if isinstance(R, int) or isinstance(R, float):  R = np.array([R, ])
+        if isinstance(Z, int) or isinstance(Z, float):  Z = np.array([Z, ])
+
+        if grid==True or len(R)!=len(Z):
+            if grid==True or len(R)!=len(Z):
+                if len(R) != len(Z) and grid == False:
+                    print('\n*WARNING*: estimate potential on model %s. \n'
+                          'R and Z have different dimensions, but grid=False. R and Z will be sorted and grid set to True.\n' % self.name)
+                    sys.stdout.flush()
+                    R=np.sort(R)
+                    Z=np.sort(Z)
+                    grid=True
+
+            ret=np.zeros(shape=(len(R)*len(Z),3))
+            coord=cartesian(R,Z)
+            ret[:,:2]=coord
+            Sdens = self.Sdens(coord[:,0])[:, 1]
+            zd = self.flare(coord[:,0])[:, 1]
+            gzd = self.zfunc(coord[:,1], zd)
+
+        else:
+            if Dgrid==True:
+                raise ValueError('Cannot use output 2D with non-grid input')
+
+            ret=np.zeros(shape=(len(R),3))
+            ret[:,0]=R
+            ret[:,1]=Z
+            Sdens = self.Sdens(R)[:, 1]
+            zd = self.flare(R)[:, 1]
+            gzd = self.zfunc(Z, zd)
+
+        ret[:, 2] = Sdens * gzd
+        if grid and Dgrid:
+            ret_Darray = np.zeros((3, len(R), len(Z)))
+            ret_Darray[0, :, :] = ret[:, 0].reshape(len(R), len(Z))
+            ret_Darray[1, :, :] = ret[:, 1].reshape(len(R), len(Z))
+            ret_Darray[2, :, :] = ret[:, 2].reshape(len(R), len(Z))
+            ret = ret_Darray
+
+        return ret
+
 
     def diskmass(self,up,low=0):
         int_func=lambda r: (self.Sdens(r)[:,1])*(2*np.pi*r)
         int=quad(int_func,low,up)[0]
         return int
 
-    def __str__(self):
 
+    def __str__(self):
         s=''
         s+='Model: %s \n'%self.name
         s+='Sigma0: %.2e Msun/kpc2 \n'%self.sigma0
@@ -466,6 +567,7 @@ class disc(object):
         else:
             s+='Rlimit: %.3f kpc \n'%self.Rlimit
         return s
+
 
 
 class Exponential_disc(disc):
@@ -502,8 +604,7 @@ class Exponential_disc(disc):
         return cls(sigma0=sigma0,Rd=Rd,Rm=Rm,fparam=fparam,zlaw='dirac',flaw='constant', Rcut=Rcut, zcut=zcut)
 
     @classmethod
-    def thick(cls,sigma0=None, Rd=None, Rm=0,zd=None, rfit_array=None, ffit_array=None, zlaw='gau', Rcut=50, zcut=30,**kwargs):
-
+    def thick(cls,sigma0=None, Rd=None, zd=None, rfit_array=None, ffit_array=None, zlaw='gau', Rcut=50, zcut=30,check_thin=True,**kwargs):
 
         #Sigma(R)
         if rfit_array is not None:
@@ -527,14 +628,17 @@ class Exponential_disc(disc):
         else:
             raise ValueError()
 
-        if zd<0.01:
-            print('Warning Zd lower than 0.01, switching to thin disc')
-            fparam=np.array([0,0])
-            zlaw='dirac'
+        if check_thin:
+            if zd<0.01:
+                print('Warning Zd lower than 0.01, switching to thin disc')
+                fparam=np.array([0,0])
+                zlaw='dirac'
+            else:
+                fparam=np.array([zd,0])
         else:
-            fparam=np.array([zd,0])
+            fparam = np.array([zd, 0])
 
-        return cls(sigma0=sigma0, Rd=Rd, Rm=Rm, fparam=fparam, zlaw=zlaw, flaw='constant', Rcut=Rcut, zcut=zcut)
+        return cls(sigma0=sigma0, Rd=Rd, fparam=fparam, zlaw=zlaw, flaw='constant', Rcut=Rcut, zcut=zcut)
 
 
     @classmethod
@@ -550,7 +654,6 @@ class Exponential_disc(disc):
             pass
         else:
             raise ValueError()
-
 
         #Flaw
         if ffit_array is not None:
@@ -587,6 +690,7 @@ class Exponential_disc(disc):
 
         return cls_ret
     
+    
     @classmethod
     def asinhflare(cls,sigma0=None,Rd=None, h0=None, Rf=None, c=None, rfit_array=None, ffit_array=None, zlaw='gau', Rlimit=None, Rcut=50, zcut=30,**kwargs):
 
@@ -600,7 +704,6 @@ class Exponential_disc(disc):
             pass
         else:
             raise ValueError()
-
 
         #Flaw
         if ffit_array is not None:
@@ -630,9 +733,9 @@ class Exponential_disc(disc):
 
         return cls_ret
 
+
     @classmethod
     def tanhflare(cls,sigma0=None,Rd=None, h0=None, Rf=None, c=None, rfit_array=None, ffit_array=None, zlaw='gau', Rlimit=None, Rcut=50, zcut=30,**kwargs):
-
 
         #Sigma(R)
         if rfit_array is not None:
@@ -673,6 +776,7 @@ class Exponential_disc(disc):
 
         return cls_ret
 
+
     def change_flaring(self,flaw,zlaw=None,polycoeff=None,h0=None,c=None,Rf=None,zd=None, ffit_array=None, fitdegree=None, Rlimit=None, zcut=None):
         """
         Make a new object with the same radial surface density but different flaring
@@ -693,9 +797,6 @@ class Exponential_disc(disc):
             zcut=self.zcut
         if zlaw is None: zlaw=self.zlaw
         else: zlaw=zlaw
-
-
-
 
         if flaw=='thin':
             return Exponential_disc.thin(sigma0=sigma0,Rd=Rd, Rcut=Rcut, zcut=zcut)
@@ -738,7 +839,6 @@ class Exponential_disc(disc):
 
 
     def __str__(self):
-
         s=''
         s+='Model: %s \n'%self.name
         s+='Sigma0: %.2e Msun/kpc2 \n'%self.sigma0
@@ -754,6 +854,7 @@ class Exponential_disc(disc):
         else:
             s+='Rlimit: %.3f kpc \n'%self.Rlimit
         return s
+
 
 
 class PolyExponential_disc(disc):
@@ -800,12 +901,11 @@ class PolyExponential_disc(disc):
             raise ValueError()
 
         fparam=np.array([0.0,0])
-
-
         return cls(sigma0=sigma0,Rd=Rd,Rm=Rm, coeff=coeff,fparam=fparam,zlaw='dirac',flaw='constant', Rcut=Rcut, zcut=zcut)
 
+
     @classmethod
-    def thick(cls,sigma0=None, Rd=None, Rm=0,coeff=None, zd=None, rfit_array=None, rfit_degree=3, ffit_array=None, zlaw='gau',Rcut=50, zcut=30,**kwargs):
+    def thick(cls,sigma0=None, Rd=None, coeff=None, zd=None, rfit_array=None, rfit_degree=3, ffit_array=None, zlaw='gau',Rcut=50, zcut=30, check_thin=True,Rm=0,**kwargs):
 
         #Sigma(R)
         if rfit_array is not None:
@@ -834,15 +934,18 @@ class PolyExponential_disc(disc):
         else:
             raise ValueError()
 
-
-        if zd<0.01:
-            print('Warning Zd lower than 0.01, switching to thin disc')
-            fparam=np.array([0,0])
-            zlaw='dirac'
+        if check_thin:
+            if zd<0.01:
+                print('Warning Zd lower than 0.01, switching to thin disc')
+                fparam=np.array([0,0])
+                zlaw='dirac'
+            else:
+                fparam=np.array([zd,0])
         else:
-            fparam=np.array([zd,0])
+            fparam = np.array([zd, 0])
 
         return cls(sigma0=sigma0, Rd=Rd, Rm=Rm, coeff=coeff, fparam=fparam, zlaw=zlaw, flaw='constant', Rcut=Rcut, zcut=zcut)
+
 
     @classmethod
     def polyflare(cls,sigma0=None, Rd=None, coeff=None, polycoeff=None, rfit_array=None, rfit_degree=3, ffit_array=None, fitdegree=4, zlaw='gau', Rlimit=None,Rcut=50, zcut=30,**kwargs):
@@ -896,12 +999,11 @@ class PolyExponential_disc(disc):
 
         cls_ret=cls(sigma0=sigma0, Rd=Rd, coeff=coeff, fparam=fparam, zlaw=zlaw, flaw='poly', Rcut=Rcut, zcut=zcut)
         cls_ret.Rlimit=Rlimit
-
         return cls_ret
+
 
     @classmethod
     def asinhflare(cls,sigma0=None, Rd=None, coeff=None, h0=None, Rf=None, c=None, rfit_array=None, rfit_degree=3, ffit_array=None, zlaw='gau', Rlimit=None,Rcut=50, zcut=30,**kwargs):
-
 
         #Sigma(R)
         if rfit_array is not None:
@@ -930,7 +1032,6 @@ class PolyExponential_disc(disc):
         else:
             raise ValueError()
 
-
         fparam = np.zeros(10)
         fparam[0] = h0
         fparam[1] = Rf
@@ -946,6 +1047,7 @@ class PolyExponential_disc(disc):
         cls_ret.Rlimit=Rlimit
 
         return cls_ret
+
 
     @classmethod
     def tanhflare(cls,sigma0=None, Rd=None, coeff=None, h0=None, Rf=None, c=None, rfit_array=None, rfit_degree=3, ffit_array=None, zlaw='gau', Rlimit=None, Rcut=50, zcut=30,**kwargs):
@@ -976,7 +1078,6 @@ class PolyExponential_disc(disc):
             pass
         else:
             raise ValueError()
-
 
         fparam = np.zeros(10)
         fparam[0] = h0
@@ -1043,6 +1144,7 @@ class PolyExponential_disc(disc):
         else:
             raise ValueError('Flaw %s does not exist: chose between thin, thick, poly, asinh, tanh'%flaw)
 
+
     def take_radial_from(self, cls):
 
         if isinstance(cls, PolyExponential_disc) == False:
@@ -1055,8 +1157,8 @@ class PolyExponential_disc(disc):
         self.Rm = cls.Rm
         self.Rcut = cls.Rcut
 
-    def __str__(self):
 
+    def __str__(self):
         s=''
         s+='Model: %s \n'%self.name
         s+='Sigma0: %.2e Msun/kpc2 \n'%self.sigma0
@@ -1073,6 +1175,8 @@ class PolyExponential_disc(disc):
         else:
             s+='Rlimit: %.3f kpc \n'%self.Rlimit
         return s
+
+
 
 class Gaussian_disc(disc):
 
@@ -1104,12 +1208,11 @@ class Gaussian_disc(disc):
             raise ValueError()
 
         fparam=np.array([0.0,0])
-
-
         return cls(sigma0=sigma0,sigmad=sigmad,R0=R0,fparam=fparam,zlaw='dirac',flaw='constant', Rcut=Rcut, zcut=zcut)
 
+
     @classmethod
-    def thick(cls,sigma0=None, sigmad=None, R0=None, zd=None, rfit_array=None, ffit_array=None, zlaw='gau', Rcut=50, zcut=30,**kwargs):
+    def thick(cls,sigma0=None, sigmad=None, R0=None, zd=None, rfit_array=None, ffit_array=None, zlaw='gau', Rcut=50, zcut=30, check_thin=True,**kwargs):
 
         #Sigma(R)
         if rfit_array is not None:
@@ -1134,15 +1237,18 @@ class Gaussian_disc(disc):
         else:
             raise ValueError()
 
-
-        if zd<0.01:
-            print('Warning Zd lower than 0.01, switching to thin disc')
-            fparam=np.array([0,0])
-            zlaw='dirac'
+        if check_thin:
+            if zd<0.01:
+                print('Warning Zd lower than 0.01, switching to thin disc')
+                fparam=np.array([0,0])
+                zlaw='dirac'
+            else:
+                fparam=np.array([zd,0])
         else:
-            fparam=np.array([zd,0])
+            fparam = np.array([zd, 0])
 
         return cls(sigma0=sigma0, sigmad=sigmad, R0=R0, fparam=fparam, zlaw=zlaw, flaw='constant', Rcut=Rcut, zcut=zcut)
+
 
     @classmethod
     def polyflare(cls,sigma0=None, sigmad=None, R0=None, polycoeff=None, rfit_array=None, ffit_array=None, fitdegree=4, zlaw='gau', Rlimit=None, Rcut=50, zcut=30,**kwargs):
@@ -1158,8 +1264,6 @@ class Gaussian_disc(disc):
             pass
         else:
             raise ValueError()
-
-
 
         #Flaw
         if ffit_array is not None:
@@ -1193,12 +1297,11 @@ class Gaussian_disc(disc):
 
         cls_ret=cls(sigma0=sigma0, sigmad=sigmad, R0=R0, fparam=fparam, zlaw=zlaw, flaw='poly', Rcut=Rcut, zcut=zcut)
         cls_ret.Rlimit=Rlimit
-
         return cls_ret
+
 
     @classmethod
     def asinhflare(cls,sigma0=None, sigmad=None, R0=None, h0=None, Rf=None, c=None, rfit_array=None, ffit_array=None, zlaw='gau', Rlimit=None, Rcut=50, zcut=30,**kwargs):
-
 
         #Sigma(R)
         if rfit_array is not None:
@@ -1211,7 +1314,6 @@ class Gaussian_disc(disc):
             pass
         else:
             raise ValueError()
-
 
         #Flaw
         if ffit_array is not None:
@@ -1241,6 +1343,7 @@ class Gaussian_disc(disc):
 
         return cls_ret
 
+
     @classmethod
     def tanhflare(cls, sigma0=None, sigmad=None, R0=None, h0=None, Rf=None, c=None, zlaw=None, rfit_array=None, ffit_array=None, Rlimit=None, Rcut=50, zcut=30,**kwargs):
 
@@ -1256,8 +1359,6 @@ class Gaussian_disc(disc):
         else:
             raise ValueError()
 
-
-
         #Flaw
         if ffit_array is not None:
             func_fit = lambda R, h0,Rf,c: h0+c*np.tanh(R*R/(Rf*Rf))
@@ -1268,7 +1369,6 @@ class Gaussian_disc(disc):
             pass
         else:
             raise ValueError()
-
 
         fparam = np.zeros(10)
         fparam[0] = h0
@@ -1285,6 +1385,7 @@ class Gaussian_disc(disc):
         cls_ret.Rlimit=Rlimit
 
         return cls_ret
+
 
     def change_flaring(self,flaw,zlaw=None,polycoeff=None,h0=None,c=None,Rf=None,zd=None,ffit_array=None,fitdegree=None,Rlimit=None, Rcut=50, zcut=30):
         """
@@ -1304,7 +1405,6 @@ class Gaussian_disc(disc):
         R0=self.R0
         if zlaw is None: zlaw=self.zlaw
         else: zlaw=zlaw
-
 
         if flaw=='thin':
             return Gaussian_disc.thin(sigma0=sigma0,sigmad=sigmad, R0=R0, Rcut=Rcut, zcut=zcut)
@@ -1346,7 +1446,6 @@ class Gaussian_disc(disc):
 
 
     def __str__(self):
-
         s=''
         s+='Model: %s \n'%self.name
         s+='Sigma0: %.2e Msun/kpc2 \n'%self.sigma0
@@ -1364,11 +1463,11 @@ class Gaussian_disc(disc):
             s+='Rlimit: %.3f kpc \n'%self.Rlimit
         return s
 
+
+
 class Frat_disc(disc):
 
     def __init__(self,sigma0,Rd, alpha, fparam, Rd2=None, zlaw='gau', flaw='poly',Rcut=50, zcut=30):
-
-
         self.sigma0=sigma0
         self.Rd=Rd
         if Rd2 is None: self.Rd2=Rd
@@ -1390,7 +1489,6 @@ class Frat_disc(disc):
     @classmethod
     def thin(cls, sigma0=None, Rd=None, Rd2=None, alpha=None, rfit_array=None,Rcut=50, zcut=30,**kwargs):
 
-
         #Sigma(R)
         if rfit_array is not None:
             print('Fittin surface density profile...',end='')
@@ -1411,7 +1509,7 @@ class Frat_disc(disc):
 
 
     @classmethod
-    def thick(cls,sigma0=None, Rd=None, Rd2=None, alpha=None, zd=None, rfit_array=None, ffit_array=None, zlaw='gau',Rcut=50, zcut=30,**kwargs):
+    def thick(cls,sigma0=None, Rd=None, Rd2=None, alpha=None, zd=None, rfit_array=None, ffit_array=None, zlaw='gau',Rcut=50, zcut=30,check_thin=True,**kwargs):
 
         #Sigma(R)
         if rfit_array is not None:
@@ -1437,18 +1535,21 @@ class Frat_disc(disc):
         else:
             raise ValueError()
 
-        if zd<0.01:
-            print('Warning Zd lower than 0.01, switching to thin disc')
-            fparam=np.array([0,0])
-            zlaw='dirac'
+        if check_thin:
+            if zd<0.01:
+                print('Warning Zd lower than 0.01, switching to thin disc')
+                fparam=np.array([0,0])
+                zlaw='dirac'
+            else:
+                fparam=np.array([zd,0])
         else:
-            fparam=np.array([zd,0])
+            fparam = np.array([zd, 0])
 
         return cls(sigma0=sigma0, Rd=Rd, alpha=alpha, Rd2=Rd2, fparam=fparam, zlaw=zlaw, flaw='constant', Rcut=Rcut, zcut=zcut)
 
+
     @classmethod
     def polyflare(cls,sigma0=None, Rd=None, Rd2=None, alpha=None, polycoeff=None, zlaw='gau', rfit_array=None, ffit_array=None, fitdegree=4, Rlimit=None,Rcut=50, zcut=30,**kwargs):
-
 
         #Sigma(R)
         if rfit_array is not None:
@@ -1462,7 +1563,6 @@ class Frat_disc(disc):
             pass
         else:
             raise ValueError()
-
 
         #Flaw
         if ffit_array is not None:
@@ -1499,6 +1599,7 @@ class Frat_disc(disc):
 
         return cls_ret
 
+
     @classmethod
     def asinhflare(cls, sigma0=None, Rd=None, Rd2=None, alpha=None, h0=None, Rf=None, c=None, zlaw=None, rfit_array=None, ffit_array=None, Rlimit=None,Rcut=50, zcut=30,**kwargs):
 
@@ -1514,7 +1615,6 @@ class Frat_disc(disc):
             pass
         else:
             raise ValueError()
-
 
         #Flaw
         if ffit_array is not None:
@@ -1589,6 +1689,7 @@ class Frat_disc(disc):
 
         return cls_ret
 
+
     def change_flaring(self,flaw,zlaw=None,polycoeff=None,h0=None,c=None,Rf=None,zd=None,ffit_array=None,fitdegree=None,Rlimit=None, zcut=None):
         """
         Make a new object with the same radial surface density but different flaring
@@ -1611,7 +1712,6 @@ class Frat_disc(disc):
             zcut=self.zcut
         if zlaw is None: zlaw=self.zlaw
         else: zlaw=zlaw
-
 
         if flaw=='thin':
             return Frat_disc.thin(sigma0=sigma0,Rd=Rd,Rd2=Rd2,alpha=alpha, Rcut=Rcut, zcut=zcut)
@@ -1639,6 +1739,7 @@ class Frat_disc(disc):
         else:
             raise ValueError('Flaw %s does not exist: chose between thin, thick, poly, asinh, tanh'%flaw)
 
+
     def take_radial_from(self, cls):
 
         if isinstance(cls, Frat_disc) == False:
@@ -1652,8 +1753,8 @@ class Frat_disc(disc):
         self.alpha = cls.alpha
         self.Rcut = cls.Rcut
 
-    def __str__(self):
 
+    def __str__(self):
         s=''
         s+='Model: %s \n'%self.name
         s+='Sigma0: %.2e Msun/kpc2 \n'%self.sigma0

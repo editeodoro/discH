@@ -12,9 +12,21 @@ def checkModule(module):
         
 
 modules = ['scipy','Cython','cython_gsl', 'emcee']
-
+ 
 for m in modules: 
     checkModule(m)
+
+#Check Scipy>1.0 installation
+print('Checking Scipy>1.0')
+import scipy
+scv=scipy.__version__
+scvl=scv.split('.')
+if int(scvl[0])>0 or int(scvl[1])>19:
+    print('OK! (Version %s)'%scv)
+else:
+    print('Version %s too old. I will install the latest version' % scv)
+    pip.main(['install','scipy','--upgrade'])
+
 
 from setuptools import setup
 import shutil
@@ -58,12 +70,21 @@ elif sys.version_info[0]==3:
 else:
     raise ValueError('You are not using neither Python2 nor Python3, probably you are a time traveller from the Future or from the Past')
 
+#cython gsl
+cy_gsl_lib=cython_gsl.get_libraries()
+cy_gsl_inc=cython_gsl.get_include()
+cy_gsl_lib_dic=cython_gsl.get_library_dir()
+#cython
+cy_gsl_inc_cy=cython_gsl.get_cython_include_dir()
+#numpy
+np_inc=numpy.get_include()
 
 cfiles = ['discH/src/pot_halo/pot_c_ext/general_triaxial_halo.pyx', 'discH/src/pot_halo/pot_c_ext/triaxial_doublepower_halo.pyx',\
           'discH/src/pot_halo/pot_c_ext/triaxial_exponential_halo.pyx', 'discH/src/pot_halo/pot_c_ext/general_halo.pyx',\
           'discH/src/pot_halo/pot_c_ext/isothermal_halo.pyx','discH/src/pot_halo/pot_c_ext/nfw_halo.pyx',\
           'discH/src/pot_halo/pot_c_ext/alfabeta_halo.pyx', 'discH/src/pot_halo/pot_c_ext/plummer_halo.pyx',\
           'discH/src/pot_halo/pot_c_ext/einasto_halo.pyx', 'discH/src/pot_halo/pot_c_ext/powercut_halo.pyx',\
+          'discH/src/pot_halo/pot_c_ext/exponential_halo.pyx','discH/src/pot_halo/pot_c_ext/valy_halo.pyx',\
           'discH/src/pot_disc/pot_c_ext/integrand_functions.pyx','discH/src/pot_disc/pot_c_ext/rdens_law.pyx',\
           'discH/src/pot_disc/pot_c_ext/rflare_law.pyx','discH/src/pot_disc/pot_c_ext/zdens_law.pyx',\
           'discH/src/pot_disc/pot_c_ext/integrand_vcirc.pyx']
@@ -88,15 +109,16 @@ setup(
         cmdclass=cmdclass_option,
         packages=['discH','discH/src','discH/src/pot_halo','discH/src/pot_halo/pot_c_ext','discH/src/pardo','discH/src/pot_disc', 'discH/src/pot_disc/pot_c_ext', 'discH/src/galpotential', 'discH/src/discHeight', 'discH/src/discHeight/c_ext' , 'discH/src/fitlib' ],
         ext_modules=ext_modules,
-        include_dirs=[numpy.get_include(),cython_gsl.get_include()],
+        include_dirs=[np_inc,cython_gsl.get_include()],
         install_requires=['numpy>=1.9', 'scipy>=0.19', 'matplotlib','emcee']
 )
 
-"""
+
+'''
 try:
     shutil.rmtree('build')
     shutil.rmtree('dist')
     shutil.rmtree('discH.egg-info')
 except:
     pass
-"""
+'''

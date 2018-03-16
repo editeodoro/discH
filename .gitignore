@@ -4,4 +4,16 @@ __pycache__/
 .DS_Store
 build/
 dist/
-*.egg.info/
+discH.egg.info/
+*_backup.py
+*.so
+.project
+.pydevproject
+/gh-pages
+prototype
+tests
+test_develop
+varie
+herp
+Makefile
+.ipynb_checkpoints/

@@ -130,7 +130,7 @@ class discHeight(object):
             outfolder = '/diagnostic/run%i'%count
 
             df = galpotential(dynamic_components=self.disc_component)
-            newpotential=df.potential(R, Z, grid=True, nproc=nproc, toll=inttoll, Rcut=Rcut, zcut=zcut, mcut=mcut,external_potential=fixed_potential)
+            newpotential=df.potential(R, Z, grid=True, nproc=nproc, toll=inttoll, Rcut=Rcut, zcut=zcut, mcut=mcut,external_potential=fixed_potential,show_comp=False,output='1D')
 
             tabzd, tabh   = self._calc_flaring(pot_grid=newpotential, vdisp_func=vdisp_func, zlaw=zlaw,outdir=outdir + outfolder, plot=diagnostic, diagnostic=diagnostic,output=diagnostic)
             ftab, fitfunc = self._fit_flaring(tabzd=tabzd, zlaw=flaw, polydegree=polyflare_degree, diagnostic=diagnostic,outdir=outdir + outfolder + '/flare', Rlimit=Rlimit)

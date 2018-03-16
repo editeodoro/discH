@@ -240,7 +240,7 @@ cdef double tanh_flare_der(double R, double a0, double a1, double a2, double a3,
 
     x=R/Rf
     sech=(1/cosh(x*x))
-    num=2*c**sech*sech
+    num=2*c*x*sech*sech
     den=Rf
 
     return  num/den

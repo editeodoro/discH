@@ -46,13 +46,18 @@ class ParDo:
         self.output.put(self.func(*args))
 
 
-    def run_grid(self, array, args):
+    def run_grid(self, array, args, _sorted=True):
         """Run func in parallel
-        It parallelizes the func dividing the first argument in chunks
+        It parallelizes the func dividing the first argument in chunks.
+        If _sorted=True, the ouput is re-sorted following the input order of the first array
         :param array: Firt argument of function self.func
         :param args: other args
+        :param _sorted: If True, sort the output to match the order of array.
+                        Otherwise the order is casual and depends on the output order of the chunks.
+                        In any case the match between array and results are safe.
         :return: results of func ordered with array as key
         """
+
 
         target=self._target
         # Initialize process
@@ -76,23 +81,33 @@ class ParDo:
         for p in self.process:
             p.join()
         ##Order
-        indxsort = np.argsort(results[:, 0], kind='mergesort')
+        if _sorted:
+            #original_order=np.argsort(array, kind='mergesort')
+            #final_order = np.argsort(results[:, 0], kind='mergesort')
+            #results[original_order]=results[final_order]
+            idx_sort=np.argsort(results[:,0], kind='mergesort')
+            results=results[idx_sort]
+        else:
+            pass
 
-        return results[indxsort]
+        return results
 
 
 
-    def run(self, array1, array2, args):
+    def run(self, array1, array2, args, _sorted=True):
         """Run func in parallel
-        It parallelizes the func dividing the first and second argument in chunks
+        It parallelizes the func dividing the first and second argument in chunks.
+        If _sorted=True, the ouput is re-sorted following the input order of the first array
         :param array1: First argument of function self.func
         :param array2: Secon argument of function self.func
         :param args: other args
+        :param _sorted: If True, sort the output to match the order of array1.
+                        Otherwise the order is casual and depends on the output order of the chunks.
+                        In any case the match between array and results are safe.
         :return: results of func ordered with array as key
         """
 
         if len(array1)!=len(array2): raise ValueError('Unequal length')
-
 
 
         target=self._target
@@ -118,6 +133,11 @@ class ParDo:
         for p in self.process:
             p.join()
         ##Order
-        indxsort = np.argsort(results[:, 0], kind='mergesort')
+        if _sorted:
+            original_order=np.argsort(array1, kind='mergesort')
+            final_order = np.argsort(results[:, 0], kind='mergesort')
+            results[original_order]=results[final_order]
+        else:
+            pass
 
-        return results[indxsort]
+        return results

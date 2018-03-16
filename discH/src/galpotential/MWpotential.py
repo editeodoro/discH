@@ -95,7 +95,7 @@ class MWpotential(galpotential):
                 alph_h = 1.63    
                 beta_h = 2.17
 
-            halo = alfabeta_halo(d0=rho0_h,rs=rscl_h,alpha=alph_h,beta=beta_h,e=e_h)
+            halo = alfabeta_halo(d0=rho0_h,rs=rscl_h,alfa=alph_h,beta=beta_h,e=e_h)
             #-----------------------------------------------
             
             # DISK (thin+thick stellar + gas) --------------
@@ -154,7 +154,7 @@ class MWpotential(galpotential):
             rho0_h = 8.11E06  # Msun/kpc3
             rscl_h = 19.6     # kpc  
             
-            halo = alfabeta_halo(d0=rho0_h,rs=rscl_h,alpha=1,beta=3,e=0)
+            halo = alfabeta_halo(d0=rho0_h,rs=rscl_h,alfa=1,beta=3,e=0)
             #-----------------------------------------------
             
             # DISK (thin+thick) ----------------------------
@@ -231,7 +231,7 @@ class MWpotential(galpotential):
             rho0_h = 8.54E06  # Msun/kpc3
             rscl_h = 19.6     # kpc  
             
-            halo = alfabeta_halo(d0=rho0_h,rs=rscl_h,alpha=1,beta=3,e=0)
+            halo = alfabeta_halo(d0=rho0_h,rs=rscl_h,alfa=1,beta=3,e=0)
             #-----------------------------------------------
             
             dc = [bulge,halo,disk_thin,disk_thick,disk_HI,disk_H2]

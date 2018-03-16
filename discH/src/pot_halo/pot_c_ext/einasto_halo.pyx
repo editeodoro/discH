@@ -27,6 +27,7 @@ cdef double dn_func(double n) nogil:
 
     return a0+a1+a2+a3+a4+a5
 
+
 cdef double dens_einasto(double m, void * params) nogil:
 
     cdef:
@@ -38,6 +39,7 @@ cdef double dens_einasto(double m, void * params) nogil:
         double ee=dn*pow(x,1/n)
 
     return 2.*m*d0*exp(-ee)
+
 
 cdef double psi_einasto(double d0, double rs, double n, double m,  double toll) nogil:
 
@@ -53,15 +55,14 @@ cdef double psi_einasto(double d0, double rs, double n, double m,  double toll) 
 
     W = gsl_integration_workspace_alloc (1000)
 
-
     F.function = &dens_einasto
     F.params = params
-
 
     gsl_integration_qag(&F, 0, m, toll, toll, 1000, GSL_INTEG_GAUSS15, W, &result, &error)
     gsl_integration_workspace_free(W)
 
     return result
+
 
 cdef double integrand_einasto(int nn, double *data) nogil:
 
@@ -88,11 +89,10 @@ cdef double integrand_einasto(int nn, double *data) nogil:
     result=integrand_core(m, R, Z, e, psi)
     #num=xi(m,R,Z,e)*(xi(m,R,Z,e)-e*e)*sqrt(xi(m,R,Z,e)-e*e)*m*psi
     #den=((xi(m,R,Z,e)-e*e)*(xi(m,R,Z,e)-e*e)*R*R)+(xi(m,R,Z,e)*xi(m,R,Z,e)*Z*Z)
-
     return result
 
-cdef double  _potential_einasto(double R, double Z, double mcut, double d0, double rs, double n, double e, double toll):
 
+cdef double  _potential_einasto(double R, double Z, double mcut, double d0, double rs, double n, double e, double toll):
 
     cdef:
         double G=4.498658966346282e-12 #G constant in  kpc^3/(msol Myr^2 )
@@ -107,21 +107,14 @@ cdef double  _potential_einasto(double R, double Z, double mcut, double d0, doub
     #Integ
     import discH.src.pot_halo.pot_c_ext.einasto_halo as mod
     fintegrand=LowLevelCallable.from_cython(mod,'integrand_einasto')
-
-
+    
     intpot=quad(fintegrand,0.,m0,args=(R,Z,mcut,d0,rs,n,e,toll),epsabs=toll,epsrel=toll)[0]
-
-
     psi=psi_einasto(d0,rs,n,mcut,toll)
-
     result=potential_core(e, intpot, psi)
-
     return result
 
 
-
 cdef double[:,:]  _potential_einasto_array(double[:] R, double[:] Z, int nlen, double mcut, double d0, double rs, double n, double e, double toll):
-
 
     cdef:
         double G=4.498658966346282e-12 #G constant in  kpc^3/(msol Myr^2 )
@@ -132,34 +125,22 @@ cdef double[:,:]  _potential_einasto_array(double[:] R, double[:] Z, int nlen, d
         double intpot
         int i
 
-
-
     #Integ
     import discH.src.pot_halo.pot_c_ext.einasto_halo as mod
     fintegrand=LowLevelCallable.from_cython(mod,'integrand_einasto')
 
-
     for  i in range(nlen):
-
-
         ret[i,0]=R[i]
         ret[i,1]=Z[i]
-
         m0=m_calc(R[i],Z[i],e)
-
         intpot=quad(fintegrand,0.,m0,args=(R[i],Z[i],mcut,d0,rs,n,e,toll),epsabs=toll,epsrel=toll)[0]
-
         psi=psi_einasto(d0,rs,n, mcut, toll)
-
         ret[i,2]=potential_core(e, intpot, psi)
-
 
     return ret
 
 
-
 cdef double[:,:]  _potential_einasto_grid(double[:] R, double[:] Z, int nlenR, int nlenZ, double mcut, double d0, double rs, double n,  double e, double toll):
-
 
     cdef:
         double G=4.498658966346282e-12 #G constant in  kpc^3/(msol Myr^2 )
@@ -170,8 +151,6 @@ cdef double[:,:]  _potential_einasto_grid(double[:] R, double[:] Z, int nlenR, i
         double intpot
         int i, j, c
 
-
-
     #Integ
     import discH.src.pot_halo.pot_c_ext.einasto_halo as mod
     fintegrand=LowLevelCallable.from_cython(mod,'integrand_einasto')
@@ -179,22 +158,16 @@ cdef double[:,:]  _potential_einasto_grid(double[:] R, double[:] Z, int nlenR, i
     c=0
     for  i in range(nlenR):
         for j in range(nlenZ):
-
             ret[c,0]=R[i]
             ret[c,1]=Z[j]
-
             m0=m_calc(R[i],Z[j],e)
-
             intpot=quad(fintegrand,0.,m0,args=(R[i],Z[j],mcut,d0,rs,n,e,toll),epsabs=toll,epsrel=toll)[0]
-
             psi=psi_einasto(d0,rs,n,mcut,toll)
-
             ret[c,2]=potential_core(e, intpot, psi)
             #if (e<=0.0001):
             #    ret[c,2] = -cost*(psi-intpot)
             #else:
             #    ret[c,2] = -cost*(sqrt(1-e*e)/e)*(psi*asin(e)-e*intpot)
-
             c+=1
 
     return ret
@@ -226,8 +199,6 @@ cdef double vcirc_integrand_einasto(int n, double *data) nogil:
     """
     Integrand function for vcirc  on the plane (Eq. 2.132 in BT2)
     """
-
-
     cdef:
         double m      = data[0]
         double R      = data[1]
@@ -267,11 +238,10 @@ cdef double _vcirc_einasto(double R, double d0, double rs, double n, double e, d
     fintegrand=LowLevelCallable.from_cython(mod,'vcirc_integrand_einasto')
 
     intvcirc=quad(fintegrand,0.,R,args=(R,rs,n,e),epsabs=toll,epsrel=toll)[0]
-
     return vcirc_norm(intvcirc,d0,e)
 
 
-cdef double[:,:] _vcirc_alfabeta_array(double[:] R, int nlen, double d0, double rs, double n, double e, double toll):
+cdef double[:,:] _vcirc_einasto_array(double[:] R, int nlen, double d0, double rs, double n, double e, double toll):
     """
     Calculate Vcirc on a single point on the plane
     :param R: radii array (kpc)
@@ -292,11 +262,10 @@ cdef double[:,:] _vcirc_alfabeta_array(double[:] R, int nlen, double d0, double 
     fintegrand=LowLevelCallable.from_cython(mod,'vcirc_integrand_einasto')
 
     for  i in range(nlen):
-
         ret[i,0]=R[i]
         intvcirc=quad(fintegrand,0.,R[i],args=(R[i],rs,n,e),epsabs=toll,epsrel=toll)[0]
         ret[i,1]=vcirc_norm(intvcirc,d0,e)
-
+        
     return ret
 
 
@@ -321,7 +290,7 @@ cpdef vcirc_einasto(R, d0, rs, n, e, toll=1e-4):
 
     else:
 
-        ret=_vcirc_alfabeta_array(R, len(R), d0, rs, n, e, toll)
+        ret=_vcirc_einasto_array(R, len(R), d0, rs, n, e, toll)
         ret[:,1]=np.where(R==0, 0, ret[:,1])
 
     return ret

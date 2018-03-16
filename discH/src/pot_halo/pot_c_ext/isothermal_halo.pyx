@@ -330,7 +330,6 @@ cdef double _vcirc_iso(double R, double d0, double rc, double e, double toll):
     fintegrand=LowLevelCallable.from_cython(mod,'vcirc_integrand_iso')
 
     intvcirc=quad(fintegrand,0.,R,args=(R,rc,e),epsabs=toll,epsrel=toll)[0]
-
     return vcirc_norm(intvcirc,d0,e)
 
 
@@ -349,19 +348,14 @@ cdef double[:,:] _vcirc_iso_array(double[:] R, int nlen, double d0, double rc, d
         int i
         double[:,:] ret=np.empty((nlen,2), dtype=np.dtype("d"))
 
-
-
-
     #Integ
     import discH.src.pot_halo.pot_c_ext.isothermal_halo as mod
     fintegrand=LowLevelCallable.from_cython(mod,'vcirc_integrand_iso')
 
     for  i in range(nlen):
-
         ret[i,0]=R[i]
         intvcirc=quad(fintegrand,0.,R[i],args=(R[i],rc,e),epsabs=toll,epsrel=toll)[0]
         ret[i,1]=vcirc_norm(intvcirc,d0,e)
-
     return ret
 
 
@@ -382,14 +376,10 @@ cpdef vcirc_iso(R, d0, rc, e, toll=1e-4):
     if e==0:
         ret= _vcirc_iso_spherical(R, d0, rc)
     else:
-
         if isinstance(R, float) or isinstance(R, int):
-
             if R==0: ret=0
             else: ret= _vcirc_iso(R, d0, rc,  e,  toll)
-
         else:
-
             ret=_vcirc_iso_array(R, len(R), d0, rc, e, toll)
             ret[:,1]=np.where(R==0, 0, ret[:,1])
 

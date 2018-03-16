@@ -13,7 +13,7 @@ cdef double psi_plummer(double d0, double rc, double m) nogil:
 
 
     cdef:
-        double costn=0.66666666666666667
+        double costn=0.66666666666666667*rc*rc
         double x=m/rc
         double costm=pow(1+x*x, 1.5)
 
@@ -254,7 +254,6 @@ cdef double _vcirc_plummer(double R, double d0, double rc, double e, double toll
     fintegrand=LowLevelCallable.from_cython(mod,'vcirc_integrand_plummer')
 
     intvcirc=quad(fintegrand,0.,R,args=(R,rc,e),epsabs=toll,epsrel=toll)[0]
-
     return vcirc_norm(intvcirc,d0,e)
 
 
@@ -273,13 +272,11 @@ cdef double[:,:] _vcirc_plummer_array(double[:] R, int nlen, double d0, double r
         int i
         double[:,:] ret=np.empty((nlen,2), dtype=np.dtype("d"))
 
-
     #Integ
     import discH.src.pot_halo.pot_c_ext.plummer_halo as mod
     fintegrand=LowLevelCallable.from_cython(mod,'vcirc_integrand_plummer')
 
     for  i in range(nlen):
-
         ret[i,0]=R[i]
         intvcirc=quad(fintegrand,0.,R[i],args=(R[i],rc,e),epsabs=toll,epsrel=toll)[0]
         ret[i,1]=vcirc_norm(intvcirc,d0,e)

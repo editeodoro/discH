@@ -10,10 +10,9 @@ cimport numpy as np
 cdef double PI=3.14159265358979323846
 
 
-
 cdef double psi_alfabeta (double d0, double alpha, double beta, double rc, double m) nogil:
     """Auxiliary functions linked to density law alfabeta:
-    d=d0*(m/rs)**(-alfa)*(m/rs)**(-(alfa-beta))
+    d=d0*(m/rs)**(-alfa)*(1+m/rs)**(-(alfa-beta))
 
     :param d0: Scale density  [Msol/kpc^3], if alpha=0, d0 is the density ad R=0 and Z=0
     :param alpha: Alpha exponent
@@ -34,6 +33,7 @@ cdef double psi_alfabeta (double d0, double alpha, double beta, double rc, doubl
     num3=hyp2f1(2.-alpha, beta-alpha, 3.-alpha, -x)
 
     return -(d0*num1*num2*num3)/den
+
 
 cdef double integrand_alfabeta(int n, double *data) nogil:
     """ Potential integrand for alfabeta halo: d=d0*(m/rs)**(-alfa)*(m/rs)**(-(alfa-beta))
@@ -77,6 +77,7 @@ cdef double integrand_alfabeta(int n, double *data) nogil:
 
     return result
 
+
 cdef double  _potential_alfabeta(double R, double Z, double mcut, double d0, double alfa, double beta, double rc, double e, double toll):
     """Calculate the potential of an isothermal halo in the point R-Z.
         Use the formula 2.88b in BT 1987. The integration is performed with the function quad in scipy.quad.
@@ -104,15 +105,11 @@ cdef double  _potential_alfabeta(double R, double Z, double mcut, double d0, dou
     #Integ
     import discH.src.pot_halo.pot_c_ext.alfabeta_halo as mod
     fintegrand=LowLevelCallable.from_cython(mod,'integrand_alfabeta')
-
     intpot=quad(fintegrand,0.,m0,args=(R,Z,mcut,d0,alfa, beta, rc,e),epsabs=toll,epsrel=toll)[0]
-
-
     psi=psi_alfabeta(d0,alfa,beta,rc,mcut)
-
     result=potential_core(e, intpot, psi)
-
     return result
+    
 
 cdef double[:,:]  _potential_alfabeta_array(double[:] R, double[:] Z, int nlen, double mcut, double d0, double alfa, double beta, double rc, double e, double toll):
     """Calculate the potential of an isothermal halo in the a list of points R-Z
@@ -141,33 +138,24 @@ cdef double[:,:]  _potential_alfabeta_array(double[:] R, double[:] Z, int nlen, 
         double intpot
         int i
 
-
-
     #Integ
     import discH.src.pot_halo.pot_c_ext.alfabeta_halo as mod
     fintegrand=LowLevelCallable.from_cython(mod,'integrand_alfabeta')
 
     for  i in range(nlen):
-
-
         ret[i,0]=R[i]
         ret[i,1]=Z[i]
-
         m0=m_calc(R[i],Z[i],e)
-
         intpot=quad(fintegrand,0.,m0,args=(R[i],Z[i],mcut,d0,alfa, beta, rc,e),epsabs=toll,epsrel=toll)[0]
-
         psi=psi_alfabeta(d0,alfa,beta,rc,mcut)
-
         ret[i,2]=potential_core(e, intpot, psi)
-
-
         #if (e<=0.0001):
         #    ret[i,2] = -cost*(psi-intpot)
         #else:
         #    ret[i,2] = -cost*(sqrt(1-e*e)/e)*(psi*asin(e)-e*intpot)
 
     return ret
+
 
 cdef double[:,:]  _potential_alfabeta_grid(double[:] R, double[:] Z, int nlenR, int nlenZ, double mcut, double d0, double alfa, double beta,  double rc, double e, double toll):
     """Calculate the potential of an isothermal halo in a 2D grid combining the vector R and Z
@@ -197,8 +185,6 @@ cdef double[:,:]  _potential_alfabeta_grid(double[:] R, double[:] Z, int nlenR, 
         double intpot
         int i, j, c
 
-
-
     #Integ
     import discH.src.pot_halo.pot_c_ext.alfabeta_halo as mod
     fintegrand=LowLevelCallable.from_cython(mod,'integrand_alfabeta')
@@ -206,25 +192,20 @@ cdef double[:,:]  _potential_alfabeta_grid(double[:] R, double[:] Z, int nlenR, 
     c=0
     for  i in range(nlenR):
         for j in range(nlenZ):
-
             ret[c,0]=R[i]
             ret[c,1]=Z[j]
-
             m0=m_calc(R[i],Z[j],e)
-
             intpot=quad(fintegrand,0.,m0,args=(R[i],Z[j],mcut,d0,alfa, beta, rc,e),epsabs=toll,epsrel=toll)[0]
-
             psi=psi_alfabeta(d0,alfa,beta,rc,mcut)
-
             ret[c,2]=potential_core(e, intpot, psi)
             #if (e<=0.0001):
             #    ret[c,2] = -cost*(psi-intpot)
             #else:
             #    ret[c,2] = -cost*(sqrt(1-e*e)/e)*(psi*asin(e)-e*intpot)
-
             c+=1
 
     return ret
+
 
 cpdef potential_alfabeta(R, Z, d0, alfa, beta, rc, e, mcut, toll=1e-4, grid=False):
     """Calculate the potential of an isothermal halo.
@@ -264,6 +245,7 @@ cpdef potential_alfabeta(R, Z, d0, alfa, beta, rc, e, mcut, toll=1e-4, grid=Fals
         else:
             raise ValueError('R and Z have different dimension')
 
+
 #####################################################################
 #Vcirc
 cdef double vcirc_integrand_alfabeta(int n, double *data) nogil:
@@ -292,11 +274,8 @@ cdef double vcirc_integrand_alfabeta(int n, double *data) nogil:
         double base
 
     core=vcirc_core(m, R, e)
-
     dens=pow(x, ainn) * pow(1+x, aout)
-
     return core*dens
-
 
 
 cdef double _vcirc_alfabeta(double R, double d0, double rc, double alpha, double beta, double e, double toll):
@@ -317,7 +296,6 @@ cdef double _vcirc_alfabeta(double R, double d0, double rc, double alpha, double
     fintegrand=LowLevelCallable.from_cython(mod,'vcirc_integrand_afabeta')
 
     intvcirc=quad(fintegrand,0.,R,args=(R,rc,alpha,beta,e),epsabs=toll,epsrel=toll)[0]
-
     return vcirc_norm(intvcirc,d0,e)
 
 
@@ -341,11 +319,9 @@ cdef double[:,:] _vcirc_alfabeta_array(double[:] R, int nlen, double d0, double 
     fintegrand=LowLevelCallable.from_cython(mod,'vcirc_integrand_alfabeta')
 
     for  i in range(nlen):
-
         ret[i,0]=R[i]
         intvcirc=quad(fintegrand,0.,R[i],args=(R[i],rc,alpha,beta,e),epsabs=toll,epsrel=toll)[0]
         ret[i,1]=vcirc_norm(intvcirc,d0,e)
-
     return ret
 
 
@@ -364,12 +340,9 @@ cpdef vcirc_alfabeta(R, d0, rc, alfa, beta, e, toll=1e-4):
     """
 
     if isinstance(R, float) or isinstance(R, int):
-
         if R==0: ret=0
         else: ret= _vcirc_alfabeta(R, d0, rc, alfa, beta,  e,  toll)
-
     else:
-
         ret=_vcirc_alfabeta_array(R, len(R), d0, rc, alfa, beta, e, toll)
         ret[:,1]=np.where(R==0, 0, ret[:,1])
 

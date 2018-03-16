@@ -1,0 +1,16 @@
+warnings_are_errors: false
+language: python
+python:
+  - 2.7
+  - 3.4
+  - 3.5
+  - 3.6
+addons:
+  apt:
+    packages:
+     - libgsl0-dev
+install:
+  - python setup.py install
+script:
+  - python setup.py test -q
+sudo: true
