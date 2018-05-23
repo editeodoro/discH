@@ -1,2 +1,2 @@
 
-The project has been migrated to the repository galpynamics: https://github.com/iogiul/galpynamics
+Tools for calculating galaxy dynamics (potential, rotation curves, etc).
